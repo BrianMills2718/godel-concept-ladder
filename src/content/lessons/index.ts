@@ -20,18 +20,16 @@ import { stage11 } from "./stage11";
 import { stage12 } from "./stage12";
 import { stage13 } from "./stage13";
 import { stage14 } from "./stage14";
+import { stage15 } from "./stage15";
+import { stage16 } from "./stage16";
 
 export const LESSONS: Lesson[] = [
   stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8,
-  stage9, stage10, stage11, stage12, stage13, stage14,
+  stage9, stage10, stage11, stage12, stage13, stage14, stage15, stage16,
 ];
 
-/** Titles of the not-yet-authored stages, shown greyed in the sidebar so the
- *  learner sees the whole trajectory and where they are in it. */
-export const UPCOMING: { stage: number; title: string }[] = [
-  { stage: 15, title: "First Incompleteness Theorem" },
-  { stage: 16, title: "Second Incompleteness Theorem" },
-];
+/** All stages authored — the ladder is complete. */
+export const UPCOMING: { stage: number; title: string }[] = [];
 
 export function lessonById(id: string): Lesson | undefined {
   return LESSONS.find((l) => l.id === id);
