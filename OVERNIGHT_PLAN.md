@@ -1,5 +1,10 @@
 # Overnight build — mission & acceptance criteria
 
+> **STATUS: COMPLETE (2026-06-19).** All 20 tasks done. 17 stages (0–16) authored
+> + 2 flagship interactives + 6 quiz types + 61-term glossary. `npm run check`
+> (typecheck + content validator + build) passes. Working tree clean, all
+> committed. See README status table.
+
 **Mission:** Complete the Concept Ladder site — author all remaining stages
 (2–16) plus the two flagship interactives, on top of the verified Stage 0–1
 slice. Run continuously until done. Soft gating throughout.
