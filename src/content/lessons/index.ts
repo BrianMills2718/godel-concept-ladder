@@ -17,18 +17,18 @@ import { stage8 } from "./stage8";
 import { stage9 } from "./stage9";
 import { stage10 } from "./stage10";
 import { stage11 } from "./stage11";
+import { stage12 } from "./stage12";
+import { stage13 } from "./stage13";
+import { stage14 } from "./stage14";
 
 export const LESSONS: Lesson[] = [
   stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8,
-  stage9, stage10, stage11,
+  stage9, stage10, stage11, stage12, stage13, stage14,
 ];
 
 /** Titles of the not-yet-authored stages, shown greyed in the sidebar so the
  *  learner sees the whole trajectory and where they are in it. */
 export const UPCOMING: { stage: number; title: string }[] = [
-  { stage: 12, title: "Gödel Coding" },
-  { stage: 13, title: "Proof_T(p,q) and Prov_T(q)" },
-  { stage: 14, title: "Diagonalization & the Gödel Sentence" },
   { stage: 15, title: "First Incompleteness Theorem" },
   { stage: 16, title: "Second Incompleteness Theorem" },
 ];
