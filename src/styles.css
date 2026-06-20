@@ -269,6 +269,39 @@ kbd {
 .gloss-tag { display: inline-block; background: #f1f5f9; border-radius: 5px; padding: 1px 7px; margin: 0 4px 4px 0; font-size: 11.5px; }
 .gloss-empty { color: var(--ink-soft); padding: 16px 0; }
 
+/* coding encoder */
+.coding-encoder { padding: 18px 20px; }
+.ce-seq { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.ce-label { font-size: 13px; color: var(--ink-soft); }
+.ce-cell { display: inline-flex; align-items: center; background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: 2px 6px; }
+.ce-prime { font-family: ui-monospace, monospace; color: var(--coding); font-size: 14px; }
+.ce-cell input { width: 46px; border: none; background: transparent; font-size: 15px; font-family: ui-monospace, monospace; }
+.ce-btn { width: 30px; height: 30px; border: 1px solid var(--line); background: #fff; border-radius: 7px; cursor: pointer; font-size: 15px; }
+.ce-btn:disabled { opacity: .4; cursor: not-allowed; }
+.ce-eq { margin: 8px 0; overflow-x: auto; }
+.ce-product { margin: 12px 0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.ce-number { font-size: 15px; word-break: break-all; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 6px; padding: 4px 8px; color: var(--coding); }
+.ce-decode { font-size: 14.5px; margin: 10px 0; }
+.ce-decode code { background: #f1f5f9; padding: 1px 6px; border-radius: 5px; }
+.ce-ok { color: var(--semantics); font-weight: 600; }
+.ce-bad { color: var(--metatheory); font-weight: 600; }
+.ce-note { font-size: 13.5px; color: var(--ink-soft); margin: 12px 0 0; }
+
+/* godel loop */
+.godel-loop { padding: 18px 20px; }
+.gl-banner { background: var(--coding); color: #fff; font-size: 12.5px; padding: 7px 12px; border-radius: 8px; text-align: center; margin-bottom: 16px; letter-spacing: .2px; }
+.gl-stations { list-style: none; margin: 0; padding: 0; max-width: 520px; margin-inline: auto; }
+.gl-station { display: flex; flex-direction: column; align-items: center; }
+.gl-card { width: 100%; border: 2px solid var(--metatheory); border-radius: 10px; background: #fff; padding: 12px 16px; text-align: center; }
+.gl-card-main { font-size: 17px; }
+.gl-card-sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+.gl-arrow { display: flex; flex-direction: column; align-items: center; padding: 6px 0; color: var(--coding); }
+.gl-arrow-label { font-size: 12px; font-family: ui-monospace, monospace; }
+.gl-arrow-glyph { font-size: 22px; line-height: 1; }
+.gl-arrow-loop { color: var(--metatheory); font-weight: 700; }
+.gl-foot { font-size: 14px; color: var(--ink-soft); margin-top: 14px; }
+.gl-foot code { background: #f1f5f9; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+
 /* KaTeX inline sizing tweak */
 .tex-error { color: var(--metatheory); font-family: ui-monospace, monospace; }
 

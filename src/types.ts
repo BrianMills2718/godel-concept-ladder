@@ -87,7 +87,9 @@ export interface GraphEdge {
 export type VisualizationSpec =
   | TypedGraphViz
   | ParseTreeViz
-  | ComparisonTableViz;
+  | ComparisonTableViz
+  | CodingEncoderViz
+  | GodelLoopViz;
 
 export interface VizBase {
   id: string;
@@ -137,6 +139,24 @@ export interface ComparisonTableViz extends VizBase {
   /** Column keys in order, e.g. ["Well-formed?", "Provable in PA?", "True in ℕ?"]. */
   columns: string[];
   rows: ComparisonRow[];
+}
+
+/** Interactive prime-power Gödel encoder: the learner edits a short sequence of
+ *  exponents and sees 2^a·3^b·5^c·… , its product, and the decode back. */
+export interface CodingEncoderViz extends VizBase {
+  kind: "coding-encoder";
+  /** Default exponent sequence, e.g. [4, 7, 9]. */
+  defaultSequence: number[];
+}
+
+/** The Gödel-sentence self-reference cycle. Fixed four-node loop; the labels are
+ *  parameterized but the structure (G_T → code → ¬Prov → G_T) is constant. */
+export interface GodelLoopViz extends VizBase {
+  kind: "godel-loop";
+  /** The four stations of the loop, in cycle order. KaTeX-able labels. */
+  stations: { label: string; sub?: string }[];
+  /** The relation label printed on each arrow, in order. */
+  arrows: string[];
 }
 
 // ---------------------------------------------------------------------------

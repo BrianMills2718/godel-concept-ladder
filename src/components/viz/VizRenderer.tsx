@@ -7,6 +7,8 @@ import type { VisualizationSpec } from "../../types";
 import { TypedGraph } from "./TypedGraph";
 import { ParseTree } from "./ParseTree";
 import { ComparisonTable } from "./ComparisonTable";
+import { CodingEncoder } from "./CodingEncoder";
+import { GodelLoop } from "./GodelLoop";
 
 export function VizRenderer({ viz }: { viz: VisualizationSpec }) {
   return (
@@ -15,6 +17,8 @@ export function VizRenderer({ viz }: { viz: VisualizationSpec }) {
       {viz.kind === "typed-graph" && <TypedGraph viz={viz} />}
       {viz.kind === "parse-tree" && <ParseTree viz={viz} />}
       {viz.kind === "comparison-table" && <ComparisonTable viz={viz} />}
+      {viz.kind === "coding-encoder" && <CodingEncoder viz={viz} />}
+      {viz.kind === "godel-loop" && <GodelLoop viz={viz} />}
       <details className="viz-summary">
         <summary>Text description of this visualization</summary>
         <p>{viz.textualSummary}</p>
