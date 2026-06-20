@@ -27,7 +27,7 @@ writeFileSync(
    export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};
    export { SKILL_GRAPH, ROOT_GOAL_ID } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};
    export { ASSESSMENTS, ASSESSMENT_BY_ID, RUBRICS } from ${JSON.stringify(process.cwd() + "/src/content/assessments.ts")};
-   export { CONCEPT_GRAPH } from ${JSON.stringify(process.cwd() + "/src/content/concepts.ts")};`,
+   export { CONCEPT_GRAPH, PREREQ_WHY } from ${JSON.stringify(process.cwd() + "/src/content/concepts.ts")};`,
 );
 await build({
   entryPoints: [stub],
@@ -37,7 +37,7 @@ await build({
   logLevel: "error",
 });
 
-const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID, RUBRICS, CONCEPT_GRAPH } = await import(pathToFileURL(out).href);
+const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID, RUBRICS, CONCEPT_GRAPH, PREREQ_WHY } = await import(pathToFileURL(out).href);
 
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
@@ -336,6 +336,20 @@ for (const l of LESSONS) {
       if (q.type === "fill-in")
         ok(Array.isArray(q.accepted) && q.accepted.length > 0, `concept ${c.id} ${q.id}: no accepted answers`);
     }
+  }
+
+  // every prerequisite edge must carry a justification (PREREQ_WHY); no orphans.
+  {
+    const usedKeys = new Set();
+    for (const c of CONCEPTS)
+      for (const p of c.prerequisites) {
+        const key = `${c.id}>${p}`;
+        usedKeys.add(key);
+        ok(typeof PREREQ_WHY[key] === "string" && PREREQ_WHY[key].length > 0,
+          `concept ${c.id}: prerequisite ${p} has no justification (add "${key}" to PREREQ_WHY)`);
+      }
+    for (const key of Object.keys(PREREQ_WHY))
+      ok(usedKeys.has(key), `PREREQ_WHY: orphan key "${key}" — no such prerequisite edge`);
   }
 
   // contrasts: undirected associations — must resolve and be symmetric.

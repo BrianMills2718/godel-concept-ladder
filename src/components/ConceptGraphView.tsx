@@ -1,52 +1,49 @@
 /**
  * The concept graph itself (ADR-0003/0004), rendered with the shared React Flow
- * engine. Nodes are concepts, laid out left-to-right by dependency depth.
+ * engine. Nodes are laid out by curriculum STAGE (x = stage column), with a
+ * stage's concepts ordered top-to-bottom by dependency. Stage layout keeps
+ * unrelated concepts apart (e.g. `decidable`, stage 11, sits far from `alphabet`,
+ * stage 1) rather than colliding in a shared depth-0 column.
  *
- *   - solid arrow  P → C : C has prerequisite P
+ *   - solid arrow  P → C : C has prerequisite P (arrow runs prereq → dependent)
  *   - dashed line  A — B : A and B contrast (mutual; not a dependency)
  *   - double border       : the concept is in a dependency cycle — a modeling
  *                           error to fix (acyclic is enforced, so this is a
  *                           visual linter that should never light up)
  *
- * Clicking a concept inspects its definition + example. This is the structural
- * view the per-stage panels summarize one group at a time.
+ * Hover any edge to read the relationship; click a concept to highlight + label
+ * its dependencies (what it requires, what needs it) and inspect it.
  */
 import { useMemo, useState } from "react";
 import ReactFlow, { Background, Controls, MarkerType, type Edge, type Node } from "reactflow";
 import "reactflow/dist/style.css";
-import { CONCEPT_GRAPH, CONCEPT_BY_ID } from "../content/concepts";
+import { CONCEPT_GRAPH, CONCEPT_BY_ID, conceptTopoOrder, prereqWhy } from "../content/concepts";
 import { conceptSCCs } from "../content/derive";
 import { LAYER_META } from "./viz/legend";
 import { flowNodeTypes, flowEdgeTypes, pickHandles } from "./viz/flow";
 import { RichLine } from "./Math";
 
-/** Dependency depth (longest prerequisite chain), cycle-tolerant. */
-function depthMap(): Record<string, number> {
-  const depth: Record<string, number> = {};
-  const computing = new Set<string>();
-  const d = (id: string): number => {
-    if (depth[id] !== undefined) return depth[id];
-    if (computing.has(id)) return 0; // break cycles
-    computing.add(id);
-    const ps = CONCEPT_BY_ID[id]?.prerequisites ?? [];
-    const val = ps.length ? 1 + Math.max(...ps.map((p) => d(p))) : 0;
-    computing.delete(id);
-    return (depth[id] = val);
-  };
-  CONCEPT_GRAPH.concepts.forEach((c) => d(c.id));
-  return depth;
-}
+const stageNum = (id: string): number => {
+  const m = (CONCEPT_BY_ID[id]?.introducedIn ?? "").match(/(\d+)/);
+  return m ? Number(m[1]) : 0;
+};
 
+/** Layout by curriculum stage: x = stage column, y = dependency order within the
+ *  stage (global simplest-first rank). Grouping by stage keeps a stage's concepts
+ *  together and unrelated ones apart. */
 function layout(): Record<string, { x: number; y: number }> {
-  const depth = depthMap();
-  const byDepth: Record<number, string[]> = {};
-  for (const c of CONCEPT_GRAPH.concepts) (byDepth[depth[c.id]] ??= []).push(c.id);
+  const rank: Record<string, number> = {};
+  conceptTopoOrder().forEach((id, i) => (rank[id] = i));
+  const byStage: Record<number, string[]> = {};
+  for (const c of CONCEPT_GRAPH.concepts) (byStage[stageNum(c.id)] ??= []).push(c.id);
   const pos: Record<string, { x: number; y: number }> = {};
-  for (const k of Object.keys(byDepth)) {
+  for (const k of Object.keys(byStage)) {
     const col = Number(k);
-    byDepth[col].forEach((id, i) => {
-      pos[id] = { x: col * 250 + 20, y: i * 78 + 20 };
-    });
+    byStage[col]
+      .sort((a, b) => rank[a] - rank[b])
+      .forEach((id, i) => {
+        pos[id] = { x: col * 230 + 20, y: i * 80 + 20 };
+      });
   }
   return pos;
 }
@@ -102,15 +99,24 @@ export function ConceptGraphView() {
       const meta = LAYER_META[c.layer];
       for (const p of c.prerequisites) {
         if (!positions[p]) continue;
+        const incident = sel === c.id || sel === p;
+        const dimmed = sel !== null && !incident;
+        // Label only the edges of the selected concept, from its point of view.
+        const short = sel === c.id ? "requires" : sel === p ? "needed by" : "";
         es.push({
           id: `pq-${p}-${c.id}`,
           type: "annot",
           source: p,
           target: c.id,
           ...pickHandles(positions[p], positions[c.id]),
-          data: { short: "", color: meta.color },
-          style: { stroke: meta.color, strokeWidth: 1.5, opacity: 0.85 },
+          data: {
+            short,
+            verbose: `${c.term} requires ${CONCEPT_BY_ID[p]?.term ?? p} — ${prereqWhy(c.id, p) ?? "(unannotated)"}`,
+            color: meta.color,
+          },
+          style: { stroke: meta.color, strokeWidth: incident ? 2.5 : 1.5, opacity: dimmed ? 0.1 : 0.85 },
           markerEnd: { type: MarkerType.ArrowClosed, color: meta.color },
+          zIndex: incident ? 10 : 0,
         });
       }
     }
@@ -121,32 +127,43 @@ export function ConceptGraphView() {
         const key = [c.id, x].sort().join("|");
         if (seen.has(key) || !positions[x]) continue;
         seen.add(key);
+        const incident = sel === c.id || sel === x;
+        const dimmed = sel !== null && !incident;
         es.push({
           id: `ct-${key}`,
           type: "annot",
           source: c.id,
           target: x,
           ...pickHandles(positions[c.id], positions[x]),
-          data: { short: "contrasts", verbose: "understood against each other — not a dependency", color: "#64748b" },
-          style: { stroke: "#94a3b8", strokeWidth: 1.5, strokeDasharray: "4 4" },
+          data: {
+            short: "contrasts",
+            verbose: `${c.term} ↔ ${CONCEPT_BY_ID[x]?.term ?? x}: understood against each other (not a dependency)`,
+            color: "#64748b",
+          },
+          style: { stroke: "#94a3b8", strokeWidth: 1.5, strokeDasharray: "4 4", opacity: dimmed ? 0.1 : 0.7 },
         });
       }
     }
     return es;
-  }, [positions]);
+  }, [positions, sel]);
 
   const selected = sel ? CONCEPT_BY_ID[sel] : null;
+  const neededBy = selected
+    ? CONCEPT_GRAPH.concepts.filter((c) => c.prerequisites.includes(selected.id)).map((c) => c.term)
+    : [];
 
   return (
     <div className="concept-graph-view">
       <header className="cgv-head">
         <h2>Concept graph</h2>
         <p>
-          The source of truth (ADR-0003/0004): every concept and what it depends on. The skill map is
-          <em> derived</em> from this. Drag nodes; click one to inspect it.
+          The source of truth (ADR-0003/0004): every concept and what it depends on; the skill map is
+          <em> derived</em> from this. <strong>Click a concept</strong> to highlight and label its
+          dependencies (what it requires, what needs it); <strong>hover an edge</strong> to read the
+          relationship. Laid out by stage, left → right.
         </p>
         <ul className="cgv-legend">
-          <li><span className="cgv-key solid" /> prerequisite (A → B: B needs A)</li>
+          <li><span className="cgv-key solid" /> prerequisite — arrow runs prerequisite → the concept that needs it</li>
           <li><span className="cgv-key dashed" /> contrasts (mutual, not a dependency)</li>
           <li><span className="cgv-key cluster" /> in a dependency cycle (a modeling error — should not appear)</li>
         </ul>
@@ -159,6 +176,7 @@ export function ConceptGraphView() {
           nodeTypes={flowNodeTypes}
           edgeTypes={flowEdgeTypes}
           onNodeClick={(_, n) => setSel(n.id)}
+          onPaneClick={() => setSel(null)}
           fitView
           nodesDraggable
           nodesConnectable={false}
@@ -178,11 +196,28 @@ export function ConceptGraphView() {
             <div className="cgv-inspect-eg">e.g. <RichLine text={selected.example} /></div>
           )}
           <div className="cgv-inspect-meta">
-            needs:{" "}
-            {selected.prerequisites.length
-              ? selected.prerequisites.map((p) => CONCEPT_BY_ID[p]?.term ?? p).join(", ")
-              : "— (primitive)"}
+            requires:
+            {selected.prerequisites.length ? (
+              <ul className="cgv-req-list">
+                {selected.prerequisites.map((p) => (
+                  <li key={p}>
+                    <strong>{CONCEPT_BY_ID[p]?.term ?? p}</strong>
+                    {prereqWhy(selected.id, p) ? ` — ${prereqWhy(selected.id, p)}` : ""}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              " — (primitive)"
+            )}
           </div>
+          <div className="cgv-inspect-meta">
+            needed by: {neededBy.length ? neededBy.join(", ") : "—"}
+          </div>
+          {selected.contrasts?.length ? (
+            <div className="cgv-inspect-meta">
+              contrasts: {selected.contrasts.map((x) => CONCEPT_BY_ID[x]?.term ?? x).join(", ")}
+            </div>
+          ) : null}
         </aside>
       )}
     </div>
