@@ -31,7 +31,7 @@ const achievement = (
 
 const NODES: SkillNode[] = [
   // --- concept nodes (content = stages) ---
-  concept("c-four-levels", "foundations", "stage-0", "The Four-Level Map", "Syntax vs proof vs truth vs metatheory.", { x: 0, y: 280 }),
+  concept("c-four-levels", "foundations", "stage-0", "Two Distinctions (orientation)", "Optional map: ⊢ vs ⊨, and object vs meta.", { x: 40, y: -120 }),
   concept("c-syntax", "syntax", "stage-1", "Terms, Formulas, Sentences", "The grammatical ladder.", { x: 250, y: 40 }),
   concept("c-grammar", "syntax", "stage-2", "Grammar & Well-formedness", "Legal ≠ true ≠ provable.", { x: 500, y: 20 }),
   concept("c-proof", "proof-theory", "stage-3", "Axioms, Rules, Proofs", "⊢ is derivability, not truth.", { x: 250, y: 460 }),
@@ -67,11 +67,8 @@ const NODES: SkillNode[] = [
 
 /** prerequisite_for edges: source must be passed before target unlocks. */
 const PREREQS: [string, string][] = [
-  // foundations fan-out
-  ["c-four-levels", "c-syntax"],
-  ["c-four-levels", "c-structures"],
-  ["c-four-levels", "c-proof"],
-  ["c-four-levels", "c-metatheory"],
+  // Roots are the three atoms: c-syntax, c-proof, c-structures. The orientation
+  // node c-four-levels is intentionally non-gating (an optional map).
   // syntax
   ["c-syntax", "c-grammar"],
   ["c-syntax", "c-pa"],
@@ -81,6 +78,7 @@ const PREREQS: [string, string][] = [
   ["c-proof", "c-proof-graphs"],
   ["c-proof", "c-prov-vs-truth"],
   ["c-proof", "c-computability"],
+  ["c-proof", "c-metatheory"],
   // semantics
   ["c-structures", "c-satisfaction"],
   ["c-pa", "c-satisfaction"],

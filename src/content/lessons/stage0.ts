@@ -1,197 +1,142 @@
 /**
- * Stage 0 — The Four-Level Map.
+ * Stage 0 — Two Distinctions (optional orientation).
  *
- * Goal: install the single most important habit before any definitions —
- * keeping syntax / proof / truth / metatheory apart. The comparison table is
- * the payload; the layer map shows that semantics is not merely "after" proof.
+ * NOTE: this node is an OPTIONAL, non-gating orientation (ADR-0001 reframe). It
+ * deliberately previews ⊢/⊨/object-meta before they're taught, using
+ * self-contained notation chips + spiral glosses, so it is exempt from the
+ * forward-reference closure check (it is the "map," not a prerequisite).
+ *
+ * Replaces the earlier "four-level map": the four things were not co-equal
+ * levels (proof lives on the syntactic side; metatheory is a vantage, not a
+ * level). The faithful structure is one precondition + two orthogonal axes.
  */
 import type { Lesson } from "../../types";
 
 export const stage0: Lesson = {
   id: "stage-0",
   stage: 0,
-  title: "The Four-Level Map",
+  title: "Two Distinctions (orientation)",
   summary:
-    "Before any definitions: keep syntax, proof, truth, and metatheory separate. Well-formed ≠ provable ≠ true.",
+    "An optional map. One precondition — is the string even well-formed? — and two independent distinctions that run through everything: provable (⊢) vs true (⊨), and talking inside a theory vs about it.",
   prerequisites: [],
   objectives: [
-    "Name the four levels: syntax, proof theory, semantics, metatheory.",
-    "State the core slogan: well-formed ≠ provable ≠ true.",
-    "Classify an expression by which level a claim about it lives on.",
+    "Name the precondition (well-formedness) and the two distinctions.",
+    "State that @n{turnstile} (provable) and @n{models} (true) are different relations.",
+    "Recognize an object-level claim vs a metatheoretic one.",
   ],
   definitions: [
-    {
-      term: "syntax",
-      short: "Which strings are legal formulas.",
-      example: "$\\forall x(x+0=x)$ is legal; $\\forall{+}{=}x))0$ is not.",
-    },
-    {
-      term: "proof theory",
-      short: "Which formulas are derivable from axioms by inference rules. Written @n{T}@n{turnstile}@n{P}.",
-    },
-    {
-      term: "semantics",
-      short: "Which formulas are true in a structure / model. Written @n{M}@n{models}@n{P} (for the standard model, @n{N}@n{models}@n{P}).",
-    },
-    {
-      term: "metatheory",
-      short: "What we can prove ABOUT the theory — its syntax, proofs, and models — from outside it.",
-    },
+    { term: "well-formed formula", short: "A string the grammar accepts — the precondition before truth or proof even apply.", example: "$2+2=5$ is well-formed (and false)." },
+    { term: "syntactic", short: "About symbol manipulation — proofs/derivations. @n{turnstile} lives here." },
+    { term: "semantic", short: "About truth in a structure. @n{models} lives here." },
+    { term: "metatheory", short: "Reasoning ABOUT a theory (its proofs, consistency) — a vantage point, not a level." },
   ],
   sections: [
     {
-      heading: "Four levels, not one",
-      body: `Most confusion about Gödel comes from collapsing four different questions into one. Keep them apart from the start.
+      heading: "First, a precondition",
+      body: `Before anything else: **is the string a legal formula at all?** Gibberish like $\\forall{+}{=}x))0$ isn't true, isn't false, isn't provable — it's simply not in the game. Well-formedness (grammar) is the gate. A *well-formed* sentence like $2+2=5$ can then be false; being legal says nothing about being true.
 
-1. **Syntax** — *Is this string a legal formula?* This is grammar. It has nothing to do with truth.
-2. **Proof theory** — *Can this formula be derived from the axioms?* Written @n{T}@n{turnstile}@n{P}. This is symbol manipulation.
-3. **Semantics** — *Is this formula true in a structure?* Written @n{M}@n{models}@n{P}. This is about interpretation, e.g. truth in the standard natural numbers @n{N}.
-4. **Metatheory** — *What can we prove about the theory itself?* For example: "PA is consistent", or "PA does not prove @n{GT}".`,
+Our running theory @n{T} is **PA** — @n{PA}, a standard formal theory of the natural numbers built from $0$ and successor (dissected fully at the *Peano Arithmetic* node). Our running structure is @n{N}, the ordinary natural numbers.`,
     },
     {
-      heading: "The slogan",
-      body: `The whole site is built to keep this true in your head:
+      heading: "Axis 1 — provable (⊢) vs true (⊨)",
+      body: `For a well-formed sentence @n{P}, two **different** relations can hold:
 
-$$\\text{well-formed} \\;\\neq\\; \\text{provable} \\;\\neq\\; \\text{true}$$
+- @n{T}@n{turnstile}@n{P} — *$P$ is provable in $T$*: there's a finite derivation. This is **syntactic** (symbol pushing).
+- @n{N}@n{models}@n{P} — *$P$ is true in $\\mathbb{N}$*. This is **semantic** (evaluation in a structure).
 
-These are three different properties of a sentence. They often agree on simple examples — which is exactly why they get confused — but they are not the same property.`,
+They often agree on easy cases, which is exactly why people fuse them — but they are different arrows on the same sentence. **The gap between them is the whole subject:** Gödel builds a sentence that is true in @n{N} yet not provable in @n{T}.
+
+$$\\text{provable} \\;\\neq\\; \\text{true}$$`,
     },
     {
-      heading: "Not a one-way pipeline",
-      body: `It is tempting to draw a straight line: strings → formulas → theorems → truths. That is misleading. A sentence can be *evaluated for truth in a structure even if no proof of it exists*. Proof and truth are two different relations on the same well-formed sentence, not two stops on one conveyor belt. Gödel's theorem lives precisely in the gap between them.`,
+      heading: "Axis 2 — object vs meta (orthogonal)",
+      body: `A separate distinction, at right angles to the first: are you speaking **inside** the theory or **about** it?
+
+- *Object level* — a claim of @n{T} about numbers: $2+2=4$.
+- *Metatheory* — a claim about @n{T} itself: "@n{T} proves $2+2=4$", "@n{T} is consistent".
+
+The symbol @n{turnstile} is not part of @n{T}'s language; it belongs to the metatheory describing @n{T}. (Later, **Gödel coding** is precisely the trick that smuggles metatheoretic claims back into object-level arithmetic — that's why coding matters.)`,
+    },
+    {
+      heading: "What to keep in your head",
+      body: `Not four stacked levels — **one gate and two crossing axes**: well-formed? then *provable vs true* and *object vs meta*. Almost every confusion about Gödel is a slip on one of these. The rest of the tree builds each one properly; come back to this map whenever you feel lost.`,
     },
   ],
   visualizations: [
     {
-      id: "stage0-layer-map",
+      id: "stage0-axes",
       kind: "typed-graph",
-      title: "The four levels and how claims attach to a sentence",
+      title: "One sentence, two relations (Axis 1), seen from a vantage (Axis 2)",
       textualSummary:
-        "A raw string is filtered by grammar into a well-formed sentence. That same sentence has two independent relations: the proof relation from a theory T (proves) and the satisfaction relation from the structure ℕ (satisfies). Above all of this sits the metatheory, which proves claims about the theory, its proofs, and its models. Syntax, proof, semantics, and metatheory are distinct layers.",
+        "A single well-formed sentence P is the target of two different arrows: the theory T 'proves' P (syntactic, ⊢) and the structure ℕ 'satisfies' P (semantic, ⊨). Separately, the metatheory sits outside and makes claims ABOUT T and about these relations — that is the object-vs-meta axis, orthogonal to provable-vs-true.",
       layers: ["syntax", "proof", "semantics", "metatheory"],
       nodes: [
-        { id: "raw", type: "RawString", layer: "syntax", label: "raw string", position: { x: 40, y: 40 }, note: "any finite sequence of symbols" },
-        { id: "sent", type: "Sentence", layer: "syntax", label: "well-formed sentence $P$", position: { x: 40, y: 170 } },
-        { id: "T", type: "ObjectTheory", layer: "proof", label: "theory $T$ (PA)", position: { x: 330, y: 60 } },
-        { id: "thm", type: "Theorem", layer: "proof", label: "$T \\vdash P$", position: { x: 330, y: 180 }, note: "P is provable in T" },
-        { id: "N", type: "Structure", layer: "semantics", label: "structure $\\mathbb{N}$", position: { x: 330, y: 300 } },
-        { id: "true", type: "TruthValue", layer: "semantics", label: "$\\mathbb{N} \\models P$", position: { x: 330, y: 420 }, note: "P is true in the standard naturals" },
-        { id: "meta", type: "MetaTheory", layer: "metatheory", label: "metatheory", position: { x: 640, y: 230 }, note: "reasons about T, its proofs, and its models" },
+        { id: "P", type: "Sentence", layer: "syntax", label: "well-formed sentence @n{P}", position: { x: 320, y: 170 } },
+        { id: "T", type: "ObjectTheory", layer: "proof", label: "theory @n{T} (PA)", position: { x: 40, y: 40 } },
+        { id: "N", type: "Structure", layer: "semantics", label: "structure @n{N}", position: { x: 40, y: 300 } },
+        { id: "meta", type: "MetaTheory", layer: "metatheory", label: "metatheory (about $T$)", position: { x: 640, y: 170 } },
       ],
       edges: [
-        { id: "e1", source: "raw", target: "sent", type: "parsed_as", label: "grammar", layer: "syntax" },
-        { id: "e2", source: "T", target: "thm", type: "proves", layer: "proof" },
-        { id: "e3", source: "thm", target: "sent", type: "proves", label: "of", layer: "proof" },
-        { id: "e4", source: "N", target: "sent", type: "satisfies", layer: "semantics" },
-        { id: "e5", source: "meta", target: "T", type: "proves_about", layer: "metatheory" },
-        { id: "e6", source: "meta", target: "thm", type: "proves_about", layer: "metatheory" },
-        { id: "e7", source: "meta", target: "true", type: "proves_about", layer: "metatheory" },
-      ],
-    },
-    {
-      id: "stage0-table",
-      kind: "comparison-table",
-      title: "The same four examples, three different questions",
-      textualSummary:
-        "The malformed string ∀+=x))0 is not well-formed, not provable, and has no truth value. 2+2=4 is well-formed, provable in PA, and true in ℕ. 2+2=5 is well-formed, not provable in consistent PA, and false in ℕ. The Gödel sentence G_PA is well-formed, not provable in PA (assuming PA is consistent), yet true in ℕ (assuming PA is sound). The columns disagree — that is the point.",
-      columns: ["Well-formed?", "Provable in PA?", "True in $\\mathbb{N}$?"],
-      rows: [
-        {
-          label: "$\\forall{+}{=}x))0$",
-          cells: {
-            "Well-formed?": { value: "no" },
-            "Provable in PA?": { value: "no", note: "only formulas can be proved" },
-            "True in $\\mathbb{N}$?": { value: "n/a", note: "no truth value — it is not a sentence" },
-          },
-        },
-        {
-          label: "$2+2=4$",
-          cells: {
-            "Well-formed?": { value: "yes" },
-            "Provable in PA?": { value: "yes" },
-            "True in $\\mathbb{N}$?": { value: "yes" },
-          },
-        },
-        {
-          label: "$2+2=5$",
-          cells: {
-            "Well-formed?": { value: "yes" },
-            "Provable in PA?": { value: "no", note: "assuming PA is consistent" },
-            "True in $\\mathbb{N}$?": { value: "no" },
-          },
-        },
-        {
-          label: "Gödel sentence $G_{\\mathrm{PA}}$",
-          cells: {
-            "Well-formed?": { value: "yes" },
-            "Provable in PA?": { value: "no", note: "assuming PA is consistent" },
-            "True in $\\mathbb{N}$?": { value: "yes", note: "assuming PA is sound" },
-          },
-        },
+        { id: "e1", source: "T", target: "P", type: "proves", label: "⊢ provable (syntactic)", layer: "proof" },
+        { id: "e2", source: "N", target: "P", type: "satisfies", label: "⊨ true (semantic)", layer: "semantics" },
+        { id: "e3", source: "meta", target: "T", type: "proves_about", label: "Axis 2: about $T$", layer: "metatheory" },
       ],
     },
   ],
   confusions: [
     {
-      misconception: "If a sentence is well-formed, it must be either provable or at least meaningful-as-true.",
+      misconception: "If a sentence is well-formed it must be true (or at least provable).",
       correction:
-        "Well-formedness is purely grammatical. $2+2=5$ is perfectly well-formed and simply false. Being legal says nothing about being provable or true.",
+        "Well-formedness is just the grammar gate. $2+2=5$ is well-formed and false. Legal ≠ true ≠ provable.",
     },
     {
-      misconception: "‘True’ and ‘provable in PA’ are the same thing for arithmetic.",
+      misconception: "'True in ℕ' and 'provable in PA' are the same thing.",
       correction:
-        "They agree on simple examples but are different properties. Gödel's theorem produces a sentence that is true in $\\mathbb{N}$ yet not provable in PA.",
+        "They are different relations (Axis 1). They agree on simple cases, but Gödel's sentence is true in @n{N} yet unprovable in @n{T} — that gap is incompleteness.",
     },
     {
-      misconception: "Metatheory is just more statements inside PA.",
+      misconception: "Metatheory is just more statements inside T.",
       correction:
-        "Metatheoretic claims like ‘PA is consistent’ are about PA. They live one level up. (Later, Gödel cleverly encodes some of them back into arithmetic — but they start as external claims.)",
+        "'@n{T} is consistent' is a claim ABOUT @n{T} (Axis 2), one level up. Gödel later encodes such claims back into arithmetic — a separate, deliberate move.",
     },
   ],
   quiz: [
     {
       id: "s0q1",
       type: "classification",
-      prompt: "Sort each claim by which level it belongs to.",
-      buckets: ["Syntax", "Proof theory", "Semantics", "Metatheory"],
+      prompt: "Which distinction is each pair testing?",
+      buckets: ["Axis 1: provable vs true", "Axis 2: object vs meta", "Precondition: well-formed?"],
       items: [
-        { id: "i1", label: "“$\\forall{+}{=}x))0$ is not a legal formula.”", correctBucket: "Syntax" },
-        { id: "i2", label: "“$\\mathrm{PA} \\vdash 2+2=4$.”", correctBucket: "Proof theory" },
-        { id: "i3", label: "“$\\mathbb{N} \\models 2+2=4$.”", correctBucket: "Semantics" },
-        { id: "i4", label: "“PA is consistent.”", correctBucket: "Metatheory" },
+        { id: "i1", label: "“$\\forall{+}{=}x))0$ is not a legal formula.”", correctBucket: "Precondition: well-formed?" },
+        { id: "i2", label: "“$2+2=4$ is true in $\\mathbb{N}$, but is it provable in PA?”", correctBucket: "Axis 1: provable vs true" },
+        { id: "i3", label: "“$2+2=4$” vs “PA proves $2+2=4$.”", correctBucket: "Axis 2: object vs meta" },
       ],
       explanation:
-        "Legality is syntax; $\\vdash$ is proof theory; $\\models$ (truth in a structure) is semantics; a claim about PA itself is metatheory.",
+        "Legality is the precondition; ⊢-vs-⊨ is Axis 1; a claim about PA's proofs (vs about numbers) is Axis 2.",
     },
     {
       id: "s0q2",
-      type: "multiple-choice",
-      prompt: "Which statement about $2+2=5$ is correct?",
-      options: [
-        "It is malformed, so it has no truth value.",
-        "It is well-formed but false in $\\mathbb{N}$, and not provable in consistent PA.",
-        "It is well-formed and true, but PA cannot prove it.",
-        "It is provable in PA but not true.",
-      ],
-      correct: 1,
-      wrongExplanations: {
-        "0": "$2+2=5$ parses fine — it is a perfectly legal equation between numerals. It is simply false.",
-        "2": "It is not true in $\\mathbb{N}$: $2+2$ evaluates to $4$, and $4 \\neq 5$.",
-        "3": "A consistent, sound theory never proves a false arithmetic equation.",
-      },
+      type: "true-false",
+      prompt: "True or false: a sentence must be provable in $T$ before we can ask whether it is true in $\\mathbb{N}$.",
+      correct: false,
       explanation:
-        "$2+2=5$ is well-formed (grammatical), false in $\\mathbb{N}$, and not provable in consistent PA. Three different levels, all answered separately.",
+        "False. ⊢ and ⊨ are independent relations (Axis 1). Any well-formed sentence can be evaluated in $\\mathbb{N}$ whether or not $T$ proves it — and that independence is where the Gödel sentence lives.",
     },
     {
       id: "s0q3",
-      type: "true-false",
-      prompt:
-        "True or false: a sentence must be provable in $T$ before we can ask whether it is true in $\\mathbb{N}$.",
-      correct: false,
+      type: "multiple-choice",
+      prompt: "Why is the metatheory called a 'vantage', not a fourth level?",
+      options: [
+        "Because it is inside $T$.",
+        "Because 'about $T$' is a different axis from 'syntax vs semantics' — you can make object- or meta-level claims that are themselves syntactic or semantic.",
+        "Because it has no symbols.",
+        "Because it is always false.",
+      ],
+      correct: 1,
       explanation:
-        "False. Truth in a structure is an independent relation. We can evaluate any well-formed sentence in $\\mathbb{N}$ whether or not $T$ proves it — that independence is exactly where the Gödel sentence lives.",
+        "Object-vs-meta is orthogonal to provable-vs-true. Treating it as a peer 'level' stacked on the others is itself a category slip.",
     },
   ],
   masteryCheckpoint:
-    "You can take any claim and say which of the four levels it lives on — and explain why ‘well-formed’, ‘provable’, and ‘true’ are three separate questions.",
+    "You can name the precondition (well-formed) and the two axes (⊢ vs ⊨; object vs meta), and say why proof and truth are different relations.",
 };
