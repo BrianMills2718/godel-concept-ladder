@@ -11,15 +11,17 @@ import { stage2 } from "./stage2";
 import { stage3 } from "./stage3";
 import { stage4 } from "./stage4";
 import { stage5 } from "./stage5";
+import { stage6 } from "./stage6";
+import { stage7 } from "./stage7";
+import { stage8 } from "./stage8";
 
-export const LESSONS: Lesson[] = [stage0, stage1, stage2, stage3, stage4, stage5];
+export const LESSONS: Lesson[] = [
+  stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8,
+];
 
 /** Titles of the not-yet-authored stages, shown greyed in the sidebar so the
  *  learner sees the whole trajectory and where they are in it. */
 export const UPCOMING: { stage: number; title: string }[] = [
-  { stage: 6, title: "Structures & Interpretations" },
-  { stage: 7, title: "Satisfaction and Truth (⊨)" },
-  { stage: 8, title: "Provability vs Truth (⊢ vs ⊨)" },
   { stage: 9, title: "Soundness & Completeness" },
   { stage: 10, title: "Object Theory vs Metatheory" },
   { stage: 11, title: "Computability" },
