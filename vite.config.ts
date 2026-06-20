@@ -6,4 +6,18 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "./",
+  build: {
+    rollupOptions: {
+      output: {
+        // Split the heavy vendors into their own chunks so they cache
+        // independently and the main bundle stays small: React Flow (the graph
+        // engine) and KaTeX (math) dominate the dependency weight.
+        manualChunks: {
+          reactflow: ["reactflow"],
+          katex: ["katex"],
+          react: ["react", "react-dom"],
+        },
+      },
+    },
+  },
 });

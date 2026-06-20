@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "validate": "node scripts/validate-content.mjs",
+    "check": "tsc -b --noEmit && node scripts/validate-content.mjs && vite build"
   },
   "dependencies": {
     "katex": "^0.16.11",
