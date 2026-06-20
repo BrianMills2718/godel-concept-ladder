@@ -10,13 +10,13 @@ import { stage1 } from "./stage1";
 import { stage2 } from "./stage2";
 import { stage3 } from "./stage3";
 import { stage4 } from "./stage4";
+import { stage5 } from "./stage5";
 
-export const LESSONS: Lesson[] = [stage0, stage1, stage2, stage3, stage4];
+export const LESSONS: Lesson[] = [stage0, stage1, stage2, stage3, stage4, stage5];
 
 /** Titles of the not-yet-authored stages, shown greyed in the sidebar so the
  *  learner sees the whole trajectory and where they are in it. */
 export const UPCOMING: { stage: number; title: string }[] = [
-  { stage: 5, title: "Peano Arithmetic and 2+2=4" },
   { stage: 6, title: "Structures & Interpretations" },
   { stage: 7, title: "Satisfaction and Truth (⊨)" },
   { stage: 8, title: "Provability vs Truth (⊢ vs ⊨)" },
