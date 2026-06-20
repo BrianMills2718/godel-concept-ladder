@@ -1,5 +1,14 @@
 # Migration Plan — Linear ladder → Skill DAG + hybrid assessments
 
+> **STATUS: COMPLETE & PARTLY SUPERSEDED (2026-06-20).** This ADR-0001 migration
+> shipped (skill DAG homepage, hybrid assessments, live LLM judge). **§2's
+> hand-authored concept→concept edge table is now historical:** those edges are
+> **derived** from the concept graph (`src/content/concepts.ts`) per
+> **ADR-0003**, with `graph.ts` holding only the overlay. The concept layer
+> (ADR-0002), derivation (ADR-0003), and the generalized methodology (ADR-0004 /
+> `METHODOLOGY.md`) are the current source of truth. Kept as a historical record
+> of the original plan; do not author graph edges from §2.
+
 Companion to **ADR-0001**. This is the executable plan: concrete contracts, the
 actual graph, file layout, and per-phase acceptance. An agent should be able to
 run this without further decisions.

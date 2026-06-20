@@ -11,19 +11,25 @@ theorems by keeping the key relations **strictly apart**. The pedagogical goal i
 not "explain Gödel" — it is to prevent the category errors (well-formed =
 provable = true) that ordinary explanations skip over.
 
-**Architecture (ADR-0001):** the homepage is a **typed prerequisite DAG** ("skill
-tree") — 17 concept nodes (the reviewed lessons) + 13 **achievement** nodes earned
-by **performance assessment**, not by viewing content. Deterministic checks grade
-exact answers; an **LLM judge** (`backend/`, FastAPI + llm_client) grades
-open-ended explanations with fatal-misconception overrides and remediation
-routing. Pick a goal (dropdown or free text) and the tree highlights its
-prerequisite sub-DAG and your recommended next node. The old linear ladder is one
-topological ordering of this graph. See `docs/ADR-0001-skill-dag-pivot.md`.
+**Architecture — concept graph as source of truth.** A **concept graph**
+(`src/content/concepts.ts`: 60 concepts, acyclic prerequisites each with a stated
+justification, plus undirected `contrasts`) is the single source of truth; the
+**skill map** (homepage DAG) is *derived* from it (`derive.ts` → `graph.ts`). The
+homepage is that derived prerequisite DAG — concept nodes (the reviewed lessons) +
+13 **achievement** nodes earned by **performance assessment**, not by viewing
+content. Deterministic checks grade exact answers; an **LLM judge** (`backend/`,
+FastAPI + llm_client) grades open-ended explanations with fatal-misconception
+overrides and remediation routing. `#/concepts` renders the concept graph itself
+(stage layout, per-edge justifications). Pick a goal and the tree highlights its
+prerequisite sub-DAG. The old linear ladder is one topological order of the derived
+map. See `docs/ADR-0002…0004` and `METHODOLOGY.md`; ADR-0001/MIGRATION_PLAN are
+historical. **To change structure, edit `concepts.ts`, not `graph.ts`.**
 
 ## Stack
 - Vite + React + TypeScript
 - KaTeX for math, React Flow for typed node-link graphs (DAGs only)
-- Content is plain data (`src/content/`); no backend; progress in localStorage
+- Content is plain data (`src/content/`); progress in localStorage; optional
+  FastAPI + `llm_client` judge backend (`backend/`) for open-ended grading
 
 ## Develop
 ```bash
@@ -34,18 +40,26 @@ npm run validate   # structural check of all lesson/quiz/graph content
 npm run check      # typecheck + validate + build (full gate)
 ```
 
-## Architecture
-- `src/types.ts` — the content contract (Lesson, typed graph nodes/edges, quiz union)
+## Code map
+- `src/types.ts` — the content contract (Concept, Lesson, typed graph/quiz unions)
+- `src/content/concepts.ts` — **the source of truth**: 60 concepts + `PREREQ_WHY`
+  (per-edge justifications) + topological-order/SCC helpers
+- `src/content/derive.ts` — SCC linter, `deriveStageEdges`, `transitiveReduction`
+- `src/content/graph.ts` — skill map: derived prerequisite edges + hand-authored
+  overlay (achievements, positions, goals)
 - `src/content/lessons/` — one file per stage; add to `lessons/index.ts`
 - `src/content/glossary.ts` — 61 terms, every technical word used in a lesson
-- `src/components/viz/` — five renderers: typed-graph (React Flow), parse-tree,
-  comparison-table, coding-encoder (interactive prime-power BigInt), godel-loop
+- `src/components/ConceptGraphView.tsx` — the `#/concepts` concept-graph view
+- `src/components/viz/` — six renderers: typed-graph (React Flow), parse-tree,
+  **parse-explorer** (formation rules + parse/fail), comparison-table,
+  coding-encoder (prime-power BigInt), godel-loop
 - `src/components/Quiz.tsx` — MC / multi-select / true-false / classification /
   fill-in / matching, with immediate feedback + why-wrong explanations
 - `src/store/progress.ts` — localStorage, soft gating (never blocks navigation)
-- `scripts/validate-content.mjs` — bundles content with esbuild and asserts
-  invariants (stage coverage, quiz answer ranges, graph edge endpoints, a11y
-  summaries)
+- `scripts/validate-content.mjs` — the build gate: stage coverage, quiz integrity,
+  **concept acyclicity + definition closure + mandatory PREREQ_WHY + group
+  coherence + contrasts symmetry**, graph edges, a11y summaries
+- `scripts/derive-report.mjs` — SCC/cycle linter + derived-vs-authored map audit
 
 ## Status — complete
 All **17 stages (0–16)** are authored, registered, and validated:

@@ -1,51 +1,84 @@
-# Overnight build — mission & acceptance criteria
+# Overnight build — make the reference architecture fully embody the methodology
 
-> **STATUS: COMPLETE (2026-06-19).** All 20 tasks done. 17 stages (0–16) authored
-> + 2 flagship interactives + 6 quiz types + 61-term glossary. `npm run check`
-> (typecheck + content validator + build) passes. Working tree clean, all
-> committed. See README status table.
+> **STATUS: PROPOSED (2026-06-20)** — pending Brian's scope confirmation and an
+> execution-mechanism choice. The prior overnight build (17 stages + interactives)
+> and the SPRINT (skill DAG + LLM judge) are **complete**; this plan is the next
+> increment. The previous plans are preserved in git history / `docs/SPRINT.md`.
 
-**Mission:** Complete the Concept Ladder site — author all remaining stages
-(2–16) plus the two flagship interactives, on top of the verified Stage 0–1
-slice. Run continuously until done. Soft gating throughout.
+**Mission.** The methodology (`METHODOLOGY.md`, ADR-0004) now describes several
+model features the reference implementation does not yet have. Close that gap so
+the Gödel instance *is* a faithful, complete worked example of the method, add the
+goal-closure lens, and run a correctness audit of the concept graph. Run
+continuously through the ordered phases; commit (and push) after each.
 
-**Re-read this after any compaction. Track work in the task list (#1–#20).**
+## Standing decisions (do not re-litigate)
+- **Concept graph is the source of truth**; the skill map is derived. Edit
+  `concepts.ts`, never hand-author `graph.ts` prerequisite edges.
+- **Acyclic prerequisites**; cycles are decomposition errors (resolve by primitive
+  / inductive / contrast / **maturity version**). Every edge keeps a `PREREQ_WHY`.
+- **Verify by running it:** `npm run check` + a headless visual sweep after any UI
+  change. A failed gate is a content discovery, not an obstacle.
+- Math correctness per `CONTENT_NOTES.md`; fixed cast per `RUNNING_EXAMPLE.md`.
 
-## Order of execution
-Infra just-in-time, then stages in sequence:
-1. Quiz types: fill-in + matching (#1) — needed by Stage 5, 12.
-2. Stages 2→4 (#4–#6).
-3. Stage 5 (#7, uses fill-in).
-4. Stages 6→11 (#8–#13).
-5. Encoder viz (#2) → Stage 12 (#14).
-6. Stage 13 (#15).
-7. Loop viz (#3) → Stage 14 (#16).
-8. Stages 15→16 (#17–#18) — apply CONTENT_NOTES §1 carefully.
-9. Glossary expansion (#19).
-10. Final polish/build/commit (#20).
+## Phases (ordered; each ends green + committed)
 
-## Per-stage definition of done
-- `stageN.ts` authored: summary, objectives, definitions, sections, ≥1 typed
-  visualization, ≥2 common-confusion boxes, ≥3 quiz questions, mastery checkpoint.
-- Registered in `src/content/lessons/index.ts` (moved out of UPCOMING).
-- `npx tsc -b --noEmit` clean.
-- Math correctness follows `CONTENT_NOTES.md` (esp. Stages 9, 14, 15, 16).
-- Committed (one commit per stage or tight pair).
+### Phase 1 — Typed relations + concept versioning (model fidelity)
+- Generalize relations to a typed set: keep `prerequisite` (gates, acyclic) and
+  `contrasts` (symmetric, non-gating); **add** `soft-prerequisite`/`corequisite`
+  (helpful/concurrent) and `gloss`/`foreshadow` (forward, motivational, never
+  gate, must resolve and point to a not-yet-introduced concept).
+- Validator: definition closure governs **requirement** relations only;
+  `gloss`/`foreshadow` are exempt from closure but must resolve and be forward.
+- **Concept versioning:** optional `level` (`informal`/`operational`/`formal`)
+  with a version chain (a later version lists earlier ones as prerequisites);
+  validator keeps version chains acyclic. Ship the *support* + one test fixture;
+  apply to a real Gödel concept only if it genuinely clarifies (else leave unused).
+- Render the new relation types distinctly in `#/concepts` (legend updated).
+- **Gate:** `npm run check` green; visual sweep clean.
 
-## Global acceptance criteria (from the original spec)
-1. Site separates well-formedness / provability / truth / metatheory / coding —
-   visibly, via typed nodes + typed edges with legends.
-2. Learner can see why 2+2=5 is well-formed but false; 2+2=4 provable & true;
-   G_T arithmetic not paradox; Proof_T an arithmetic predicate; metatheory ≠ a
-   node inside T.
-3. Every stage has a quiz with meaningful feedback (why correct + why wrong).
-4. Typed, consistent graph notation with legend + textual fallback.
-5. No unexplained term: everything used is in the glossary.
-6. Sequential navigation, review previous concepts (sidebar).
-7. Math renders (KaTeX).
-8. Clean, modular, content-driven (add a lesson without touching components).
+### Phase 2 — Goal-closure lens (core vs enrichment)
+- Declare the official goal set (the achievement/terminal concepts). Compute each
+  concept's membership in some goal's backward closure.
+- Mark every concept **core** (in a goal's closure), **enrichment** (reachable but
+  off the critical path), or **orphan** (in none — a warning).
+- Add a non-failing **goal-closure report** (`scripts/derive-report.mjs` or a new
+  one); fail only on true orphans. Surface a core/enrichment badge + filter in
+  `#/concepts`.
+- **Gate:** report runs; current 44/60 core split reproduced and explained; no
+  unexplained orphans.
 
-## Verification at the end
-- `npx tsc -b --noEmit` clean, `npm run build` succeeds.
-- Dev server serves all 17 stages; spot-check each route renders.
-- README status updated; final commit pushed-equivalent (local commit, no remote).
+### Phase 3 — Correctness audit (Tier-1 structural validation)
+- Adversarially review **all 60 definitions, 107 prerequisite edges + their
+  `PREREQ_WHY`, and the contrasts** for mathematical and pedagogical correctness
+  (apply `CONTENT_NOTES.md`). Fix what's wrong; log each change with a reason.
+- Emit `docs/EDGE_REVIEW.md`: every edge + its justification + a verdict column
+  (correct / arguable / wrong) for later human sign-off — the Tier-1 artifact.
+- **Gate:** `npm run check` green after fixes; review doc generated.
+
+### Phase 4 — Ordering heuristics + maintenance
+- Implement the secondary ordering criteria (METHODOLOGY §5 Step 6) as a refinement
+  over the topological order (minimize new-symbol density; alternate
+  abstraction/examples; cap chains without a check). Keep it a pure function with a
+  test; do not change content.
+- Maintenance: bump `deploy.yml` actions off the deprecated Node-20 runner.
+- **Gate:** `npm run check` green; deploy workflow still valid.
+
+## Verification each phase
+`npm run check` (tsc + content/graph/closure/concept validator + build); for any
+UI change, `npm run dev` + `node scripts/screenshots.mjs` (puppeteer,
+`--disable-dev-shm-usage`) and eyeball. `node scripts/derive-report.mjs` for the
+graph audit. Backend untouched unless a phase says so.
+
+## Hard-won lessons (don't regress)
+- Clone a regex per call if it's reused recursively (shared `lastIndex` →
+  page-freezing infinite loop).
+- `useSyncExternalStore` getSnapshot must return stable refs.
+- React Flow: route edges via geometry-picked handles (`viz/flow.tsx`) or upward
+  edges dangle; hide default handles.
+- Cyclicity is a *diagnostic*, never a feature — decompose/version/reclassify.
+
+## Non-goals (this run)
+- No per-learner model / knowledge-tracing / adaptive policy (methodology §11
+  marks it out of scope).
+- No new subject instance; no AI-generated graphs.
+- No force-push to `master`; no rewrite of the existing LLM-judge contract.

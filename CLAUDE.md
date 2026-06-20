@@ -4,14 +4,26 @@ Educational site teaching the prerequisites for Gödel's incompleteness theorems
 Core mission: **prevent category errors** — make `well-formed ≠ provable ≠ true ≠
 metatheoretically known` visible. Not a generic "Gödel explainer."
 
-## Architecture (current → target)
-- **Current:** linear 17-stage ladder (`src/content/lessons/stageN.ts`), static
-  Vite/React/TS frontend, KaTeX, React Flow typed-graph viz, content-as-data.
-- **Target (ADR-0001):** typed **prerequisite DAG** ("skill tree" in UI) with
-  **achievement-as-assessment** (deterministic + LLM-judged hybrid grading) and a
-  FastAPI/`llm_client` judge backend. See `docs/ADR-0001-skill-dag-pivot.md` and
-  `docs/MIGRATION_PLAN.md`. The linear ladder = one topological ordering; content
-  is preserved and attached to nodes.
+## Architecture (current state)
+The **concept graph is the source of truth** and everything else is derived
+(ADR-0002 → ADR-0003 → ADR-0004; generalized in `METHODOLOGY.md`):
+- **`src/content/concepts.ts`** — 60 concepts across the 17 stages. Each has a
+  definition, example, optional micro-quiz, a `group` (`introducedIn` stage), an
+  **acyclic** `prerequisites` list, optional `contrasts` (undirected), and a
+  **mandatory** per-edge justification in `PREREQ_WHY` (`"concept>prereq"` → why).
+- **`src/content/derive.ts`** — SCC linter + `deriveStageEdges` + `transitiveReduction`.
+- **`src/content/graph.ts`** — the skill map: its concept→concept prerequisite
+  edges are **derived** from the concept graph; only achievements, positions,
+  goals, and 4 audited pedagogical-sequencing edges are hand-authored overlay.
+- **Frontend** (static Vite/React/TS, KaTeX, React Flow): skill-tree homepage,
+  `#/concepts` concept-graph view (stage layout, per-edge justifications on
+  hover/inspect), per-stage concept panels with recursive `@c{}` drill-down chips,
+  the interactive parse/parse-failure explorer, 6 quiz types.
+- **Backend** (`backend/`, FastAPI + `llm_client`): the LLM judge is **live and
+  validated** (prompt_eval frozen set); achievements graded deterministic + judged.
+- To change curriculum structure, **edit `concepts.ts`, not `graph.ts`** — the
+  map, ordering, glossary panels, and checks follow. ADR-0001/MIGRATION_PLAN are
+  historical (the linear ladder = one topological order of the derived map).
 
 ## Content invariants (enforced)
 - **No forward references (prerequisite closure).** Every concept a node uses must
@@ -22,6 +34,15 @@ metatheoretically known` visible. Not a generic "Gödel explainer."
   (carry their own definition). Unavoidable early refs (PA) use **spiral glosses**
   — a one-line working definition up front, deepened later — not a bare name-drop.
   Orientation nodes (stage-0) preview deliberately and are exempt.
+- **Concept graph invariants (ADR-0002/0003/0004), all gated in the validator.**
+  `prerequisites` is **acyclic** — a cycle is a *decomposition error*, not a
+  feature (resolve by: name a primitive; recognize an inductive definition as
+  well-founded; reclassify a contrast; or split into maturity versions). Every
+  prerequisite edge **must** have a `PREREQ_WHY` justification (no unjustified
+  edges, no orphans). Concept definitions are **closed** at term granularity
+  (a `@c{}`/`@t{}` ref must be a prerequisite-or-equal). The **group-lifted**
+  graph must be acyclic (no mis-grouping). `contrasts` must resolve and be
+  symmetric. Cyclicity is a diagnostic; the SCC pass is a linter.
 - **Two distinctions, not four levels.** The faithful frame is one precondition
   (well-formed) + two orthogonal axes: `⊢ vs ⊨` (provable vs true) and object vs
   metatheory. Proof is on the syntactic side; metatheory is a vantage, not a
@@ -46,8 +67,9 @@ metatheoretically known` visible. Not a generic "Gödel explainer."
   for WSL) is mandatory before declaring UI done — it has already caught two
   page-freezing bugs that tsc/validator/review all missed.
 
-## LLM judge (when building Phase C)
-Must use the ecosystem: `llm_client` (`task=`,`trace_id=`,`max_budget=`),
+## LLM judge (live — maintain to this contract)
+Built and validated; keep these invariants when changing it. Uses the ecosystem:
+`llm_client` (`task=`,`trace_id=`,`max_budget=`),
 `json_schema` structured output (`JudgeResult`; fatal-misconception fields
 required), prompts-as-data (YAML/Jinja, no f-strings), a typed `@boundary`,
 FastAPI + API parity, and **validate with `prompt_eval` on a frozen case set
