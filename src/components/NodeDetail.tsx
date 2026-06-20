@@ -15,6 +15,9 @@ import { Quiz } from "./Quiz";
 import { RichLine, RichText } from "./Math";
 import { useProgress } from "../store/progress";
 import { markNodePassed, useSkillView } from "../store/skillProgress";
+import { nodeById as graphNode } from "../content/graph";
+import { gradeAnswer } from "../lib/judge";
+import type { JudgeResult } from "../types";
 
 export function NodeDetail({ nodeId }: { nodeId: string }) {
   const node = nodeById(nodeId);
@@ -118,11 +121,34 @@ function Capstone({ task, nodeId, alreadyPassed }: { task: AssessmentTask; nodeI
   const detProgress = useProgress(task.id);
   const detPassed = !task.deterministic || detProgress.mastered;
   const [answer, setAnswer] = useState("");
+  const [grading, setGrading] = useState(false);
+  const [result, setResult] = useState<JudgeResult | null>(null);
+  const [backendDown, setBackendDown] = useState(false);
   const [attested, setAttested] = useState(false);
 
   const rubric = task.openEnded ? RUBRICS[task.openEnded.rubricId] : undefined;
-  const openOk = !task.openEnded || (answer.trim().length > 40 && attested);
-  const canClaim = !alreadyPassed && detPassed && openOk;
+
+  async function submitForGrading() {
+    setGrading(true);
+    setResult(null);
+    try {
+      const r = await gradeAnswer(task.id, answer);
+      setResult(r);
+      setBackendDown(false);
+      if (r.passed && detPassed) markNodePassed(nodeId); // earned
+    } catch {
+      setBackendDown(true); // degrade to self-attest
+    } finally {
+      setGrading(false);
+    }
+  }
+
+  // Claim is available when: deterministic-only and det passed; or judge passed;
+  // or (backend down) det passed + self-attested a substantive answer.
+  const judgePassed = !!result?.passed;
+  const fallbackOk = backendDown && answer.trim().length > 40 && attested;
+  const canClaim =
+    !alreadyPassed && detPassed && (!task.openEnded || judgePassed || fallbackOk);
 
   return (
     <>
@@ -152,16 +178,35 @@ function Capstone({ task, nodeId, alreadyPassed }: { task: AssessmentTask; nodeI
               </ul>
             </details>
           )}
-          <label className="ach-attest">
-            <input type="checkbox" checked={attested} onChange={(e) => setAttested(e.target.checked)} />
-            I've written a complete explanation and checked it against the criteria.
-            <span className="ach-note"> (An AI judge will grade this automatically once the grading backend is enabled.)</span>
-          </label>
+
+          {!backendDown && (
+            <button
+              className="quiz-submit"
+              disabled={grading || answer.trim().length < 40}
+              onClick={submitForGrading}
+            >
+              {grading ? "Grading…" : result ? "Re-submit" : "Submit for grading"}
+            </button>
+          )}
+
+          {result && <JudgeFeedback result={result} />}
+
+          {backendDown && (
+            <div className="ach-degraded">
+              <p>The grading service isn't reachable, so this explanation can't be
+                AI-graded right now. You can self-assess against the criteria above and
+                proceed — or start the backend and re-submit.</p>
+              <label className="ach-attest">
+                <input type="checkbox" checked={attested} onChange={(e) => setAttested(e.target.checked)} />
+                I've written a complete explanation and checked it against the criteria.
+              </label>
+            </div>
+          )}
         </section>
       )}
 
       <div className="nd-complete">
-        {alreadyPassed ? (
+        {alreadyPassed || (judgePassed && detPassed) ? (
           <span className="nd-passed">✓ Achievement earned.</span>
         ) : (
           <button
@@ -172,13 +217,44 @@ function Capstone({ task, nodeId, alreadyPassed }: { task: AssessmentTask; nodeI
             Claim achievement →
           </button>
         )}
-        {!canClaim && !alreadyPassed && (
+        {!canClaim && !alreadyPassed && !(judgePassed && detPassed) && (
           <p className="ach-blocked">
             {task.deterministic && !detPassed ? "Pass the check above. " : ""}
-            {task.openEnded && !openOk ? "Write your explanation and confirm." : ""}
+            {task.openEnded && !judgePassed && !backendDown ? "Submit your explanation for grading." : ""}
+            {task.openEnded && backendDown && !fallbackOk ? "Write your explanation and confirm." : ""}
           </p>
         )}
       </div>
     </>
+  );
+}
+
+function JudgeFeedback({ result }: { result: JudgeResult }) {
+  return (
+    <div className={`judge-result ${result.passed ? "ok" : "bad"}`}>
+      <div className="jr-head">
+        <span className="jr-verdict">{result.passed ? "✓ Passed" : "Not yet"}</span>
+        <span className="jr-score">{Math.round(result.score)}/100</span>
+        <span className="jr-conf">confidence: {result.confidence}</span>
+      </div>
+      <p className="jr-feedback"><RichLine text={result.feedbackForLearner} /></p>
+      {result.detectedMisconceptions.length > 0 && (
+        <p className="jr-misc">Flagged: {result.detectedMisconceptions.join(", ")}</p>
+      )}
+      {result.suggestedRemediationNodeIds.length > 0 && (
+        <p className="jr-remed">
+          Revisit:{" "}
+          {result.suggestedRemediationNodeIds.map((id, i) => (
+            <span key={id}>
+              {i > 0 && ", "}
+              <a href={`#/node/${id}`}>{graphNode(id)?.title ?? id}</a>
+            </span>
+          ))}
+        </p>
+      )}
+      {result.followUpQuestion && (
+        <p className="jr-followup"><strong>Follow-up:</strong> <RichLine text={result.followUpQuestion} /></p>
+      )}
+    </div>
   );
 }
