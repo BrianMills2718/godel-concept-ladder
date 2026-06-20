@@ -1,62 +1,61 @@
 /**
- * Left navigation: the full concept ladder. Authored stages are links with a
- * progress dot (visited / mastered); upcoming stages are shown greyed so the
- * learner always sees the whole trajectory and where they are on it.
+ * Left navigation. The skill tree is the home; the sidebar offers a quick link
+ * back to it, the current goal + progress, and the "recommended path" (the
+ * concept nodes in topological/ladder order) with per-node state dots.
  */
-import { LESSONS, UPCOMING } from "../content/lessons";
-import { useAllProgress } from "../store/progress";
+import { LESSONS } from "../content/lessons";
+import { nodeForLesson, nodeById } from "../content/graph";
+import { useSkillView, nodeStateOf } from "../store/skillProgress";
 
-export function Sidebar({
-  currentId,
-  onOpenGlossary,
-}: {
-  currentId: string;
-  onOpenGlossary: () => void;
-}) {
-  const progress = useAllProgress();
+type Route = { kind: "tree" } | { kind: "node"; id: string };
+
+export function Sidebar({ route, onOpenGlossary }: { route: Route; onOpenGlossary: () => void }) {
+  const { passed, goalId, recommended } = useSkillView();
+  const currentId = route.kind === "node" ? route.id : undefined;
+  const goal = nodeById(goalId);
 
   return (
-    <nav className="sidebar" aria-label="Lessons">
+    <nav className="sidebar" aria-label="Navigation">
       <div className="sidebar-head">
         <h1 className="brand">The Concept Ladder</h1>
-        <p className="brand-sub">Prerequisites for Gödel — kept strictly apart.</p>
+        <p className="brand-sub">A skill map for Gödel's incompleteness.</p>
       </div>
 
+      <a href="#/tree" className={`tree-link ${route.kind === "tree" ? "active" : ""}`}>
+        ⌂ Skill Tree
+      </a>
+
+      <div className="sidebar-goal">
+        <span className="sg-label">Goal</span>
+        <span className="sg-title">{goal?.title ?? "—"}</span>
+        <span className="sg-progress">{passed.size} / {LESSONS.length + 13} nodes passed</span>
+      </div>
+
+      <div className="nav-section">Recommended path</div>
       <ol className="nav-list">
         {LESSONS.map((l) => {
-          const p = progress[l.id];
-          const status = p?.mastered ? "mastered" : p?.visited ? "visited" : "new";
+          const node = nodeForLesson(l.id);
+          if (!node) return null;
+          const state = node.id === recommended ? "current" : nodeStateOf(node.id, passed);
           return (
-            <li key={l.id}>
+            <li key={node.id}>
               <a
-                href={`#/${l.id}`}
-                className={`nav-item ${l.id === currentId ? "active" : ""}`}
-                aria-current={l.id === currentId ? "page" : undefined}
+                href={`#/node/${node.id}`}
+                className={`nav-item ${node.id === currentId ? "active" : ""}`}
+                aria-current={node.id === currentId ? "page" : undefined}
               >
-                <span className={`nav-dot dot-${status}`} aria-hidden />
-                <span className="nav-stage">Stage {l.stage}</span>
-                <span className="nav-title">{l.title}</span>
-                {p?.mastered && <span className="nav-check" title="mastered">✓</span>}
+                <span className={`nav-dot dot-${state}`} aria-hidden />
+                <span className="nav-title">{node.title}</span>
+                {state === "passed" && <span className="nav-check">✓</span>}
+                {state === "current" && <span className="nav-rec">★</span>}
               </a>
             </li>
           );
         })}
-        {UPCOMING.map((u) => (
-          <li key={u.stage}>
-            <span className="nav-item nav-upcoming" aria-disabled>
-              <span className="nav-dot dot-locked" aria-hidden />
-              <span className="nav-stage">Stage {u.stage}</span>
-              <span className="nav-title">{u.title}</span>
-              <span className="nav-soon">soon</span>
-            </span>
-          </li>
-        ))}
       </ol>
 
       <div className="sidebar-foot">
-        <button className="glossary-btn" onClick={onOpenGlossary}>
-          📖 Glossary <kbd>g</kbd>
-        </button>
+        <button className="glossary-btn" onClick={onOpenGlossary}>📖 Glossary <kbd>g</kbd></button>
       </div>
     </nav>
   );

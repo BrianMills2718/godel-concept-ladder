@@ -145,6 +145,17 @@ export function nodeById(id: string): SkillNode | undefined {
   return SKILL_GRAPH.nodes.find((n) => n.id === id);
 }
 
+/** The concept node that renders a given stage (for legacy #/stage-* redirects
+ *  and the sidebar's recommended-path links). */
+export function nodeForLesson(lessonId: string): SkillNode | undefined {
+  return SKILL_GRAPH.nodes.find((n) => n.lessonId === lessonId);
+}
+
+/** All achievement nodes (goal choices). */
+export function achievements(): SkillNode[] {
+  return SKILL_GRAPH.nodes.filter((n) => n.kind === "achievement");
+}
+
 /** Direct prerequisite node ids of `id`. */
 export function prereqsOf(id: string): string[] {
   return SKILL_GRAPH.edges

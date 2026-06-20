@@ -348,6 +348,63 @@ kbd {
 .np-row dd { margin: 0; font-size: 14px; }
 .np-example { color: var(--ink-soft); font-size: 13px; margin-top: 3px; }
 
+/* ---------------------------- skill tree -------------------------- */
+.skill-tree { display: flex; flex-direction: column; height: 100%; }
+.st-toolbar { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.st-goal { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.st-goal select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; font-size: 14px; font-family: inherit; }
+.st-progress { font-size: 13px; color: var(--ink-soft); }
+.st-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-left: auto; font-size: 12px; color: var(--ink-soft); }
+.st-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.st-legend .sw { width: 14px; height: 14px; border: 2px solid; border-radius: 3px; display: inline-block; }
+.st-legend .sw.ring { background: #fff; border-color: #d97706; box-shadow: 0 0 0 3px rgba(217,119,6,.35); }
+.st-canvas { flex: 1; min-height: 420px; }
+.st-node-inner { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.st-node-kind { font-size: 9px; text-transform: uppercase; letter-spacing: .4px; opacity: .7; }
+.st-node-title { font-size: 12.5px; font-weight: 600; line-height: 1.2; }
+.st-node-state { font-size: 9px; text-transform: uppercase; letter-spacing: .4px; opacity: .6; }
+.st-why { position: absolute; left: 50%; top: 120px; transform: translateX(-50%); z-index: 40; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; box-shadow: 0 10px 30px rgba(15,23,42,.18); max-width: 340px; font-size: 14px; }
+.st-why-close { position: absolute; top: 6px; right: 10px; border: none; background: none; font-size: 20px; cursor: pointer; color: var(--ink-soft); }
+.st-why ul { margin: 6px 0 0; padding-left: 18px; }
+
+/* ---------------------------- node detail ------------------------- */
+.node-detail { max-width: 880px; margin: 0 auto; }
+.nd-bar { display: flex; align-items: center; gap: 14px; padding: 14px 40px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 5; }
+.nd-back { text-decoration: none; color: var(--accent); font-size: 14px; }
+.nd-branch { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); }
+.nd-kind { margin-left: auto; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #fff; background: var(--accent); padding: 2px 9px; border-radius: 12px; }
+.nd-complete { padding: 18px 40px 60px; }
+.nd-complete-btn { padding: 11px 20px; background: var(--semantics); color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+.nd-complete-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+.nd-passed { color: var(--semantics); font-weight: 600; }
+
+/* achievement */
+.achievement { padding: 30px 40px 0; }
+.ach-badge { background: var(--coding); }
+.ach-meta { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0 4px; font-size: 13px; color: var(--ink-soft); }
+.ach-fmt { font-weight: 600; }
+.ach-fatal { margin: 0; padding-left: 20px; }
+.ach-fatal li { margin: 5px 0; color: var(--metatheory); }
+.ach-answer { width: 100%; margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 15px; font-family: inherit; resize: vertical; }
+.ach-rubric { margin-top: 10px; }
+.ach-rubric ul { padding-left: 20px; }
+.ach-attest { display: block; margin-top: 12px; font-size: 14px; }
+.ach-note { color: var(--ink-soft); }
+.ach-blocked { font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+
+/* sidebar additions */
+.tree-link { display: block; margin: 12px 14px 6px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; text-decoration: none; color: var(--accent); font-weight: 600; font-size: 14px; }
+.tree-link.active, .tree-link:hover { background: #eef2ff; }
+.sidebar-goal { margin: 6px 14px 10px; padding: 10px 14px; background: #fbfcfe; border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; gap: 2px; }
+.sg-label { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); }
+.sg-title { font-size: 14px; font-weight: 600; color: var(--coding); }
+.sg-progress { font-size: 12px; color: var(--ink-soft); }
+.nav-section { padding: 8px 20px 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); }
+.dot-available { background: var(--syntax); }
+.dot-locked { background: #e2e8f0; }
+.dot-current { background: var(--coding); box-shadow: 0 0 0 3px rgba(217,119,6,.25); }
+.nav-rec { color: var(--coding); }
+
 /* KaTeX inline sizing tweak */
 .tex-error { color: var(--metatheory); font-family: ui-monospace, monospace; }
 
