@@ -147,7 +147,9 @@ export type QuizQuestion =
   | MultipleChoiceQ
   | MultiSelectQ
   | TrueFalseQ
-  | ClassificationQ;
+  | ClassificationQ
+  | FillInQ
+  | MatchingQ;
 
 interface QuizBase {
   id: string;
@@ -183,6 +185,33 @@ export interface ClassificationQ extends QuizBase {
   type: "classification";
   buckets: string[];
   items: { id: string; label: string; correctBucket: string }[];
+}
+
+/** Fill in a missing step (e.g. a derivation line). The learner's text is
+ *  normalized (whitespace collapsed, a few notational variants folded) and
+ *  matched against `accepted`. Used for the 2+2=4 derivation. */
+export interface FillInQ extends QuizBase {
+  type: "fill-in";
+  /** Context shown above the blank, KaTeX-able (e.g. the derivation so far). */
+  before?: string;
+  /** Context shown below the blank. */
+  after?: string;
+  /** Accepted answers (post-normalization, case-insensitive). */
+  accepted: string[];
+  /** Shown as the input's placeholder/hint. */
+  placeholder?: string;
+}
+
+/** Match each left item (notation) to its right meaning. Used for the symbol
+ *  glossary checks (e.g. ⊢, ⊨, ⌜P⌝, Con(T)). */
+export interface MatchingQ extends QuizBase {
+  type: "matching";
+  /** Left column, e.g. notation. */
+  left: { id: string; label: string }[];
+  /** Right column, e.g. meanings. Shown shuffled in the UI via select boxes. */
+  right: { id: string; label: string }[];
+  /** Correct pairing: left id → right id. */
+  pairs: Record<string, string>;
 }
 
 // ---------------------------------------------------------------------------

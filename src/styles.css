@@ -218,6 +218,20 @@ kbd {
 .row-bad td { background: var(--bad-bg); }
 .qc-answer { margin-left: 10px; font-size: 13px; color: var(--semantics); font-weight: 600; }
 
+/* fill-in */
+.quiz-fillin { display: grid; gap: 10px; }
+.fillin-context { font-size: 16px; padding: 4px 0; color: var(--ink); }
+.fillin-row { display: flex; gap: 10px; align-items: center; }
+.fillin-input { flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 16px; font-family: ui-monospace, monospace; }
+.fillin-answer { font-size: 14px; color: var(--ink-soft); }
+
+/* matching */
+.quiz-matching { width: 100%; border-collapse: collapse; }
+.quiz-matching td { padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.qm-left { font-size: 16px; width: 38%; }
+.qm-arrow { color: var(--ink-soft); width: 24px; text-align: center; }
+.quiz-matching select { width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; font-size: 14px; font-family: inherit; }
+
 /* --------------------------- Mastery ------------------------------ */
 .mastery { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border: 1px solid var(--line); border-left: 4px solid #cbd5e1; border-radius: var(--radius); background: var(--panel); margin: 30px 0; }
 .mastery.is-mastered { border-left-color: var(--semantics); background: var(--ok-bg); }

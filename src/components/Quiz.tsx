@@ -66,6 +66,8 @@ function QuestionCard({
       {q.type === "multi-select" && <MultiSelect q={q} onResolved={onResolved} />}
       {q.type === "true-false" && <TrueFalse q={q} onResolved={onResolved} />}
       {q.type === "classification" && <Classification q={q} onResolved={onResolved} />}
+      {q.type === "fill-in" && <FillIn q={q} onResolved={onResolved} />}
+      {q.type === "matching" && <Matching q={q} onResolved={onResolved} />}
     </div>
   );
 }
@@ -228,6 +230,146 @@ function TrueFalse({
         })}
       </div>
       {done && <Feedback correct={picked === q.correct} explanation={q.explanation} />}
+    </>
+  );
+}
+
+/** Normalize a free-text math answer so trivial notation differences match:
+ *  collapse whitespace, drop spaces, fold common successor/equality variants. */
+function normalizeAnswer(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/\\/g, "")
+    .replace(/·|×|\*/g, "*")
+    .replace(/[{}]/g, "");
+}
+
+function FillIn({
+  q,
+  onResolved,
+}: {
+  q: Extract<QuizQuestion, { type: "fill-in" }>;
+  onResolved: (id: string, correct: boolean) => void;
+}) {
+  const [text, setText] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const accepted = useMemo(() => q.accepted.map(normalizeAnswer), [q.accepted]);
+  const isCorrect = submitted && accepted.includes(normalizeAnswer(text));
+
+  return (
+    <div className="quiz-fillin">
+      {q.before && (
+        <div className="fillin-context">
+          <RichLine text={q.before} />
+        </div>
+      )}
+      <div className="fillin-row">
+        <input
+          className="fillin-input"
+          placeholder={q.placeholder ?? "your answer"}
+          value={text}
+          disabled={submitted}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && text.trim() && !submitted) {
+              setSubmitted(true);
+              onResolved(q.id, accepted.includes(normalizeAnswer(text)));
+            }
+          }}
+        />
+        {!submitted && (
+          <button
+            className="quiz-submit"
+            disabled={!text.trim()}
+            onClick={() => {
+              setSubmitted(true);
+              onResolved(q.id, accepted.includes(normalizeAnswer(text)));
+            }}
+          >
+            Check
+          </button>
+        )}
+      </div>
+      {q.after && (
+        <div className="fillin-context">
+          <RichLine text={q.after} />
+        </div>
+      )}
+      {submitted && (
+        <>
+          <Feedback correct={isCorrect} explanation={q.explanation} />
+          {!isCorrect && (
+            <div className="fillin-answer">
+              Accepted answer: <RichLine text={q.accepted[0]} />
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function Matching({
+  q,
+  onResolved,
+}: {
+  q: Extract<QuizQuestion, { type: "matching" }>;
+  onResolved: (id: string, correct: boolean) => void;
+}) {
+  const [choice, setChoice] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const allChosen = q.left.every((l) => choice[l.id]);
+  const allRight = q.left.every((l) => choice[l.id] === q.pairs[l.id]);
+
+  return (
+    <>
+      <table className="quiz-matching">
+        <tbody>
+          {q.left.map((l) => {
+            const picked = choice[l.id];
+            const right = picked === q.pairs[l.id];
+            return (
+              <tr key={l.id} className={submitted ? (right ? "row-ok" : "row-bad") : ""}>
+                <td className="qm-left">
+                  <RichLine text={l.label} />
+                </td>
+                <td className="qm-arrow">→</td>
+                <td>
+                  <select
+                    disabled={submitted}
+                    value={picked ?? ""}
+                    onChange={(e) => setChoice((c) => ({ ...c, [l.id]: e.target.value }))}
+                  >
+                    <option value="" disabled>
+                      choose…
+                    </option>
+                    {q.right.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.label}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {!submitted ? (
+        <button
+          className="quiz-submit"
+          disabled={!allChosen}
+          onClick={() => {
+            setSubmitted(true);
+            onResolved(q.id, q.left.every((l) => choice[l.id] === q.pairs[l.id]));
+          }}
+        >
+          Check answer
+        </button>
+      ) : (
+        <Feedback correct={allRight} explanation={q.explanation} />
+      )}
     </>
   );
 }
