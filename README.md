@@ -1,5 +1,11 @@
 # The Concept Ladder — Gödel Prerequisites
 
+**Live:** https://brianmills2718.github.io/godel-concept-ladder/ (auto-deploys from
+`master` via GitHub Actions → Pages). The deployed site is fully usable — lessons,
+the skill tree, deterministic quizzes, progress. The *open-ended* achievement
+grading needs the LLM-judge backend (`backend/`), which Pages can't host, so on the
+hosted site it degrades to self-assess; run the backend locally for AI grading.
+
 An educational site that teaches the prerequisites for Gödel's incompleteness
 theorems by keeping the key relations **strictly apart**. The pedagogical goal is
 not "explain Gödel" — it is to prevent the category errors (well-formed =
