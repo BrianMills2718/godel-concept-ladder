@@ -73,16 +73,21 @@ export function MathText({ text }: { text: string }) {
 
 // Order matters: $$ before $, ** before *. Math/chip runs are matched before
 // emphasis so a `*` inside math or a `_` in code never trips the emphasis rules.
+// Template only — renderInline clones it per call (see below).
 const INLINE_RE =
   /\$\$([^$]+)\$\$|\$([^$]+)\$|@n\{([^}]+)\}|@t\{([^}|]+)(?:\|([^}]+))?\}|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g;
 
 function renderInline(text: string): ReactNode[] {
+  // renderInline recurses (bold/italic re-parse their inner text). A SHARED
+  // global regex carries `lastIndex` state, so a recursive call would reset the
+  // outer loop's position → it re-matches forever (a synchronous infinite loop
+  // that freezes the page). Clone per call so each frame has its own lastIndex.
+  const re = new RegExp(INLINE_RE.source, INLINE_RE.flags);
   const out: ReactNode[] = [];
   let last = 0;
   let m: RegExpExecArray | null;
   let k = 0;
-  INLINE_RE.lastIndex = 0;
-  while ((m = INLINE_RE.exec(text)) !== null) {
+  while ((m = re.exec(text)) !== null) {
     if (m.index > last) out.push(<span key={k++}>{text.slice(last, m.index)}</span>);
     if (m[1] !== undefined) out.push(<Tex key={k++} block>{m[1]}</Tex>);
     else if (m[2] !== undefined) out.push(<Tex key={k++}>{m[2]}</Tex>);
@@ -91,7 +96,7 @@ function renderInline(text: string): ReactNode[] {
     else if (m[6] !== undefined) out.push(<strong key={k++}>{renderInline(m[6])}</strong>);
     else if (m[7] !== undefined) out.push(<em key={k++}>{renderInline(m[7])}</em>);
     else if (m[8] !== undefined) out.push(<code key={k++}>{m[8]}</code>);
-    last = INLINE_RE.lastIndex;
+    last = re.lastIndex;
   }
   if (last < text.length) out.push(<span key={k++}>{text.slice(last)}</span>);
   return out;
@@ -149,8 +154,17 @@ function parseBlocks(text: string): Block[] {
       }
       blocks.push({ kind: "ol", items });
     } else {
-      const para: string[] = [];
-      while (i < lines.length && lines[i].trim() !== "" && !isBullet(lines[i]) && !isOrdered(lines[i]) && !isTableRow(lines[i])) {
+      // Always consume the current line first, so a stray "|...|" line that is
+      // NOT a real table (no separator row) can't stall the loop forever.
+      const para: string[] = [line];
+      i++;
+      while (
+        i < lines.length &&
+        lines[i].trim() !== "" &&
+        !isBullet(lines[i]) &&
+        !isOrdered(lines[i]) &&
+        !(isTableRow(lines[i]) && isTableSep(lines[i + 1] ?? ""))
+      ) {
         para.push(lines[i]);
         i++;
       }

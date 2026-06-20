@@ -24,6 +24,15 @@ type ProgressMap = Record<string, LessonProgress>;
 
 const KEY = "godel-ladder:progress:v1";
 
+/**
+ * Shared default for an unvisited lesson. MUST be a stable singleton: it is
+ * returned from the useSyncExternalStore getSnapshot, and returning a fresh
+ * object each call makes React think the snapshot changed every render —
+ * an infinite re-render loop ("getSnapshot should be cached"). Frozen so a
+ * caller can't mutate the shared instance.
+ */
+const EMPTY: LessonProgress = Object.freeze({ quizScore: 0, mastered: false, visited: false });
+
 function load(): ProgressMap {
   try {
     const raw = localStorage.getItem(KEY);
@@ -51,7 +60,7 @@ function subscribe(l: () => void) {
 }
 
 export function getProgress(lessonId: string): LessonProgress {
-  return state[lessonId] ?? { quizScore: 0, mastered: false, visited: false };
+  return state[lessonId] ?? EMPTY;
 }
 
 export function markVisited(lessonId: string) {
