@@ -298,7 +298,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "Gödel coding",
     definition: "Assigning natural numbers to symbols, formulas, and proofs, so syntactic facts become arithmetic facts.",
-    example: "Code a sequence as $2^{a_1}3^{a_2}5^{a_3}\\cdots$.",
+    example: "Code a sequence as $2^{a_1+1}3^{a_2+1}5^{a_3+1}\\cdots$.",
     related: ["code number", "arithmetization of syntax"],
   },
   {
@@ -313,7 +313,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   },
   {
     term: "Proof_T(p,q)",
-    definition: "Arithmetic predicate: $p$ codes a valid $T$-proof of the formula coded by $q$. Decidable (with $p$ given), hence representable.",
+    definition: "Arithmetic predicate: $p$ codes a valid $T$-proof of the formula coded by $q$. Proof-checking is primitive recursive, hence representable.",
     related: ["Prov_T(q)", "Gödel coding", "representable"],
   },
   {
