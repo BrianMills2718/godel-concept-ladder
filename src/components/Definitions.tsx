@@ -13,7 +13,9 @@
 import { useEffect, useRef, useState } from "react";
 import { NOTATION } from "../content/notation";
 import { GLOSSARY_INDEX } from "../content/glossary";
-import { MathText, Tex } from "./Math";
+import { CONCEPT_BY_ID, conceptsForStage, conceptTopoOrder } from "../content/concepts";
+import { MathText, Tex, RichLine } from "./Math";
+import { Quiz } from "./Quiz";
 import { Rollup } from "./Rollup";
 import type { Lesson } from "../types";
 
@@ -95,6 +97,29 @@ export function TermChip({ slug, label }: { slug: string; label?: string }) {
   );
 }
 
+/** @c{id} — an inline *concept* (ADR-0002). Unlike a glossary chip, its popover
+ *  renders the definition with RichLine, so a definition may itself contain
+ *  @c{} chips: you can drill down through prerequisites. The concept DAG is
+ *  acyclic and prose only references transitive prerequisites, so drilling
+ *  strictly descends and terminates. */
+export function ConceptChip({ id, label }: { id: string; label?: string }) {
+  const c = CONCEPT_BY_ID[id];
+  if (!c) return <span className="def-missing">@c&#123;{id}&#125;?</span>; // fail loud
+  return (
+    <Popover trigger={<span className="def-term def-concept">{label ?? c.term}</span>}>
+      <span className="def-card-name">{c.term}</span>
+      <span className="def-card-meaning">
+        <RichLine text={c.short} />
+      </span>
+      {c.example && (
+        <span className="def-card-example">
+          e.g. <RichLine text={c.example} />
+        </span>
+      )}
+    </Popover>
+  );
+}
+
 // --- per-stage notation panel ------------------------------------------------
 
 const TOKEN_RE = /@n\{([^}]+)\}|@t\{([^}|]+)(?:\|[^}]+)?\}/g;
@@ -171,6 +196,69 @@ export function NotationPanel({ lesson }: { lesson: Lesson }) {
           );
         })}
       </dl>
+    </Rollup>
+  );
+}
+
+// --- per-stage concept panel (ADR-0002) --------------------------------------
+
+/** One concept row with its definition, example, and an optional self-check that
+ *  reuses the Quiz engine. The definition is RichLine, so its @c{} prerequisites
+ *  are drillable inline. */
+function ConceptRow({ id }: { id: string }) {
+  const c = CONCEPT_BY_ID[id];
+  const [quizOpen, setQuizOpen] = useState(false);
+  if (!c) return null;
+  return (
+    <div className="cp-row">
+      <div className="cp-term">{c.term}</div>
+      <div className="cp-body">
+        <RichLine text={c.short} />
+        {c.expanded && (
+          <div className="cp-expanded">
+            <RichLine text={c.expanded} />
+          </div>
+        )}
+        {c.example && (
+          <div className="np-example">
+            e.g. <RichLine text={c.example} />
+          </div>
+        )}
+        {c.microQuiz && c.microQuiz.length > 0 && (
+          <div className="cp-quiz">
+            <button type="button" className="cp-quiz-toggle" onClick={() => setQuizOpen((o) => !o)}>
+              {quizOpen ? "Hide check" : "Quiz yourself"}
+            </button>
+            {quizOpen && <Quiz lessonId={`concept-${c.id}`} questions={c.microQuiz} />}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** The concepts a stage introduces, listed simplest-first by a topological sort
+ *  of the concept DAG (ADR-0002) — the order is derived, not hand-authored. */
+export function ConceptPanel({ lesson }: { lesson: Lesson }) {
+  const stageIds = new Set(conceptsForStage(lesson.id).map((c) => c.id));
+  if (stageIds.size === 0) return null;
+  const ordered = conceptTopoOrder().filter((id) => stageIds.has(id));
+
+  return (
+    <Rollup
+      className="concept-panel"
+      summary={
+        <span>
+          Concepts introduced here, in dependency order{" "}
+          <span className="np-count">({ordered.length})</span> — click to expand
+        </span>
+      }
+    >
+      <div className="cp-list">
+        {ordered.map((id) => (
+          <ConceptRow key={id} id={id} />
+        ))}
+      </div>
     </Rollup>
   );
 }

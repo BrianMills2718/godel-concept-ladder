@@ -57,13 +57,16 @@ So: legal does not mean true, legal does not mean provable, and — going the ot
         "On the generation side, the rule 'term, term → formula (s=t)' builds the well-formed formula 2+2=5 from the terms 2+2 and 5. On the recognition side, a parser takes a string and outputs legal or illegal: 2+2=5 is legal (well-formed), while ∀+=x))0 is illegal. Both 2+2=4 and 2+2=5 are legal — legality is independent of truth.",
       layers: ["syntax"],
       nodes: [
-        { id: "rule", type: "InferenceRule", layer: "syntax", label: "rule: terms $s,t \\Rightarrow$ formula $(s=t)$", position: { x: 40, y: 40 } },
-        { id: "t1", type: "Term", layer: "syntax", label: "term $2+2$", position: { x: 40, y: 160 } },
-        { id: "t2", type: "Term", layer: "syntax", label: "term $5$", position: { x: 40, y: 260 } },
-        { id: "wff", type: "Formula", layer: "syntax", label: "well-formed $2+2=5$", position: { x: 320, y: 200 } },
-        { id: "parser", type: "InferenceRule", layer: "syntax", label: "parser", position: { x: 320, y: 40 } },
-        { id: "legal", type: "Formula", layer: "syntax", label: "legal ✓", position: { x: 600, y: 0 } },
-        { id: "bad", type: "RawString", layer: "syntax", label: "$\\forall{+}{=}x))0$ illegal ✗", position: { x: 600, y: 110 } },
+        // Left-to-right flow: the two input terms (left) fan into the rule, which
+        // builds the wff (right); recognition drops to the parser, which fans out
+        // to legal/illegal. Laid out so no edge passes through an unrelated node.
+        { id: "t1", type: "Term", layer: "syntax", label: "term $2+2$", position: { x: 40, y: 60 } },
+        { id: "t2", type: "Term", layer: "syntax", label: "term $5$", position: { x: 40, y: 200 } },
+        { id: "rule", type: "InferenceRule", layer: "syntax", label: "rule: terms $s,t \\Rightarrow$ formula $(s=t)$", position: { x: 300, y: 130 } },
+        { id: "wff", type: "Formula", layer: "syntax", label: "well-formed $2+2=5$", position: { x: 560, y: 130 } },
+        { id: "parser", type: "InferenceRule", layer: "syntax", label: "parser", position: { x: 560, y: 360 } },
+        { id: "legal", type: "Formula", layer: "syntax", label: "legal ✓", position: { x: 820, y: 300 } },
+        { id: "bad", type: "RawString", layer: "syntax", label: "$\\forall{+}{=}x))0$ illegal ✗", position: { x: 820, y: 440 } },
       ],
       edges: [
         { id: "e1", source: "t1", target: "rule", type: "formed_from", label: "input", layer: "syntax" },

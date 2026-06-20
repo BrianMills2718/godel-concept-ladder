@@ -67,43 +67,95 @@ Now there are no free variables. A formula with no free variables is a **sentenc
   ],
   visualizations: [
     {
-      id: "stage1-parsetree",
-      kind: "parse-tree",
-      title: "Parse tree of the sentence $\\forall x\\,(x+0=x)$",
+      id: "stage1-parse-explorer",
+      kind: "parse-explorer",
+      title: "Parse it yourself: the formation rules, and what breaks",
       textualSummary:
-        "The sentence ∀x(x+0=x) is a quantifier ∀x binding the formula x+0=x. That formula is an equality whose left side is the term x+0 (built from term x, the symbol +, and term 0) and whose right side is the term x. Every leaf is a symbol or atomic term; because the whole thing parses, it is well-formed. The string ∀+=x))0 has no such tree and is malformed.",
-      root: {
-        id: "n-sent",
-        category: "sentence",
-        label: "$\\forall x\\,(x+0=x)$",
-        children: [
-          { id: "n-quant", category: "quantifier", label: "$\\forall x$" },
-          {
-            id: "n-form",
-            category: "formula",
-            label: "$x+0=x$",
+        "An interactive explorer showing the term and formula formation rules (0 and variables are terms; S(t), (s+t), (s×t) are terms; s=t is an atomic formula; ¬P and ∀x P are formulas). Pick a string and see it parse rule-by-rule or fail. ∀x(x+0=x) parses as a sentence: rule F∀ over the formula x+0=x (rule F=) whose left side x+0 is a term (rule T+). S(S(0)) parses as a term by rule TS twice over T0. ∀+=x))0 fails: rule F∀ needs a variable right after ∀, but '+' is not one. ∀x(x+0) fails: rule F∀ needs a formula after the variable, but x+0 is a term, not a formula.",
+      rules: [
+        { id: "T0", category: "term", text: "$0$ is a term" },
+        { id: "Tv", category: "term", text: "every variable ($x, y, z, \\dots$) is a term" },
+        { id: "TS", category: "term", text: "if $t$ is a term, then $S(t)$ is a term" },
+        { id: "T+", category: "term", text: "if $s, t$ are terms, then $(s+t)$ and $(s\\times t)$ are terms" },
+        { id: "F=", category: "formula", text: "if $s, t$ are terms, then $s=t$ is an (atomic) formula" },
+        { id: "F¬", category: "formula", text: "if $P$ is a formula, then $\\neg P$ is a formula" },
+        { id: "F∀", category: "formula", text: "if $P$ is a formula and $x$ a variable, then $\\forall x\\,P$ and $\\exists x\\,P$ are formulas" },
+      ],
+      examples: [
+        {
+          input: "$\\forall x\\,(x+0=x)$",
+          legal: true,
+          tree: {
+            id: "n-sent",
+            category: "sentence",
+            label: "$\\forall x\\,(x+0=x)$",
+            ruleId: "F∀",
             children: [
+              { id: "n-quant", category: "quantifier", label: "$\\forall x$" },
               {
-                id: "n-tleft",
-                category: "term",
-                label: "$x+0$",
+                id: "n-form",
+                category: "formula",
+                label: "$x+0=x$",
+                ruleId: "F=",
                 children: [
-                  { id: "n-x1", category: "term", label: "$x$" },
-                  { id: "n-plus", category: "symbol", label: "$+$" },
-                  { id: "n-0", category: "term", label: "$0$" },
+                  {
+                    id: "n-tleft",
+                    category: "term",
+                    label: "$x+0$",
+                    ruleId: "T+",
+                    children: [
+                      { id: "n-x1", category: "term", label: "$x$", ruleId: "Tv" },
+                      { id: "n-plus", category: "symbol", label: "$+$" },
+                      { id: "n-0", category: "term", label: "$0$", ruleId: "T0" },
+                    ],
+                  },
+                  { id: "n-eq", category: "symbol", label: "$=$" },
+                  { id: "n-tright", category: "term", label: "$x$", ruleId: "Tv" },
                 ],
               },
-              { id: "n-eq", category: "symbol", label: "$=$" },
-              { id: "n-tright", category: "term", label: "$x$" },
             ],
           },
-        ],
-      },
-      malformedExample: {
-        input: "∀+=x))0",
-        reason:
-          "no rule builds a term or formula from this symbol order — a quantifier needs a variable then a formula, and there is no legal sub-formula here",
-      },
+        },
+        {
+          input: "$S(S(0))$",
+          legal: true,
+          tree: {
+            id: "t-ss0",
+            category: "term",
+            label: "$S(S(0))$",
+            ruleId: "TS",
+            children: [
+              {
+                id: "t-s0",
+                category: "term",
+                label: "$S(0)$",
+                ruleId: "TS",
+                children: [{ id: "t-0", category: "term", label: "$0$", ruleId: "T0" }],
+              },
+            ],
+          },
+        },
+        {
+          input: "$\\forall{+}{=}x))0$",
+          legal: false,
+          failure: {
+            at: "+",
+            ruleTried: "F∀",
+            reason:
+              "Rule F∀ needs a variable immediately after ∀, then a formula. Here ∀ is followed by '+', which is not a variable, so no formula can even begin — the parse dies at the first step.",
+          },
+        },
+        {
+          input: "$\\forall x\\,(x+0)$",
+          legal: false,
+          failure: {
+            at: "x+0",
+            ruleTried: "F∀",
+            reason:
+              "Rule F∀ needs a formula after the bound variable. Here ∀x is followed by the term x+0 (a noun phrase that names a number), not a formula — and no rule turns a bare term into a formula, so the quantifier has nothing to bind.",
+          },
+        },
+      ],
     },
   ],
   confusions: [

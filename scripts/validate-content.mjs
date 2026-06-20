@@ -26,7 +26,8 @@ writeFileSync(
    export { GLOSSARY } from ${JSON.stringify(process.cwd() + "/src/content/glossary.ts")};
    export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};
    export { SKILL_GRAPH, ROOT_GOAL_ID } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};
-   export { ASSESSMENTS, ASSESSMENT_BY_ID, RUBRICS } from ${JSON.stringify(process.cwd() + "/src/content/assessments.ts")};`,
+   export { ASSESSMENTS, ASSESSMENT_BY_ID, RUBRICS } from ${JSON.stringify(process.cwd() + "/src/content/assessments.ts")};
+   export { CONCEPT_GRAPH } from ${JSON.stringify(process.cwd() + "/src/content/concepts.ts")};`,
 );
 await build({
   entryPoints: [stub],
@@ -36,7 +37,7 @@ await build({
   logLevel: "error",
 });
 
-const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID, RUBRICS } = await import(pathToFileURL(out).href);
+const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID, RUBRICS, CONCEPT_GRAPH } = await import(pathToFileURL(out).href);
 
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
@@ -223,6 +224,177 @@ for (const l of LESSONS) {
   }
 }
 
+// --- concept dependency DAG (ADR-0002) ---
+// A `Concept` carries its own `prerequisites` (other concept ids). Assert:
+//   - unique ids; prerequisites resolve; graph acyclic
+//   - definition closure: every @c{X} in a concept's short/expanded is a
+//     TRANSITIVE prerequisite of that concept ("defined before use" at term
+//     granularity — the hole the chip-token checker missed)
+//   - micro-quiz answer integrity
+//   - introducedIn is a real stage; a prerequisite concept is introduced at the
+//     same stage or a prerequisite stage (cross-DAG coherence)
+{
+  const CONCEPTS = CONCEPT_GRAPH.concepts;
+  const conceptIds = new Set();
+  for (const c of CONCEPTS) {
+    ok(!conceptIds.has(c.id), `concept: duplicate id ${c.id}`);
+    conceptIds.add(c.id);
+  }
+  for (const c of CONCEPTS)
+    for (const p of c.prerequisites)
+      ok(conceptIds.has(p), `concept ${c.id}: prerequisite "${p}" is not a concept`);
+
+  const prereqAdj = {};
+  for (const c of CONCEPTS) prereqAdj[c.id] = c.prerequisites.filter((p) => conceptIds.has(p));
+
+  // `prerequisites` must be ACYCLIC (ADR-0004). A prerequisite cycle is not a
+  // feature — it signals under-decomposition: a sloppy definition, an inductive
+  // definition mistaken for a dependency, or a contrast mislabeled as a
+  // dependency (use `contrasts` for that). The SCC linter (scripts/derive-report)
+  // reports cycles; this gate fails the build on them.
+  {
+    const WHITE = 0, GREY = 1, BLACK = 2;
+    const color = {};
+    for (const id of conceptIds) color[id] = WHITE;
+    let cycle = null;
+    const visit = (u, path) => {
+      color[u] = GREY;
+      for (const v of prereqAdj[u]) {
+        if (color[v] === GREY) { cycle = [...path, u, v].join(" → "); return; }
+        if (color[v] === WHITE) { visit(v, [...path, u]); if (cycle) return; }
+      }
+      color[u] = BLACK;
+    };
+    for (const id of conceptIds) { if (color[id] === WHITE) visit(id, []); if (cycle) break; }
+    ok(!cycle, `concept: prerequisite cycle: ${cycle} — decompose/reclassify (cycles signal under-decomposition; use contrasts for mutual association)`);
+  }
+
+  // The GROUP-lifted graph (the derived skill map) must also be acyclic — even
+  // with acyclic concepts, a grouping that interleaves dependencies (A needs B
+  // and B needs A across groups) means a concept is mis-grouped.
+  {
+    const grp = {};
+    for (const c of CONCEPTS) grp[c.id] = c.introducedIn;
+    const groups = new Set(Object.values(grp));
+    const gadj = {};
+    for (const g of groups) gadj[g] = new Set();
+    for (const c of CONCEPTS)
+      for (const p of prereqAdj[c.id])
+        if (grp[p] !== grp[c.id]) gadj[grp[p]].add(grp[c.id]);
+    const WHITE = 0, GREY = 1, BLACK = 2;
+    const color = {};
+    for (const g of groups) color[g] = WHITE;
+    let cyc = null;
+    const visit = (u, path) => {
+      color[u] = GREY;
+      for (const v of gadj[u]) {
+        if (color[v] === GREY) { cyc = [...path, u, v].join(" → "); return; }
+        if (color[v] === WHITE) { visit(v, [...path, u]); if (cyc) return; }
+      }
+      color[u] = BLACK;
+    };
+    for (const g of groups) { if (color[g] === WHITE) visit(g, []); if (cyc) break; }
+    ok(!cyc, `concept: derived skill-map (group) cycle: ${cyc} — a concept is mis-grouped`);
+  }
+
+  // transitive prerequisites of a concept
+  const ancCache = {};
+  const conceptAnc = (id) => {
+    if (ancCache[id]) return ancCache[id];
+    const seen = new Set(); const st = [...prereqAdj[id]];
+    while (st.length) { const u = st.pop(); if (seen.has(u)) continue; seen.add(u); st.push(...(prereqAdj[u] ?? [])); }
+    return (ancCache[id] = seen);
+  };
+
+  // definition closure: @c{X} refs must be transitive prerequisites; @n{} must
+  // resolve in NOTATION (always-available primitives).
+  const CREF = /@c\{([^}|]+)(?:\|[^}]+)?\}/g;
+  const NREF = /@n\{([^}]+)\}/g;
+  for (const c of CONCEPTS) {
+    const text = `${c.short} ${c.expanded ?? ""} ${c.example ?? ""}`;
+    const anc = conceptAnc(c.id);
+    for (const m of text.matchAll(CREF)) {
+      const ref = m[1];
+      if (!conceptIds.has(ref)) { ok(false, `concept ${c.id}: @c{${ref}} is not a concept`); continue; }
+      ok(anc.has(ref), `concept ${c.id}: @c{${ref}} used in its definition but not declared a (transitive) prerequisite`);
+    }
+    for (const m of text.matchAll(NREF))
+      ok(notationKeys.has(m[1]), `concept ${c.id}: @n{${m[1]}} not in NOTATION`);
+  }
+
+  // micro-quiz integrity (same rules the per-stage quiz uses)
+  for (const c of CONCEPTS) {
+    for (const q of c.microQuiz ?? []) {
+      ok(!!q.explanation, `concept ${c.id} microQuiz ${q.id}: no explanation`);
+      if (q.type === "multiple-choice")
+        ok(q.correct >= 0 && q.correct < q.options.length, `concept ${c.id} ${q.id}: correct index OOR`);
+      if (q.type === "multi-select")
+        for (const i of q.correct) ok(i >= 0 && i < q.options.length, `concept ${c.id} ${q.id}: multi index OOR`);
+      if (q.type === "classification")
+        for (const it of q.items)
+          ok(q.buckets.includes(it.correctBucket), `concept ${c.id} ${q.id}: bucket "${it.correctBucket}" missing`);
+      if (q.type === "fill-in")
+        ok(Array.isArray(q.accepted) && q.accepted.length > 0, `concept ${c.id} ${q.id}: no accepted answers`);
+    }
+  }
+
+  // contrasts: undirected associations — must resolve and be symmetric.
+  for (const c of CONCEPTS)
+    for (const x of c.contrasts ?? []) {
+      if (!conceptIds.has(x)) { ok(false, `concept ${c.id}: contrasts "${x}" is not a concept`); continue; }
+      const other = CONCEPTS.find((y) => y.id === x);
+      ok((other?.contrasts ?? []).includes(c.id), `concept ${c.id}: contrasts ${x} not symmetric (add ${c.id} to ${x}.contrasts)`);
+    }
+
+  // cross-DAG coherence: introducedIn is a real stage; a prerequisite concept is
+  // introduced at the same stage or a prerequisite stage (ADR-0001 skill DAG).
+  const lessonNode = {};
+  for (const n of SKILL_GRAPH.nodes) if (n.lessonId) lessonNode[n.lessonId] = n.id;
+  const skillParents = {};
+  for (const n of SKILL_GRAPH.nodes) skillParents[n.id] = [];
+  for (const e of SKILL_GRAPH.edges) if (e.kind === "prerequisite_for") skillParents[e.target].push(e.source);
+  const skillAncCache = {};
+  const skillAnc = (id) => {
+    if (skillAncCache[id]) return skillAncCache[id];
+    const seen = new Set(); const st = [...(skillParents[id] ?? [])];
+    while (st.length) { const u = st.pop(); if (seen.has(u)) continue; seen.add(u); st.push(...(skillParents[u] ?? [])); }
+    return (skillAncCache[id] = seen);
+  };
+  const stageIds = new Set(LESSONS.map((l) => l.id));
+  for (const c of CONCEPTS) {
+    ok(stageIds.has(c.introducedIn), `concept ${c.id}: introducedIn "${c.introducedIn}" is not a stage`);
+    const node = lessonNode[c.introducedIn];
+    if (!node) continue;
+    const anc = skillAnc(node);
+    for (const p of c.prerequisites) {
+      const pc = CONCEPTS.find((x) => x.id === p);
+      if (!pc) continue;
+      if (pc.primitive) continue; // primitives (symbol, object) are available everywhere
+      const pnode = lessonNode[pc.introducedIn];
+      if (!pnode) continue;
+      ok(
+        pnode === node || anc.has(pnode),
+        `concept ${c.id} (${c.introducedIn}): prerequisite ${p} is introduced at ${pc.introducedIn}, which is neither the same stage nor a prerequisite stage`,
+      );
+    }
+  }
+
+  // any @c{} used in LESSON prose must resolve to a concept (forward-looking:
+  // lessons may begin referencing concepts directly).
+  for (const l of LESSONS) {
+    const strings = [
+      l.summary, l.masteryCheckpoint, ...l.objectives,
+      ...l.definitions.flatMap((d) => [d.short, d.expanded ?? "", d.example ?? ""]),
+      ...l.sections.map((s) => s.body),
+      ...l.confusions.flatMap((cf) => [cf.misconception, cf.correction]),
+      ...l.quiz.map((q) => q.prompt + " " + (q.explanation ?? "")),
+    ];
+    for (const s of strings)
+      for (const m of s.matchAll(/@c\{([^}|]+)(?:\|[^}]+)?\}/g))
+        ok(conceptIds.has(m[1]), `stage ${l.stage}: @c{${m[1]}} not a concept`);
+  }
+}
+
 // Glossary uniqueness
 const gterms = new Set();
 for (const g of GLOSSARY) {
@@ -238,4 +410,4 @@ if (errors.length) {
   for (const e of errors) console.error("  - " + e);
   process.exit(1);
 }
-console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, ${Object.keys(NOTATION).length} symbols, ${SKILL_GRAPH.nodes.length} graph nodes / ${SKILL_GRAPH.edges.length} edges (acyclic), all consistent`);
+console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, ${CONCEPT_GRAPH.concepts.length} concepts (acyclic deps, closed), ${Object.keys(NOTATION).length} symbols, ${SKILL_GRAPH.nodes.length} graph nodes / ${SKILL_GRAPH.edges.length} edges (acyclic), all consistent`);

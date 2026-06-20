@@ -15,8 +15,11 @@ const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = join(process.cwd(), "scripts", "shots");
 mkdirSync(OUT, { recursive: true });
 
-// [route, name, optional expand-the-notation-panel?]
+// [route, name, optional expand-the-panels?]
 const SHOTS = [
+  ["", "home-skilltree", false],      // skill-tree edge routing + labels
+  ["stage-1", "stage1-concepts", true], // concept panel (ADR-0002) + chips
+  ["stage-2", "stage2-graph", false], // typed-graph edge routing fix
   ["stage-3", "stage3-defs", true],   // inline chips + notation rollup
   ["stage-6", "stage6-table", false], // markdown pipe table
   ["stage-11", "stage11-lists", false], // bullet lists
@@ -44,10 +47,12 @@ for (const [route, name, expand] of SHOTS) {
     await new Promise((r) => setTimeout(r, 1500)); // let KaTeX/React Flow settle
 
     if (expand) {
-      // open the per-stage notation rollup and the first inline chip
+      // open the per-stage concept + notation rollups and the first inline chip
       await page.evaluate(() => {
-        const d = document.querySelector("details.notation-panel");
-        if (d) d.open = true;
+        for (const sel of ["details.concept-panel", "details.notation-panel"]) {
+          const d = document.querySelector(sel);
+          if (d) d.open = true;
+        }
       }).catch(() => {});
       const chip = await page.$(".def-chip-trigger");
       if (chip) await chip.click().catch(() => {});

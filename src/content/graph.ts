@@ -10,6 +10,7 @@
  * (AssessmentTask), not as graph edges, in v1.
  */
 import type { SkillGraph, SkillNode, SkillEdge } from "../types";
+import { deriveStageEdges, transitiveReduction } from "./derive";
 
 const concept = (
   id: string,
@@ -65,38 +66,38 @@ const NODES: SkillNode[] = [
   achievement("a-second", "incompleteness", "Explain Second Incompleteness", "The tower never closes.", ["cap-second"], { x: 1560, y: 680 }),
 ];
 
-/** prerequisite_for edges: source must be passed before target unlocks. */
-const PREREQS: [string, string][] = [
-  // Roots are the three atoms: c-syntax, c-proof, c-structures. The orientation
-  // node c-four-levels is intentionally non-gating (an optional map).
-  // syntax
-  ["c-syntax", "c-grammar"],
-  ["c-syntax", "c-pa"],
-  ["c-syntax", "c-proof"],
-  ["c-grammar", "c-prov-vs-truth"],
-  // proof
-  ["c-proof", "c-proof-graphs"],
-  ["c-proof", "c-prov-vs-truth"],
-  ["c-proof", "c-computability"],
-  ["c-proof", "c-metatheory"],
-  // semantics
-  ["c-structures", "c-satisfaction"],
-  ["c-pa", "c-satisfaction"],
-  ["c-satisfaction", "c-prov-vs-truth"],
-  // upper spine
-  ["c-prov-vs-truth", "c-theory-props"],
-  ["c-theory-props", "c-incompleteness-1"],
-  // coding track
-  ["c-computability", "c-coding"],
-  ["c-computability", "c-prov-predicate"],
-  ["c-coding", "c-prov-predicate"],
-  ["c-metatheory", "c-prov-predicate"],
-  ["c-metatheory", "c-incompleteness-1"],
-  ["c-prov-predicate", "c-diagonalization"],
-  ["c-diagonalization", "c-incompleteness-1"],
-  ["c-incompleteness-1", "c-incompleteness-2"],
+// --- DERIVED concept→concept prerequisites (ADR-0003/0004, Phase C) -----------
+// The concept→concept prerequisite backbone is NO LONGER hand-authored: it is
+// DERIVED from the concept graph by lifting concept dependencies to the stage
+// (group) level, then transitively reduced. Edit prerequisites in concepts.ts,
+// not here. Only the pedagogical overlay + achievement edges below are manual.
+const STAGE_TO_NODE: Record<string, string> = {};
+for (const n of NODES) if (n.lessonId) STAGE_TO_NODE[n.lessonId] = n.id;
 
-  // concept → achievement (achievement unlocks when its prereq concepts pass)
+const DERIVED_PREREQS: [string, string][] = deriveStageEdges()
+  .map(([a, b]) => [STAGE_TO_NODE[a], STAGE_TO_NODE[b]] as [string, string])
+  .filter(([a, b]) => !!a && !!b);
+
+// Pedagogical overlay: sequencing edges the ADR-0003 Phase-A audit found are NOT
+// grounded in a concept dependency, but are kept deliberately as curriculum
+// order. Each is a soft "meet this first" rather than a definitional need.
+const PEDAGOGICAL_PREREQS: [string, string][] = [
+  ["c-grammar", "c-prov-vs-truth"], // see well-formedness fully before contrasting ⊢/⊨
+  ["c-pa", "c-satisfaction"], // truth is taught on arithmetic (numeral) examples
+  ["c-computability", "c-coding"], // computability motivates why syntax gets coded
+  ["c-metatheory", "c-prov-predicate"], // the about-the-theory vantage motivates arithmetizing provability
+];
+
+// dedupe the union, then transitively reduce for a minimal, clean DAG
+const CONCEPT_PREREQS: [string, string][] = transitiveReduction(
+  Array.from(
+    new Map([...DERIVED_PREREQS, ...PEDAGOGICAL_PREREQS].map((e) => [`${e[0]}>${e[1]}`, e])).values(),
+  ),
+);
+
+// Overlay: concept/achievement → achievement edges (achievements are NOT concepts,
+// so these are not derived). Hand-authored.
+const ACHIEVEMENT_PREREQS: [string, string][] = [
   ["c-syntax", "a-classify"],
   ["c-grammar", "a-classify"],
   ["c-pa", "a-prove-224"],
@@ -126,6 +127,10 @@ const PREREQS: [string, string][] = [
   ["c-incompleteness-2", "a-second"],
   ["a-first", "a-second"],
 ];
+
+/** prerequisite_for edges = derived concept backbone + pedagogical overlay +
+ *  achievement overlay. Source must be passed before target unlocks. */
+const PREREQS: [string, string][] = [...CONCEPT_PREREQS, ...ACHIEVEMENT_PREREQS];
 
 /** Soft, non-gating links: the orientation map points to the starting atoms.
  *  These render dashed and do NOT participate in unlock/ancestry/cycle logic. */

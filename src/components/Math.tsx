@@ -19,7 +19,7 @@
 import { useMemo, type ReactNode } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import { NotationChip, TermChip } from "./Definitions";
+import { NotationChip, TermChip, ConceptChip } from "./Definitions";
 
 function escapeHtml(s: string): string {
   return s
@@ -75,7 +75,7 @@ export function MathText({ text }: { text: string }) {
 // emphasis so a `*` inside math or a `_` in code never trips the emphasis rules.
 // Template only — renderInline clones it per call (see below).
 const INLINE_RE =
-  /\$\$([^$]+)\$\$|\$([^$]+)\$|@n\{([^}]+)\}|@t\{([^}|]+)(?:\|([^}]+))?\}|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`/g;
+  /\$\$([^$]+)\$\$|\$([^$]+)\$|@n\{([^}]+)\}|@t\{([^}|]+)(?:\|([^}]+))?\}|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|@c\{([^}|]+)(?:\|([^}]+))?\}/g;
 
 function renderInline(text: string): ReactNode[] {
   // renderInline recurses (bold/italic re-parse their inner text). A SHARED
@@ -96,6 +96,7 @@ function renderInline(text: string): ReactNode[] {
     else if (m[6] !== undefined) out.push(<strong key={k++}>{renderInline(m[6])}</strong>);
     else if (m[7] !== undefined) out.push(<em key={k++}>{renderInline(m[7])}</em>);
     else if (m[8] !== undefined) out.push(<code key={k++}>{m[8]}</code>);
+    else if (m[9] !== undefined) out.push(<ConceptChip key={k++} id={m[9]} label={m[10]} />);
     last = re.lastIndex;
   }
   if (last < text.length) out.push(<span key={k++}>{text.slice(last)}</span>);

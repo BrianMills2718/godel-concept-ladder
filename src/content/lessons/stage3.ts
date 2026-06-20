@@ -32,7 +32,7 @@ export const stage3: Lesson = {
 
 $$\\dfrac{A \\qquad A\\to B}{B}$$
 
-A @t{proof} is a finite list (or tree) of formulas in which every line is either an axiom or follows from earlier lines by a rule. The last line is the @t{theorem}. When such a proof exists we write
+A @c{proof} is a finite list (or tree) of formulas in which every line is either an axiom or follows from earlier lines by a rule. The last line is the @c{theorem}. When such a proof exists we write
 
 $$T \\vdash P$$
 

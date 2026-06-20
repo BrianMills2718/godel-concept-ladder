@@ -19,6 +19,7 @@ import "reactflow/dist/style.css";
 import type { TypedGraphViz } from "../../types";
 import { EDGE_META, LAYER_META } from "./legend";
 import { RichLine } from "../Math";
+import { flowNodeTypes, flowEdgeTypes, pickHandles } from "./flow";
 
 /** Deterministic layered layout when a node has no explicit position: group by
  *  layer into columns, stack within a column. Hand-laid diagrams override via
@@ -48,6 +49,7 @@ export function TypedGraph({ viz }: { viz: TypedGraphViz }) {
         const meta = LAYER_META[n.layer];
         return {
           id: n.id,
+          type: "hnode",
           position: positions[n.id],
           data: {
             label: (
@@ -79,13 +81,18 @@ export function TypedGraph({ viz }: { viz: TypedGraphViz }) {
       viz.edges.map((e) => {
         const meta = LAYER_META[e.layer];
         const em = EDGE_META[e.type];
+        const handles = pickHandles(positions[e.source], positions[e.target]);
         return {
           id: e.id,
+          type: "annot",
           source: e.source,
           target: e.target,
-          label: e.label ?? em.label,
-          labelStyle: { fontSize: 10, fill: meta.color },
-          labelBgStyle: { fill: "#fff", fillOpacity: 0.85 },
+          ...handles,
+          data: {
+            short: e.label ?? em.label,
+            verbose: e.label ? `${e.label} — ${em.verbose}` : em.verbose,
+            color: meta.color,
+          },
           style: {
             stroke: meta.color,
             strokeWidth: 2,
@@ -94,7 +101,7 @@ export function TypedGraph({ viz }: { viz: TypedGraphViz }) {
           markerEnd: { type: MarkerType.ArrowClosed, color: meta.color },
         };
       }),
-    [viz],
+    [viz, positions],
   );
 
   return (
@@ -103,6 +110,8 @@ export function TypedGraph({ viz }: { viz: TypedGraphViz }) {
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          nodeTypes={flowNodeTypes}
+          edgeTypes={flowEdgeTypes}
           fitView
           nodesDraggable
           nodesConnectable={false}

@@ -14,6 +14,11 @@ import { SKILL_GRAPH, ancestorsOf, achievements, nodeById } from "../content/gra
 import { useSkillView, nodeStateOf, setGoal, missingPrereqs } from "../store/skillProgress";
 import { resolveGoal } from "../content/goalMap";
 import { RichLine } from "./Math";
+import { flowNodeTypes, flowEdgeTypes, pickHandles } from "./viz/flow";
+
+const POS: Record<string, { x: number; y: number }> = Object.fromEntries(
+  SKILL_GRAPH.nodes.map((n) => [n.id, n.position ?? { x: 0, y: 0 }]),
+);
 
 const STATE_STYLE: Record<string, { bg: string; border: string; color: string }> = {
   passed: { bg: "#ecfdf5", border: "#10b981", color: "#065f46" },
@@ -54,6 +59,7 @@ export function SkillTree() {
         const isAchv = n.kind === "achievement";
         return {
           id: n.id,
+          type: "hnode",
           position: n.position ?? { x: 0, y: 0 },
           data: {
             label: (
@@ -88,11 +94,17 @@ export function SkillTree() {
         const visible = scope.has(e.source) && scope.has(e.target);
         return {
           id: e.id,
+          type: "annot",
           source: e.source,
           target: e.target,
-          label: orients ? "orients" : undefined,
-          labelStyle: { fontSize: 9, fill: "#94a3b8" },
-          labelBgStyle: { fill: "#fff", fillOpacity: 0.7 },
+          ...pickHandles(POS[e.source], POS[e.target]),
+          data: {
+            short: orients ? "orients" : "prerequisite",
+            verbose: orients
+              ? "a soft, non-gating pointer from the overview map to a starting concept"
+              : "the source node must be passed before the target unlocks",
+            color: "#94a3b8",
+          },
           markerEnd: orients
             ? { type: MarkerType.Arrow, color: "#cbd5e1" }
             : { type: MarkerType.ArrowClosed, color: "#94a3b8" },
@@ -151,6 +163,8 @@ export function SkillTree() {
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          nodeTypes={flowNodeTypes}
+          edgeTypes={flowEdgeTypes}
           onNodeClick={onNodeClick}
           fitView
           nodesDraggable

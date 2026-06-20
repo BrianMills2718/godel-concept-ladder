@@ -87,6 +87,7 @@ export interface GraphEdge {
 export type VisualizationSpec =
   | TypedGraphViz
   | ParseTreeViz
+  | ParseExplorerViz
   | ComparisonTableViz
   | CodingEncoderViz
   | GodelLoopViz;
@@ -114,6 +115,8 @@ export interface ParseNode {
   label: string;
   /** Grammatical category of this node. */
   category: "sentence" | "formula" | "term" | "symbol" | "quantifier";
+  /** Id of the formation rule that builds this node (parse-explorer only). */
+  ruleId?: string;
   children?: ParseNode[];
 }
 
@@ -122,6 +125,43 @@ export interface ParseTreeViz extends VizBase {
   root: ParseNode;
   /** Optional malformed string to show *failing* to parse, side by side. */
   malformedExample?: { input: string; reason: string };
+}
+
+/** The interactive parse / parse-failure explorer (ADR-0002, Phase 3). Shows the
+ *  formation rules explicitly and lets the learner pick a string and watch it
+ *  parse (rule-by-rule) or *fail*, citing the exact rule that can't apply — the
+ *  "show the rules by which something is parsable" capability. The parse of each
+ *  example is authored data (no live parser), matching the content-as-data
+ *  philosophy and keeping the grammar honest. */
+export interface FormationRuleSpec {
+  /** short id cited by parse nodes / failures, e.g. "F∀". */
+  id: string;
+  category: "term" | "formula";
+  /** the rule, KaTeX-able, e.g. "if $t$ is a term then $S(t)$ is a term". */
+  text: string;
+}
+
+export interface ParseExample {
+  /** the input string, KaTeX-able. */
+  input: string;
+  legal: boolean;
+  /** legal inputs: the parse as nested rule applications (root = whole input). */
+  tree?: ParseNode;
+  /** illegal inputs: where and why parsing fails. */
+  failure?: {
+    /** the offending token/fragment, shown verbatim (plain text, not KaTeX). */
+    at: string;
+    /** the rule that was expected to apply but couldn't. */
+    ruleTried: string;
+    /** plain-language reason. */
+    reason: string;
+  };
+}
+
+export interface ParseExplorerViz extends VizBase {
+  kind: "parse-explorer";
+  rules: FormationRuleSpec[];
+  examples: ParseExample[];
 }
 
 export interface ComparisonRow {
@@ -281,6 +321,55 @@ export interface GlossaryEntry {
   definition: string;
   example?: string;
   related: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Concept dependency DAG (ADR-0002) — the fine-grained substrate beneath the
+// stage-level skill DAG. A `Concept` is a first-class node: each *idea* a lesson
+// uses carries its own `prerequisites` (the other concepts you must already
+// grasp), so "defined before use" is enforceable at term granularity, not just
+// chip-token granularity. A stage node (ADR-0001) encapsulates the sub-DAG of
+// concepts whose `introducedIn` is that stage; the stage DAG is thus a quotient
+// of this one. Notation (@n{}) stays a self-contained primitive; @c{} refs an
+// idea and renders recursively (a definition may contain further @c{} chips).
+// ---------------------------------------------------------------------------
+
+export interface Concept {
+  /** kebab-case id; also the `@c{id}` chip key. */
+  id: string;
+  /** display label, e.g. "free variable". */
+  term: string;
+  layer: Layer;
+  /** One-line definition. May contain `$math$`, `@n{}` notation, and `@c{}`
+   *  concept refs. Every `@c{}` ref MUST be a transitive prerequisite of this
+   *  concept (enforced by the validator) — that is the "defined before use"
+   *  closure. */
+  short: string;
+  /** Optional deeper explanation; same reference rules as `short`. */
+  expanded?: string;
+  /** Concrete example, KaTeX-able (drawn from the fixed running cast). */
+  example?: string;
+  /** Concept ids that must be understood first — the definition-dependency
+   *  edges. MAY form cycles (mutually-defining concepts); cycles are condensed
+   *  to clusters when deriving the skill map (ADR-0003/0004). Empty for a genuine
+   *  primitive (also set `primitive: true`). */
+  prerequisites: string[];
+  /** Undirected associations — concepts understood *against* each other (e.g.
+   *  ⊢ contrasts ⊨). NOT a dependency: never gates, orders, or derives the skill
+   *  map; used for "see also"/contrast cross-links. Expected to be symmetric. */
+  contrasts?: string[];
+  /** Stage/lesson id (ADR-0001) that formally introduces this concept. A
+   *  prerequisite concept must be introduced at this stage or a prerequisite
+   *  stage of it. */
+  introducedIn: string;
+  /** Optional self-contained check for just this concept. */
+  microQuiz?: QuizQuestion[];
+  /** A genuine primitive that needs no prior concept (e.g. symbol, object). */
+  primitive?: boolean;
+}
+
+export interface ConceptGraph {
+  concepts: Concept[];
 }
 
 // ---------------------------------------------------------------------------

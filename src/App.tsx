@@ -8,15 +8,17 @@
 import { useEffect, useState } from "react";
 import { SkillTree } from "./components/SkillTree";
 import { NodeDetail } from "./components/NodeDetail";
+import { ConceptGraphView } from "./components/ConceptGraphView";
 import { Sidebar } from "./components/Sidebar";
 import { GlossaryDrawer } from "./components/GlossaryDrawer";
 import { nodeForLesson } from "./content/graph";
 
-type Route = { kind: "tree" } | { kind: "node"; id: string };
+type Route = { kind: "tree" } | { kind: "node"; id: string } | { kind: "concepts" };
 
 function parse(hash: string): Route {
   const h = hash.replace(/^#\/?/, "");
   if (h === "" || h === "tree") return { kind: "tree" };
+  if (h === "concepts") return { kind: "concepts" };
   if (h.startsWith("node/")) return { kind: "node", id: h.slice(5) };
   if (h.startsWith("stage-")) {
     const n = nodeForLesson(h);
@@ -58,7 +60,13 @@ export function App() {
         onOpenGlossary={() => setGlossaryOpen(true)}
       />
       <main id="main" className="main" tabIndex={-1}>
-        {route.kind === "tree" ? <SkillTree /> : <NodeDetail nodeId={route.id} />}
+        {route.kind === "tree" ? (
+          <SkillTree />
+        ) : route.kind === "concepts" ? (
+          <ConceptGraphView />
+        ) : (
+          <NodeDetail nodeId={route.id} />
+        )}
       </main>
       <GlossaryDrawer open={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
     </div>
