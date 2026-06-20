@@ -40,6 +40,8 @@ export function SkillTree() {
 
   const scope = useMemo(() => {
     const s = new Set<string>([goalId, ...ancestorsOf(goalId)]);
+    // The orientation map is a global overview — always in scope (never dimmed).
+    for (const n of SKILL_GRAPH.nodes) if (n.branch === "foundations") s.add(n.id);
     return s;
   }, [goalId]);
 
@@ -80,17 +82,27 @@ export function SkillTree() {
 
   const edges: Edge[] = useMemo(
     () =>
-      SKILL_GRAPH.edges.map((e) => ({
-        id: e.id,
-        source: e.source,
-        target: e.target,
-        markerEnd: { type: MarkerType.ArrowClosed, color: "#94a3b8" },
-        style: {
-          stroke: "#cbd5e1",
-          strokeWidth: 1.5,
-          opacity: scope.has(e.source) && scope.has(e.target) ? 0.9 : 0.12,
-        },
-      })),
+      SKILL_GRAPH.edges.map((e) => {
+        const orients = e.kind === "orients";
+        const visible = scope.has(e.source) && scope.has(e.target);
+        return {
+          id: e.id,
+          source: e.source,
+          target: e.target,
+          label: orients ? "orients" : undefined,
+          labelStyle: { fontSize: 9, fill: "#94a3b8" },
+          labelBgStyle: { fill: "#fff", fillOpacity: 0.7 },
+          markerEnd: orients
+            ? { type: MarkerType.Arrow, color: "#cbd5e1" }
+            : { type: MarkerType.ArrowClosed, color: "#94a3b8" },
+          style: {
+            stroke: "#cbd5e1",
+            strokeWidth: 1.5,
+            strokeDasharray: orients ? "3 4" : undefined,
+            opacity: visible ? (orients ? 0.5 : 0.9) : 0.12,
+          },
+        };
+      }),
     [scope],
   );
 

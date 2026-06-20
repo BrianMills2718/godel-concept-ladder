@@ -31,7 +31,7 @@ const achievement = (
 
 const NODES: SkillNode[] = [
   // --- concept nodes (content = stages) ---
-  concept("c-four-levels", "foundations", "stage-0", "Two Distinctions (orientation)", "Optional map: ⊢ vs ⊨, and object vs meta.", { x: 40, y: -120 }),
+  concept("c-four-levels", "foundations", "stage-0", "Two Distinctions (orientation)", "Optional map: ⊢ vs ⊨, and object vs meta.", { x: 250, y: -150 }),
   concept("c-syntax", "syntax", "stage-1", "Terms, Formulas, Sentences", "The grammatical ladder.", { x: 250, y: 40 }),
   concept("c-grammar", "syntax", "stage-2", "Grammar & Well-formedness", "Legal ≠ true ≠ provable.", { x: 500, y: 20 }),
   concept("c-proof", "proof-theory", "stage-3", "Axioms, Rules, Proofs", "⊢ is derivability, not truth.", { x: 250, y: 460 }),
@@ -127,12 +127,28 @@ const PREREQS: [string, string][] = [
   ["a-first", "a-second"],
 ];
 
-const EDGES: SkillEdge[] = PREREQS.map(([source, target], i) => ({
-  id: `e${i}`,
-  source,
-  target,
-  kind: "prerequisite_for",
-}));
+/** Soft, non-gating links: the orientation map points to the starting atoms.
+ *  These render dashed and do NOT participate in unlock/ancestry/cycle logic. */
+const ORIENTS: [string, string][] = [
+  ["c-four-levels", "c-syntax"],
+  ["c-four-levels", "c-structures"],
+  ["c-four-levels", "c-proof"],
+];
+
+const EDGES: SkillEdge[] = [
+  ...PREREQS.map(([source, target], i) => ({
+    id: `e${i}`,
+    source,
+    target,
+    kind: "prerequisite_for" as const,
+  })),
+  ...ORIENTS.map(([source, target], i) => ({
+    id: `o${i}`,
+    source,
+    target,
+    kind: "orients" as const,
+  })),
+];
 
 export const SKILL_GRAPH: SkillGraph = { nodes: NODES, edges: EDGES };
 

@@ -295,6 +295,7 @@ export type NodeKind = "concept" | "skill" | "achievement";
  *  reserved in the type but deliberately not authored yet (ADR-0001). */
 export type EdgeKind =
   | "prerequisite_for"
+  | "orients" // soft, non-gating link (the orientation map → the starting atoms)
   | "assesses"
   | "remediates"
   | "meta_level_of"
