@@ -1,10 +1,18 @@
 # The Concept Ladder — Gödel Prerequisites
 
 An educational site that teaches the prerequisites for Gödel's incompleteness
-theorems by keeping five layers **strictly apart**: syntax, proof, semantics
-(truth-in-a-structure), Gödel coding, and metatheory. The pedagogical goal is
+theorems by keeping the key relations **strictly apart**. The pedagogical goal is
 not "explain Gödel" — it is to prevent the category errors (well-formed =
 provable = true) that ordinary explanations skip over.
+
+**Architecture (ADR-0001):** the homepage is a **typed prerequisite DAG** ("skill
+tree") — 17 concept nodes (the reviewed lessons) + 13 **achievement** nodes earned
+by **performance assessment**, not by viewing content. Deterministic checks grade
+exact answers; an **LLM judge** (`backend/`, FastAPI + llm_client) grades
+open-ended explanations with fatal-misconception overrides and remediation
+routing. Pick a goal (dropdown or free text) and the tree highlights its
+prerequisite sub-DAG and your recommended next node. The old linear ladder is one
+topological ordering of this graph. See `docs/ADR-0001-skill-dag-pivot.md`.
 
 ## Stack
 - Vite + React + TypeScript

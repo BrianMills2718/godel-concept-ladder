@@ -1,5 +1,12 @@
 # Active sprint — content foundations → LLM judge → rollout
 
+> **STATUS: COMPLETE (2026-06-20).** CF1–CF4, C1–C4, D1–D2 all done. Skill DAG is
+> the homepage; four-levels reframed to two distinctions; reference-closure
+> checker green; LLM judge backend live + validated (0 false-pass) + frontend-
+> wired with graceful degradation; typed/dropdown goal selection highlights the
+> prerequisite sub-DAG. `npm run check` green; backend grading verified end-to-end.
+
+
 **Mission:** Fix the content-foundation issues (forward references; over-indexed
 four-level root), then complete the skill-DAG build (LLM judge backend + rollout +
 personalized goals). Run continuously until done. Re-read this after any

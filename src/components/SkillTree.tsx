@@ -12,6 +12,7 @@ import ReactFlow, { Background, Controls, MarkerType, type Edge, type Node } fro
 import "reactflow/dist/style.css";
 import { SKILL_GRAPH, ancestorsOf, achievements, nodeById } from "../content/graph";
 import { useSkillView, nodeStateOf, setGoal, missingPrereqs } from "../store/skillProgress";
+import { resolveGoal } from "../content/goalMap";
 import { RichLine } from "./Math";
 
 const STATE_STYLE: Record<string, { bg: string; border: string; color: string }> = {
@@ -23,6 +24,19 @@ const STATE_STYLE: Record<string, { bg: string; border: string; color: string }>
 export function SkillTree() {
   const { passed, goalId, recommended } = useSkillView();
   const [why, setWhy] = useState<{ id: string; missing: string[] } | null>(null);
+  const [goalText, setGoalText] = useState("");
+  const [goalMiss, setGoalMiss] = useState(false);
+
+  function applyTypedGoal() {
+    const r = resolveGoal(goalText);
+    if (r) {
+      setGoal(r.goal);
+      setGoalMiss(false);
+      setGoalText("");
+    } else {
+      setGoalMiss(true);
+    }
+  }
 
   const scope = useMemo(() => {
     const s = new Set<string>([goalId, ...ancestorsOf(goalId)]);
@@ -99,6 +113,17 @@ export function SkillTree() {
               <option key={a.id} value={a.id}>{a.title}</option>
             ))}
           </select>
+        </div>
+        <div className="st-goal-text">
+          <input
+            placeholder="…or type what you want to understand"
+            value={goalText}
+            onChange={(e) => { setGoalText(e.target.value); setGoalMiss(false); }}
+            onKeyDown={(e) => e.key === "Enter" && applyTypedGoal()}
+            aria-label="Type a goal"
+          />
+          <button onClick={applyTypedGoal} disabled={!goalText.trim()}>Set</button>
+          {goalMiss && <span className="st-goal-miss">couldn't map — try the dropdown</span>}
         </div>
         <div className="st-progress">{passed.size} / {SKILL_GRAPH.nodes.length} passed</div>
         <Legend />

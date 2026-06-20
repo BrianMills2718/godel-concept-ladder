@@ -353,6 +353,11 @@ kbd {
 .st-toolbar { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
 .st-goal { display: flex; align-items: center; gap: 8px; font-size: 14px; }
 .st-goal select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; font-size: 14px; font-family: inherit; }
+.st-goal-text { display: flex; align-items: center; gap: 6px; }
+.st-goal-text input { padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; font-size: 13px; font-family: inherit; width: 260px; max-width: 40vw; }
+.st-goal-text button { padding: 6px 12px; border: 1px solid var(--accent); background: #eef2ff; color: var(--accent); border-radius: 7px; cursor: pointer; font-size: 13px; }
+.st-goal-text button:disabled { opacity: .5; cursor: not-allowed; }
+.st-goal-miss { font-size: 12px; color: var(--metatheory); }
 .st-progress { font-size: 13px; color: var(--ink-soft); }
 .st-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-left: auto; font-size: 12px; color: var(--ink-soft); }
 .st-legend span { display: inline-flex; align-items: center; gap: 5px; }
