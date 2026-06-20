@@ -479,7 +479,7 @@
     "nodeId": "a-second",
     "title": "Explain Second Incompleteness",
     "kind": "llm-judged",
-    "taskPrompt": "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy.",
+    "taskPrompt": "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy (for a sound base, where each extension stays consistent).",
     "openEndedPrompt": "Cover: $\\mathrm{Con}(T):=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$; the formalized first theorem; that a stronger theory can prove it; and why $T+\\mathrm{Con}(T)$ has its own Gödel sentence.",
     "rubric": {
       "id": "rub-first",

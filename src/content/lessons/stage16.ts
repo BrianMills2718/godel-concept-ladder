@@ -11,7 +11,7 @@ export const stage16: Lesson = {
   stage: 16,
   title: "Second Incompleteness Theorem",
   summary:
-    "A consistent, computably axiomatized, strong enough T cannot prove its own consistency Con(T). A stronger theory can; but T+Con(T) is again subject to Gödel. No effective tower ever captures all arithmetic truth.",
+    "A consistent, computably axiomatized, strong enough T cannot prove its own consistency Con(T). A stronger theory can; and T+Con(T) — when it stays consistent (guaranteed for a sound base like PA) — is again subject to Gödel. No effective tower of sound theories ever captures all arithmetic truth.",
   prerequisites: ["stage-15"],
   objectives: [
     "Write $\\mathrm{Con}(T) := \\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$.",
@@ -66,7 +66,7 @@ each rung larger, **none** of them a consistent, computable, sufficiently strong
       kind: "typed-graph",
       title: "Adding Con(T) climbs forever",
       textualSummary:
-        "Theory T cannot prove Con(T). Extending T to T+Con(T) gives a strictly stronger theory, but it too cannot prove its own consistency Con(T+Con(T)); extending again continues the tower. Each extension is larger, yet no rung is a consistent, computable, sufficiently strong theory that proves its own consistency or captures all arithmetic truth.",
+        "Theory T cannot prove Con(T). Extending T to T+Con(T) — which stays consistent for a sound base like PA — gives a strictly stronger theory, but it too cannot prove its own consistency Con(T+Con(T)); extending again continues the tower. Each extension is larger, yet no rung is a consistent, computable, sufficiently strong theory that proves its own consistency or captures all arithmetic truth.",
       layers: ["proof", "metatheory"],
       nodes: [
         { id: "t0", type: "ObjectTheory", layer: "proof", label: "$T$", position: { x: 60, y: 30 }, note: "T ⊬ Con(T)" },

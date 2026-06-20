@@ -44,7 +44,7 @@ In words: $T$ *proves* $G_T$ equivalent to "no number codes a $T$-proof of the s
     },
     {
       heading: "It is arithmetic, and it is not the liar",
-      body: `$G_T$ contains only $0,S,+,\\times,=$, quantifiers, and connectives. It is an ordinary **arithmetic sentence about numbers** — it just happens that one of those numbers, $\\ulcorner G_T\\urcorner$, is its own code. The "this sentence" feeling is entirely carried by the coding, not by any spooky reflexivity.
+      body: `$G_T$ contains only $0,S,+,\\times,=$, quantifiers, and connectives. It is an ordinary **arithmetic sentence about numbers** — it just happens that one of those numbers, $\\ulcorner G_T\\urcorner$, is its own code. The "this sentence" reading is carried entirely by the coding; there is no direct self-reference in the language.
 
 Why it is **not** the liar paradox ("this sentence is false"):
 

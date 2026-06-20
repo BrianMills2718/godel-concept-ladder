@@ -15,7 +15,7 @@ export const stage12: Lesson = {
   prerequisites: ["stage-11"],
   objectives: [
     "Explain Gödel coding / arithmetization of syntax.",
-    "Encode a sequence as $2^{a_1}3^{a_2}5^{a_3}\\cdots$ and decode by factorization.",
+    "Encode a sequence as $2^{a_1+1}3^{a_2+1}5^{a_3+1}\\cdots$ and decode by factorization.",
     "State why unique factorization makes the coding invertible.",
     "Explain that the number does not intrinsically 'mean' a formula.",
   ],
@@ -107,7 +107,7 @@ Why the $+1$? It makes *every* position contribute at least one factor of its pr
       ],
       correct: 1,
       explanation:
-        "Unique factorization makes $2^{a_1}3^{a_2}5^{a_3}\\cdots$ invertible: the exponents read straight back off.",
+        "Unique factorization makes $2^{a_1+1}3^{a_2+1}5^{a_3+1}\\cdots$ invertible: the exponents (minus the $+1$ shift) read straight back off, and the first absent prime marks the length.",
     },
     {
       id: "s12q2",

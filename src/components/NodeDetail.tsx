@@ -91,8 +91,8 @@ function AchievementView({ node }: { node: SkillNode }) {
         <h2 className="lesson-title">{node.title}</h2>
         <p className="lesson-summary">{node.shortDescription}</p>
         <div className="ach-meta">
-          <span className="ach-fmt">{task.kind === "deterministic" ? "Auto-graded" : task.kind === "llm-judged" ? "Written explanation (AI-graded in a later phase)" : "Auto-graded + written explanation"}</span>
-          <span className="ach-thresh">Pass: {Math.round(task.passThreshold * 100)}%, no fatal misconception</span>
+          <span className="ach-fmt">{task.kind === "deterministic" ? "Auto-graded" : task.kind === "llm-judged" ? "Written explanation" : "Auto-graded + written explanation"}</span>
+          <span className="ach-thresh">Pass: {Math.round(task.passThreshold * 100)}%, with no category-error misconception</span>
         </div>
 
         <section className="lesson-block">
@@ -104,7 +104,7 @@ function AchievementView({ node }: { node: SkillNode }) {
 
         {task.fatalMisconceptions.length > 0 && (
           <section className="lesson-block">
-            <h3>What fails this — no matter how fluent</h3>
+            <h3>Misconceptions this task checks for</h3>
             <ul className="ach-fatal">
               {task.fatalMisconceptions.map((m) => <li key={m.id}><RichLine text={m.description} /></li>)}
             </ul>
@@ -195,7 +195,7 @@ function Capstone({ task, nodeId, alreadyPassed }: { task: AssessmentTask; nodeI
             <div className="ach-degraded">
               <p>The grading service isn't reachable, so this explanation can't be
                 AI-graded right now. You can self-assess against the criteria above and
-                proceed — or start the backend and re-submit.</p>
+                proceed, or try again later when grading is available.</p>
               <label className="ach-attest">
                 <input type="checkbox" checked={attested} onChange={(e) => setAttested(e.target.checked)} />
                 I've written a complete explanation and checked it against the criteria.

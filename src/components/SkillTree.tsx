@@ -60,6 +60,7 @@ export function SkillTree() {
               <div className="st-node-inner">
                 <span className="st-node-kind">{isAchv ? "◆ achievement" : n.branch}</span>
                 <span className="st-node-title">{n.title}</span>
+                <span className="st-node-desc">{n.shortDescription}</span>
                 <span className="st-node-state">{state}</span>
               </div>
             ),
@@ -70,7 +71,7 @@ export function SkillTree() {
             borderRadius: isAchv ? 14 : 8,
             boxShadow: n.id === recommended ? "0 0 0 4px rgba(217,119,6,.35)" : undefined,
             color: base.color,
-            width: 168,
+            width: 186,
             padding: 8,
             fontSize: 12,
             opacity: inScope ? 1 : 0.25,
@@ -117,6 +118,11 @@ export function SkillTree() {
 
   return (
     <div className="skill-tree">
+      <p className="st-intro">
+        Choose a goal, then start with the highlighted <strong>available</strong> node. Each node you
+        pass unlocks the next prerequisite. The map's job is to keep <em>syntax, proof, truth, coding,
+        and metatheory</em> separate — that separation is the whole point.
+      </p>
       <div className="st-toolbar">
         <div className="st-goal">
           <label htmlFor="goal">Goal:</label>

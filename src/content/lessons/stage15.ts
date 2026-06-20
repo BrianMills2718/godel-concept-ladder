@@ -41,6 +41,18 @@ $$\\mathbb{N}\\models G_T.$$
 So $G_T$ is **true but not provable in $T$**. Each clause leans on a *different* hypothesis; the rest of the stage keeps them apart.`,
     },
     {
+      heading: "The three claims at a glance",
+      body: `Each part of the theorem leans on a *different* hypothesis. Keep them straight before the details:
+
+| Claim | Needs | Why |
+|---|---|---|
+| $T\\nvdash G_T$ | **consistency** only | else $T$ proves both $\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ and its negation |
+| $T\\nvdash\\neg G_T$ | **ω-consistency** (original $G_T$), or a **Rosser** sentence + consistency | a different theorem route |
+| $\\mathbb{N}\\models G_T$ | correct arithmetization + **soundness** (standard model) | the truth claim is metatheoretic |
+
+The three sections below establish these one at a time.`,
+    },
+    {
       heading: "Step 1 — T ⊬ G_T (only consistency needed)",
       body: `Recall $T\\vdash G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. Suppose $T\\vdash G_T$. Then:
 

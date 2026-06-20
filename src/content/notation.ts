@@ -47,7 +47,7 @@ export const NOTATION: Record<string, NotationEntry> = {
   N: {
     glyph: "\\mathbb{N}",
     name: "the standard natural numbers",
-    meaning: "The intended structure $\\langle\\{0,1,2,\\dots\\}, 0, S, +, \\times, =\\rangle$ — the world arithmetic is 'really' about.",
+    meaning: "The intended structure for ordinary arithmetic: $\\langle\\{0,1,2,\\dots\\}, 0, S, +, \\times, =\\rangle$.",
     example: "$\\mathbb{N}\\models \\forall x(x+0=x)$.",
   },
   turnstile: {
@@ -108,7 +108,7 @@ export const NOTATION: Record<string, NotationEntry> = {
   ProofT: {
     glyph: "\\mathrm{Proof}_T(p,q)",
     name: "the proof predicate",
-    meaning: "An arithmetic formula: '$p$ codes a valid $T$-proof of the formula coded by $q$'. Decidable, hence representable in arithmetic.",
+    meaning: "An arithmetic formula: '$p$ codes a valid $T$-proof of the formula coded by $q$'. Proof-checking is primitive recursive, hence representable in arithmetic.",
     example: "$\\mathrm{Proof}_T(p, \\ulcorner 2+2=4\\urcorner)$ holds for the code $p$ of an actual proof.",
   },
   ProvT: {

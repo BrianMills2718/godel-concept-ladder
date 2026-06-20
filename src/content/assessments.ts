@@ -273,7 +273,7 @@ export const ASSESSMENTS: AssessmentTask[] = [
     nodeId: "a-second",
     kind: "llm-judged",
     title: "Explain Second Incompleteness",
-    prompt: "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy.",
+    prompt: "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy (for a sound base, where each extension stays consistent).",
     openEnded: { prompt: "Cover: $\\mathrm{Con}(T):=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$; the formalized first theorem; that a stronger theory can prove it; and why $T+\\mathrm{Con}(T)$ has its own Gödel sentence.", rubricId: "rub-first" },
     requiredConcepts: ["Con(T)", "second incompleteness theorem"],
     fatalMisconceptions: [{ id: "con-false", description: "Says T can't prove Con(T) because Con(T) is false.", remediationNodeIds: ["c-incompleteness-2"], fatal: true }],
