@@ -18,7 +18,9 @@ pip install -e . && pip install -e ~/projects/llm_client
 node ../scripts/export-assessments.mjs     # regenerate assessments.json
 uvicorn godel_judge.app:app --port 8000     # serve
 ```
-Config: `JUDGE_MODEL` (default `gemini/gemini-2.5-flash`), `JUDGE_MAX_BUDGET` (0.05).
+Config: `JUDGE_MODEL` (default `openrouter/openai/gpt-5-mini` — via `OPENROUTER_API_KEY`,
+any model, real credits, no free-tier cap), `JUDGE_MAX_BUDGET` (0.08). The OpenRouter
+route uses `llm_client`'s `instructor` fallback (already in deps).
 
 ## Validate before trusting it
 `python -m eval.run` grades a frozen good/borderline/bad case set and reports

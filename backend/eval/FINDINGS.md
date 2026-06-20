@@ -1,40 +1,33 @@
 # Judge validation findings — cap-distinguish
 
-Frozen set: 8 cases (3 expect-pass, 5 expect-fail). Model: `gemini/gemini-2.5-flash`.
-Run 2026-06-20 (7/8 graded before free-tier quota — 20/day — exhausted).
+Frozen set: 8 cases (3 expect-pass, 5 expect-fail).
+
+## Current result — `openrouter/openai/gpt-5-mini` (2026-06-20)
+Full 8/8 graded (OpenRouter has credits; no free-tier daily cap).
 
 | case | expect | got | score | conf | misconceptions |
 |---|---|---|---|---|---|
-| strong | pass | **pass** | 90 | high | — |
-| correct-terse | pass | **pass** | 90 | high | — |
-| minor-imprecision | pass | fail | 67 | high | — |
+| strong | pass | **pass** | 100 | high | — |
+| correct-terse | pass | **pass** | 100 | high | — |
+| minor-imprecision | pass | **pass** | 88 | medium | — |
 | true-equals-provable | fail | **fail** | 0 | high | true-prov |
-| malformed-is-false | fail | **fail** | 0 | high | wf-true, true-prov, malformed-false |
-| godel-is-liar | fail | **fail** | 0 | low | liar |
-| slogan-no-application | fail | **fail** | 0 | low | — |
-| off-topic | fail | (quota) | — | — | — |
+| malformed-is-false | fail | **fail** | 0 | low | wf-true, malformed-false |
+| godel-is-liar | fail | **fail** | 0 | high | liar |
+| slogan-no-application | fail | **fail** | 10 | low | — |
+| off-topic | fail | **fail** | 0 | low | — |
 
-## Verdict
-- **false-pass = 0/4 (0%)** — the safety-critical metric is clean. Every
-  fatal-misconception answer failed and the correct misconception ids were
-  detected; remediation routed correctly. **The judge never passes a confused
-  answer.**
-- **false-fail = 1/3 (~33%, above the 15% target)** — entirely the
-  "minor-imprecision" case (67/100). That answer *is* loose (no consistency hedge,
-  no worked example, "truth is broader than provability"), so 67→fail is
-  defensible; this is the judge erring **strict**, not wrong.
+**false-pass = 0/5 (0%); false-fail = 0/3 (0%). GATE: PASS.**
+Every fatal-misconception answer failed with the correct misconception ids and
+remediation routed; both clear-pass and the borderline-but-decent answer passed.
+The judge is approved to gate achievements.
 
-## Decision
-For an educational gate, **strict-but-safe is the right failure direction**:
-better to ask a learner to sharpen a vague answer than to award mastery for a
-confused one. The judge is approved to gate achievements, with a known
-conservative bias.
+## Note on model choice
+An earlier run on `gemini/gemini-2.5-flash` had a daily free-tier cap (20 req) and
+was *over*-strict (false-failed the "minor-imprecision" case at 67). Switching the
+default to OpenRouter (`OPENROUTER_API_KEY`, any model, real credits) both removed
+the quota wall and improved calibration — that case now correctly passes at 88.
+Cost ≈ $0.003/grade. Override with `JUDGE_MODEL`.
 
 ## Follow-ups
-- Re-run the full 8 when quota resets (or set `JUDGE_MODEL` to a higher-quota
-  model, e.g. an OpenAI tier — `OPENAI_API_KEY` is configured). Free-tier Gemini
-  flash is 20 req/day and unusable for real serving.
-- If the strictness frustrates real learners, nudge the pass threshold (0.8→0.75)
-  or soften the "precision" rubric criterion, then re-validate.
-- Graduate this harness into shared `prompt_eval` (frozen sets + bootstrap CI)
-  when rolling the judge out to all achievements (Phase D).
+- Expand the frozen set per achievement as the judge rolls out (Phase D), and
+  graduate this harness into shared `prompt_eval` (bootstrap CI) at scale.

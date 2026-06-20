@@ -61,8 +61,12 @@ def main() -> int:
         f"\nfalse-pass {false_pass}/{n_neg} = {fp_rate:.0%} (max {FALSE_PASS_MAX:.0%}); "
         f"false-fail {false_fail}/{n_pos} = {ff_rate:.0%} (max {FALSE_FALSE_MAX:.0%})"
     )
-    gated = fp_rate <= FALSE_PASS_MAX and ff_rate <= FALSE_FALSE_MAX
-    print("GATE:", "PASS — judge may gate achievements" if gated else "FAIL — do not trust the judge yet")
+    graded = len(cases) - errors
+    gated = graded > 0 and errors == 0 and fp_rate <= FALSE_PASS_MAX and ff_rate <= FALSE_FALSE_MAX
+    if errors:
+        print("GATE: INCONCLUSIVE — cases errored; cannot certify until all grade")
+    else:
+        print("GATE:", "PASS — judge may gate achievements" if gated else "FAIL — do not trust the judge yet")
     return 0 if gated else 1
 
 
