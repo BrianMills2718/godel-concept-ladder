@@ -65,10 +65,10 @@ PA does not literally contain the English concept "proof." It contains a number 
       title: "Proof-checking, represented as arithmetic",
       textualSummary:
         "A proof π encodes as a number p and a formula P encodes as a number q. The valid-proof relation between π and P is represented inside arithmetic by the formula Proof_T(p,q). Existentially quantifying the proof code p yields Prov_T(q) = ∃p Proof_T(p,q), the provability predicate.",
-      layers: ["coding", "metatheory"],
+      layers: ["syntax", "proof", "coding"],
       nodes: [
-        { id: "pi", type: "ProofStep", layer: "metatheory", label: "proof $\\pi$", position: { x: 40, y: 40 } },
-        { id: "P", type: "Formula", layer: "metatheory", label: "formula $P$", position: { x: 40, y: 170 } },
+        { id: "pi", type: "ProofStep", layer: "proof", label: "proof $\\pi$", position: { x: 40, y: 40 } },
+        { id: "P", type: "Formula", layer: "syntax", label: "formula $P$", position: { x: 40, y: 170 } },
         { id: "p", type: "CodeNumber", layer: "coding", label: "code $p$", position: { x: 300, y: 40 } },
         { id: "q", type: "CodeNumber", layer: "coding", label: "code $q$", position: { x: 300, y: 170 } },
         { id: "pf", type: "ArithmeticPredicate", layer: "coding", label: "$\\mathrm{Proof}_T(p,q)$", position: { x: 560, y: 105 } },
@@ -123,10 +123,10 @@ PA does not literally contain the English concept "proof." It contains a number 
       id: "s13q3",
       type: "true-false",
       prompt:
-        "True or false: $\\mathrm{Proof}_T(p,q)$ can be written as an arithmetic formula because proof-checking is mechanical (decidable ⇒ primitive recursive ⇒ representable).",
+        "True or false: $\\mathrm{Proof}_T(p,q)$ can be written as an arithmetic formula because proof-checking is **primitive recursive**, and every primitive recursive relation is representable in PA.",
       correct: true,
       explanation:
-        "True. The representability of decidable syntactic relations is exactly what lets proofhood live inside arithmetic — no magic involved.",
+        "True. Proof-checking is primitive recursive, and primitive recursive relations are representable — that is what lets proofhood live inside arithmetic. (Note: being merely *decidable* would not suffice on its own; the relevant fact is the stronger one, primitive recursiveness.)",
     },
   ],
   masteryCheckpoint:

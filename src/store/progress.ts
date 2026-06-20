@@ -10,9 +10,11 @@
 import { useSyncExternalStore } from "react";
 
 export interface LessonProgress {
-  /** Fraction of quiz questions answered correctly on the latest attempt. */
+  /** Best fraction of quiz questions answered correctly across attempts
+   *  (monotonic — see recordQuiz, which takes the max). */
   quizScore: number;
-  /** True once the learner has answered every quiz question correctly. */
+  /** True once the learner has answered every quiz question correctly on any
+   *  attempt (sticky — never un-sets). */
   mastered: boolean;
   /** True once the lesson page has been opened (for the sidebar dot). */
   visited: boolean;

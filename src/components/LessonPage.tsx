@@ -10,6 +10,7 @@ import { LESSONS } from "../content/lessons";
 import { RichText, RichLine } from "./Math";
 import { VizRenderer } from "./viz/VizRenderer";
 import { Quiz } from "./Quiz";
+import { NotationPanel } from "./Definitions";
 import { markVisited, useProgress } from "../store/progress";
 
 export function LessonPage({ lesson }: { lesson: Lesson }) {
@@ -41,6 +42,8 @@ export function LessonPage({ lesson }: { lesson: Lesson }) {
           </p>
         )}
       </header>
+
+      <NotationPanel lesson={lesson} />
 
       <section className="lesson-block">
         <h3>What you'll be able to do</h3>

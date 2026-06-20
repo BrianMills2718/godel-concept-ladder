@@ -53,7 +53,7 @@ Now suppose $T\\vdash\\mathrm{Con}(T)$. Then $T\\vdash G_T$ — contradicting th
 
 $$T' = T + \\mathrm{Con}(T).$$
 
-$T'$ is strictly stronger (it proves something $T$ couldn't). But $T'$ is itself consistent, computably axiomatized, and strong enough — so **Gödel applies again**: $T'\\nvdash\\mathrm{Con}(T')$, and $T'$ has its own Gödel sentence. Iterate and you get an endless tower
+$T'$ is strictly stronger (it proves something $T$ couldn't). **As long as $T'$ is still consistent** — which is guaranteed when $T$ is **sound** ($\\mathbb{N}\\models T$), as PA is — it is again computably axiomatized and strong enough, so **Gödel applies again**: $T'\\nvdash\\mathrm{Con}(T')$, and $T'$ has its own Gödel sentence. (The caveat matters: a consistent-but-unsound $T$ can prove $\\neg\\mathrm{Con}(T)$, in which case $T+\\mathrm{Con}(T)$ is *inconsistent* rather than stronger.) For sound base theories, iterate and you get an endless tower
 
 $$T \\;\\subsetneq\\; T+\\mathrm{Con}(T) \\;\\subsetneq\\; T+\\mathrm{Con}(T)+\\mathrm{Con}(T+\\mathrm{Con}(T)) \\;\\subsetneq\\;\\cdots$$
 
@@ -144,7 +144,7 @@ each rung larger, **none** of them a consistent, computable, sufficiently strong
       ],
       correct: 1,
       explanation:
-        "Each extension is a fresh target for Gödel: a new unprovable Gödel sentence and a new unprovable consistency statement. The tower never closes.",
+        "Each (still-consistent) extension is a fresh target for Gödel: a new unprovable Gödel sentence and a new unprovable consistency statement. For a sound base like PA the tower stays consistent and never closes.",
     },
   ],
   masteryCheckpoint:

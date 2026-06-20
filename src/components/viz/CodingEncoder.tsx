@@ -12,23 +12,29 @@ import { useMemo, useState } from "react";
 import type { CodingEncoderViz } from "../../types";
 import { Tex } from "../Math";
 
-const PRIMES = [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n];
+const PRIMES = [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n];
 
+// We encode element a_i as the exponent (a_i + 1), so EVERY position contributes
+// at least one factor of its prime. Then the number alone determines both the
+// sequence AND its length: the length is the first prime that does NOT divide it.
+// (With bare a_i, a 0 would be invisible and [1] vs [1,0] would collide.)
 function encode(seq: number[]): bigint {
-  return seq.reduce<bigint>((acc, e, i) => acc * PRIMES[i] ** BigInt(Math.max(0, e)), 1n);
+  return seq.reduce<bigint>((acc, e, i) => acc * PRIMES[i] ** BigInt(Math.max(0, e) + 1), 1n);
 }
 
-/** Recover the exponents by dividing out each prime — the decode step. */
-function decode(n: bigint, len: number): number[] {
+/** Recover the sequence from the number alone: divide out p_0, p_1, … until a
+ *  prime no longer divides (that marks the end of the sequence). */
+function decode(n: bigint): number[] {
   const out: number[] = [];
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < PRIMES.length; i++) {
     let e = 0;
     let m = n;
     while (m % PRIMES[i] === 0n) {
       m /= PRIMES[i];
       e++;
     }
-    out.push(e);
+    if (e === 0) break; // first absent prime ⇒ end of sequence
+    out.push(e - 1); // undo the +1 shift
   }
   return out;
 }
@@ -37,10 +43,10 @@ export function CodingEncoder({ viz }: { viz: CodingEncoderViz }) {
   const [seq, setSeq] = useState<number[]>(viz.defaultSequence);
 
   const product = useMemo(() => encode(seq), [seq]);
-  const decoded = useMemo(() => decode(product, seq.length), [product, seq.length]);
+  const decoded = useMemo(() => decode(product), [product]);
 
   const powerTex = seq
-    .map((e, i) => `${PRIMES[i]}^{${e}}`)
+    .map((e, i) => `${PRIMES[i]}^{${e}+1}`)
     .join(" \\cdot ");
 
   function setAt(i: number, v: string) {

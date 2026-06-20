@@ -93,7 +93,7 @@ These are three different properties of a sentence. They often agree on simple e
       kind: "comparison-table",
       title: "The same four examples, three different questions",
       textualSummary:
-        "The malformed string ∀+=x))0 is not well-formed, not provable, and has no truth value. 2+2=4 is well-formed, provable in PA, and true in ℕ. 2+2=5 is well-formed, not provable in consistent PA, and false in ℕ. The Gödel sentence G_T is well-formed, not provable in T (assuming T is consistent and strong enough), yet true in ℕ under the usual metatheoretic assumptions. The columns disagree — that is the point.",
+        "The malformed string ∀+=x))0 is not well-formed, not provable, and has no truth value. 2+2=4 is well-formed, provable in PA, and true in ℕ. 2+2=5 is well-formed, not provable in consistent PA, and false in ℕ. The Gödel sentence G_PA is well-formed, not provable in PA (assuming PA is consistent), yet true in ℕ (assuming PA is sound). The columns disagree — that is the point.",
       columns: ["Well-formed?", "Provable in PA?", "True in $\\mathbb{N}$?"],
       rows: [
         {
@@ -121,11 +121,11 @@ These are three different properties of a sentence. They often agree on simple e
           },
         },
         {
-          label: "Gödel sentence $G_T$",
+          label: "Gödel sentence $G_{\\mathrm{PA}}$",
           cells: {
             "Well-formed?": { value: "yes" },
-            "Provable in PA?": { value: "no", note: "assuming T is consistent & strong enough" },
-            "True in $\\mathbb{N}$?": { value: "yes", note: "under the usual metatheoretic assumptions" },
+            "Provable in PA?": { value: "no", note: "assuming PA is consistent" },
+            "True in $\\mathbb{N}$?": { value: "yes", note: "assuming PA is sound" },
           },
         },
       ],

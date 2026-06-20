@@ -235,13 +235,16 @@ function TrueFalse({
 }
 
 /** Normalize a free-text math answer so trivial notation differences match:
- *  collapse whitespace, drop spaces, fold common successor/equality variants. */
+ *  drop LaTeX sizing/spacing commands, collapse whitespace, fold multiplication
+ *  glyphs, and strip braces. So `S\big(S(S(S(0))+0)\big)` matches `S(S(S(S(0))+0))`. */
 function normalizeAnswer(s: string): string {
   return s
     .toLowerCase()
+    // strip LaTeX sizing/spacing commands (with their backslash) first
+    .replace(/\\(left|right|bigg?|bigg?l|bigg?r|quad|qquad|,|;|:|!|\s)/g, "")
+    .replace(/\\/g, "") // any remaining backslashes
     .replace(/\s+/g, "")
-    .replace(/\\/g, "")
-    .replace(/·|×|\*/g, "*")
+    .replace(/·|×|\*|\\cdot/g, "*")
     .replace(/[{}]/g, "");
 }
 

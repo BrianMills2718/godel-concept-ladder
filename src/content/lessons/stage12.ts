@@ -31,11 +31,11 @@ export const stage12: Lesson = {
     },
     {
       heading: "Sequences as prime powers",
-      body: `To code a *sequence* $[a_1,a_2,a_3,\\dots]$ as a single number, use prime powers:
+      body: `To code a *sequence* $[a_1,a_2,a_3,\\dots]$ as a single number, use prime powers — with a small twist, exponent $a_i+1$:
 
-$$\\text{code}([a_1,a_2,a_3,\\dots]) = 2^{a_1}\\cdot 3^{a_2}\\cdot 5^{a_3}\\cdots$$
+$$\\text{code}([a_1,a_2,a_3,\\dots]) = 2^{a_1+1}\\cdot 3^{a_2+1}\\cdot 5^{a_3+1}\\cdots$$
 
-Because of the **Fundamental Theorem of Arithmetic** (unique prime factorization), the exponents can be read straight back off the number: divide out 2s to recover $a_1$, 3s for $a_2$, and so on. The coding is therefore *invertible* — no information is lost. Try it below.`,
+Why the $+1$? It makes *every* position contribute at least one factor of its prime, so a $0$ entry is still visible and the **length** is recoverable. By the **Fundamental Theorem of Arithmetic** (unique prime factorization) the exponents read straight back off the number: divide out 2s for $a_1+1$, 3s for $a_2+1$, and so on; the first prime that does *not* divide the number marks the end of the sequence. So the coding is **invertible from the number alone** — length and all. (With bare $a_i$, a trailing $0$ would vanish and $[1]$ and $[1,0]$ would collide.) Try it below.`,
     },
     {
       heading: "Illustrative, not literal",
@@ -52,7 +52,7 @@ Because of the **Fundamental Theorem of Arithmetic** (unique prime factorization
       kind: "coding-encoder",
       title: "Encode a sequence, then decode it back",
       textualSummary:
-        "An interactive encoder: enter a short sequence of exponents such as [4,7,9]; the tool computes 2^4 · 3^7 · 5^9 as a single number, then decodes it by dividing out each prime to recover the original exponents [4,7,9]. Unique factorization guarantees the recovery is exact.",
+        "An interactive encoder: enter a short sequence such as [4,7,9]; the tool computes 2^(4+1) · 3^(7+1) · 5^(9+1) as a single number, then decodes it by dividing out each prime (subtracting the +1 shift) to recover [4,7,9]. The first prime that does not divide the number marks the sequence's end, so length and contents are recovered from the number alone.",
       defaultSequence: [4, 7, 9],
     },
     {

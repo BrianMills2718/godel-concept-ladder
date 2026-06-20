@@ -23,7 +23,8 @@ const stub = join(tmpdir(), `godel-stub-${process.pid}.ts`);
 writeFileSync(
   stub,
   `export { LESSONS } from ${JSON.stringify(process.cwd() + "/src/content/lessons/index.ts")};
-   export { GLOSSARY } from ${JSON.stringify(process.cwd() + "/src/content/glossary.ts")};`,
+   export { GLOSSARY } from ${JSON.stringify(process.cwd() + "/src/content/glossary.ts")};
+   export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};`,
 );
 await build({
   entryPoints: [stub],
@@ -33,10 +34,30 @@ await build({
   logLevel: "error",
 });
 
-const { LESSONS, GLOSSARY } = await import(pathToFileURL(out).href);
+const { LESSONS, GLOSSARY, NOTATION } = await import(pathToFileURL(out).href);
 
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
+
+// Every @n{key}/@t{slug} reference must resolve — no undefined symbols (fail loud).
+const notationKeys = new Set(Object.keys(NOTATION));
+const glossarySlugs = new Set(GLOSSARY.map((g) => g.term.toLowerCase()));
+const TOKEN_RE = /@n\{([^}]+)\}|@t\{([^}|]+)(?:\|[^}]+)?\}/g;
+for (const l of LESSONS) {
+  const strings = [
+    l.summary, l.masteryCheckpoint, ...l.objectives,
+    ...l.definitions.flatMap((d) => [d.short, d.expanded ?? "", d.example ?? ""]),
+    ...l.sections.map((s) => s.body),
+    ...l.confusions.flatMap((c) => [c.misconception, c.correction]),
+    ...l.quiz.map((q) => q.prompt + " " + (q.explanation ?? "")),
+  ];
+  for (const s of strings) {
+    for (const m of s.matchAll(TOKEN_RE)) {
+      if (m[1]) ok(notationKeys.has(m[1]), `stage ${l.stage}: @n{${m[1]}} not in NOTATION`);
+      if (m[2]) ok(glossarySlugs.has(m[2].toLowerCase()), `stage ${l.stage}: @t{${m[2]}} not in glossary`);
+    }
+  }
+}
 
 // Stage coverage + unique ids
 const stages = LESSONS.map((l) => l.stage);
@@ -103,4 +124,4 @@ if (errors.length) {
   for (const e of errors) console.error("  - " + e);
   process.exit(1);
 }
-console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, all quizzes & graphs consistent`);
+console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, ${Object.keys(NOTATION).length} symbols, all quizzes/graphs/@refs consistent`);

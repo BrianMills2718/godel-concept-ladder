@@ -34,9 +34,10 @@ export function GodelLoop({ viz }: { viz: GodelLoopViz }) {
         ))}
       </ol>
       <p className="gl-foot">
-        The last arrow closes the loop: <code>¬Prov_T(⌜G_T⌝)</code> <em>is</em> the
-        sentence <code>G_T</code>. So <code>G_T</code> says of its own code that no
-        number codes a proof of it.
+        The last arrow closes the loop: <code>T ⊢ G_T ↔ ¬Prov_T(⌜G_T⌝)</code> — the
+        two are <em>provably equivalent</em> (the Fixed-Point Lemma's biconditional),
+        not the same string. So <code>G_T</code> says of its own code that no number
+        codes a proof of it.
       </p>
     </div>
   );

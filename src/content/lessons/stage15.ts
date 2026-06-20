@@ -50,21 +50,22 @@ So $G_T$ is **true but not provable in $T$**. Each clause leans on a *different*
 Now $T$ proves both $\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ and its negation — $T$ is **inconsistent**. Contrapositive: if $T$ is **consistent**, then $T\\nvdash G_T$. Note: *only consistency* was used here.`,
     },
     {
-      heading: "Step 2 — T ⊬ ¬G_T (needs more than consistency)",
-      body: `To get genuine *incompleteness* we also want $T\\nvdash\\neg G_T$. This direction is subtler:
+      heading: "Step 2 — the other half needs more than consistency",
+      body: `For genuine *incompleteness* we also need the negation unprovable. Here the two classical routes use **different sentences** — don't merge them:
 
-- **Gödel's original** argument needs **ω-consistency** (a strengthening of consistency: $T$ doesn't prove $\\exists x\\,\\varphi(x)$ while refuting each $\\varphi(0),\\varphi(1),\\dots$).
-- **Rosser (1936)** modified the sentence (a "Rosser sentence") so that **plain consistency** already gives $T\\nvdash\\neg G$ as well.
+- **Track A — Gödel's original $G_T$** (the $\\neg\\mathrm{Prov}_T$ sentence above). Consistency gives $T\\nvdash G_T$ (Step 1), but $T\\nvdash\\neg G_T$ requires the stronger hypothesis **ω-consistency** ($T$ never proves $\\exists x\\,\\varphi(x)$ while refuting each of $\\varphi(0),\\varphi(1),\\dots$).
+- **Track B — Rosser's sentence $R_T$** (1936): a *different* sentence built from a cleverly modified "proof-before-refutation" predicate. For $R_T$, **plain consistency** already yields *both* $T\\nvdash R_T$ and $T\\nvdash\\neg R_T$.
 
-Either way, the upshot is: a consistent, computable, strong enough $T$ is **incomplete** — neither $G$ nor $\\neg G$ is provable.`,
+So: with $G_T$ you get incompleteness assuming ω-consistency; with the separate sentence $R_T$ you get it from bare consistency. Either way a consistent, computable, strong enough $T$ is **incomplete**.`,
     },
     {
-      heading: "Step 3 — why G_T is true in ℕ (needs soundness)",
-      body: `From Step 1, *in reality* there is no $T$-proof of $G_T$. So the statement "no number codes a $T$-proof of $\\ulcorner G_T\\urcorner$" — which is exactly what $G_T$ asserts — is **true in $\\mathbb{N}$**:
+      heading: "Step 3 — why G_T is true in ℕ (two separate ingredients)",
+      body: `This step is **metatheoretic** and rests on two *distinct* facts — keep them apart:
 
-$$\\mathbb{N}\\models G_T.$$
+1. **Correct arithmetization (not soundness).** $\\mathrm{Proof}_T(p,q)$ is built to hold of exactly the genuine proof-codes; in the standard model $\\mathbb{N}$ its extension matches real provability. Since Step 1 (consistency) gives *no* real proof of $G_T$, we get $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. This uses only the construction + consistency — *not* any assumption that $T$ is sound.
+2. **Soundness / standard model.** To pass from there to $\\mathbb{N}\\models G_T$ we use the provable biconditional $G_T\\leftrightarrow\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. For $\\mathbb{N}$ to satisfy that biconditional we need $\\mathbb{N}\\models T$ — i.e. $T$ is **sound** (the standard model is a model of $T$).
 
-This step is **metatheoretic** and uses that $\\mathrm{Prov}_T$ correctly describes provability in the standard model — i.e. that $T$ is **sound** (or at least $\\Sigma_1$-sound / $\\mathbb{N}\\models T$). Drop soundness and you can't conclude $G_T$ is *true*; you still get unprovability from Step 1. Keep the hedge: **"true under the usual assumption that the standard model satisfies $T$."**`,
+Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* claim (ingredient 2), though unprovability (Step 1) still stands. Keep the hedge: **"true under the usual assumption that the standard model satisfies $T$."**`,
     },
     {
       heading: "What it does and doesn't say",
@@ -77,7 +78,7 @@ This step is **metatheoretic** and uses that $\\mathrm{Prov}_T$ correctly descri
       kind: "typed-graph",
       title: "$G_T$ lives in true-but-not-provable",
       textualSummary:
-        "Within all well-formed sentences, the true-in-ℕ sentences form a region, and for a sound theory the provable-in-T sentences sit inside it. Because T is incomplete, provable-in-T does not exhaust true-in-ℕ: the Gödel sentence G_T is true in ℕ but not provable in T, sitting in the gap. Its negation ¬G_T is false in ℕ and (for consistent/Rosser T) also unprovable.",
+        "Within all well-formed sentences, the true-in-ℕ sentences form a region, and for a sound theory the provable-in-T sentences sit inside it. Because T is incomplete, provable-in-T does not exhaust true-in-ℕ: the Gödel sentence G_T is true in ℕ but not provable in T, sitting in the gap. Its negation ¬G_T is false in ℕ and also unprovable — for the original G_T this needs ω-consistency, while Rosser's separate sentence achieves both unprovabilities from plain consistency.",
       layers: ["syntax", "semantics", "proof"],
       nodes: [
         { id: "all", type: "Sentence", layer: "syntax", label: "all well-formed sentences", position: { x: 40, y: 30 } },
@@ -171,7 +172,7 @@ This step is **metatheoretic** and uses that $\\mathrm{Prov}_T$ correctly descri
       ],
       correct: 1,
       explanation:
-        "$G_T$ says it has no proof; Step 1 establishes it has none; so $G_T$ is true in $\\mathbb{N}$ — using soundness to trust that $\\mathrm{Prov}_T$ tracks real provability.",
+        "$G_T$ says it has no proof; Step 1 (consistency) establishes it has none, and correct arithmetization gives $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. Soundness ($\\mathbb{N}\\models T$) is then what carries this to $\\mathbb{N}\\models G_T$ via the provable biconditional — two separate ingredients.",
     },
   ],
   masteryCheckpoint:

@@ -36,11 +36,11 @@ That is, $T$ *proves* $G$ equivalent to "$\\psi$ holds of my own code." The lemm
 
 $$T \\vdash \\; G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner),$$
 
-equivalently, fully unfolded,
+equivalently, with $\\mathrm{Prov}_T$ unfolded,
 
-$$G_T \\;\\equiv\\; \\neg\\exists p\\,\\mathrm{Proof}_T(p,\\ulcorner G_T\\urcorner).$$
+$$T \\vdash \\; G_T \\leftrightarrow \\neg\\exists p\\,\\mathrm{Proof}_T(p,\\ulcorner G_T\\urcorner).$$
 
-In words: *no number codes a $T$-proof of the sentence whose code is $\\ulcorner G_T\\urcorner$* — and that sentence is $G_T$ itself.`,
+In words: $T$ *proves* $G_T$ equivalent to "no number codes a $T$-proof of the sentence whose code is $\\ulcorner G_T\\urcorner$" — and that sentence is $G_T$ itself. ($G_T$ is **provably equivalent** to that statement, not literally the same string — the lemma gives the biconditional, not syntactic identity.)`,
     },
     {
       heading: "It is arithmetic, and it is not the liar",
@@ -67,7 +67,7 @@ A false-saying liar yields contradiction; an unprovable-saying $G_T$ yields *inc
         { label: "$\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$", sub: "insert the code into the provability predicate" },
         { label: "$G_T$ again", sub: "Fixed-Point Lemma: provably equivalent" },
       ],
-      arrows: ["encodes_as", "inserted into", "is exactly (fixed point)", "loop closes"],
+      arrows: ["encodes_as", "inserted into", "provably equivalent (fixed point)", "loop closes"],
     },
   ],
   confusions: [

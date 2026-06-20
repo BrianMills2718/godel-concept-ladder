@@ -44,7 +44,9 @@ The object theory talks about numbers; the **metatheory** talks about the object
 
 $$T' = T + \\mathrm{Con}(T).$$
 
-But $T'$ is itself consistent, computably axiomatized, and strong enough — so Gödel applies again: $T'$ has its *own* Gödel sentence and cannot prove $\\mathrm{Con}(T')$. Climbing one rung never escapes the phenomenon.`,
+Provided $T'$ is still **consistent**, it is computably axiomatized and strong enough — so Gödel applies again: $T'$ has its *own* Gödel sentence and cannot prove $\\mathrm{Con}(T')$. Climbing one rung never escapes the phenomenon.
+
+*(A caveat the next stages lean on: $T'$'s consistency isn't automatic from $T$'s. A consistent-but-unsound theory can actually prove $\\neg\\mathrm{Con}(T)$ — e.g. $\\mathrm{PA}+\\neg\\mathrm{Con}(\\mathrm{PA})$ is consistent — and then adding $\\mathrm{Con}(T)$ would make it inconsistent. The clean tower needs $T$ **sound**, i.e. $\\mathbb{N}\\models T$, which holds for our running $T=\\mathrm{PA}$.)*`,
     },
     {
       heading: "Foreshadowing the twist",
@@ -120,7 +122,7 @@ But $T'$ is itself consistent, computably axiomatized, and strong enough — so 
         "3": "Gödel reapplies to the stronger theory.",
       },
       explanation:
-        "Adding the unprovable $\\mathrm{Con}(T)$ gives a stronger theory — still subject to Gödel.",
+        "Adding the unprovable $\\mathrm{Con}(T)$ gives a stronger theory — still subject to Gödel (assuming the extension is still consistent, which holds when $T$ is sound, e.g. $T=\\mathrm{PA}$).",
     },
     {
       id: "s10q3",

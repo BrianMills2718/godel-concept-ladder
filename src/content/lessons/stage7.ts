@@ -37,7 +37,7 @@ export const stage7: Lesson = {
 - $M \\models \\forall x\\,P(x)$ iff **every** object $d$ in the domain has $M\\models P(d)$.
 - $M \\models \\exists x\\,P(x)$ iff **some** object $d$ has $M\\models P(d)$.
 
-No intuition required — it is a mechanical evaluation once the structure is fixed.`,
+No intuition required — satisfaction is **defined by recursion** on the formula's structure, so it is fully determined once the structure is fixed. That is not the same as being *computable*: a closed numeral fact like $2+2=4$ reduces to a finite calculation, but $\\forall x\\,P(x)$ quantifies over the whole infinite domain $\\mathbb{N}$, so there's no terminating "evaluate every case" procedure in general. (Indeed, Stage 11 notes arithmetic truth is not decidable at all.) Well-defined ≠ computable.`,
     },
     {
       heading: "Evaluating the running examples",

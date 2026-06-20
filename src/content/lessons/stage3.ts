@@ -20,29 +20,29 @@ export const stage3: Lesson = {
     "Distinguish checking a proof from searching for one.",
   ],
   definitions: [
-    { term: "axiom", short: "A formula a theory accepts without derivation.", example: "$\\forall x(x+0=x)$." },
+    { term: "axiom", short: "A formula a theory @n{T} accepts without derivation.", example: "$\\forall x(x+0=x)$." },
     { term: "inference rule", short: "A licensed step from premises to a conclusion.", example: "Modus ponens: from $A$ and $A\\to B$, infer $B$." },
     { term: "proof", short: "A finite sequence/tree of formulas, each an axiom or inferred from earlier ones." },
-    { term: "theorem", short: "A formula with a proof. We write $T \\vdash P$.", example: "$\\mathrm{PA} \\vdash 2+2=4$." },
+    { term: "theorem", short: "A formula @n{P} with a proof. We write @n{T}@n{turnstile}@n{P}.", example: "$\\mathrm{PA} \\vdash 2+2=4$." },
   ],
   sections: [
     {
       heading: "From axioms by rules",
-      body: `A theory $T$ hands you two things: a set of **axioms** (formulas you may use for free) and **inference rules** (licensed moves). The workhorse rule is **modus ponens**:
+      body: `A theory @n{T} hands you two things: a set of @t{axiom|axioms} (formulas you may use for free) and @t{inference rule|inference rules} (licensed moves). The workhorse rule is **modus ponens** — from $A$ and $A\\to B$, infer $B$:
 
 $$\\dfrac{A \\qquad A\\to B}{B}$$
 
-A **proof** is a finite list (or tree) of formulas in which every line is either an axiom or follows from earlier lines by a rule. The last line is the **theorem**. When such a proof exists we write
+A @t{proof} is a finite list (or tree) of formulas in which every line is either an axiom or follows from earlier lines by a rule. The last line is the @t{theorem}. When such a proof exists we write
 
 $$T \\vdash P$$
 
-and read it "$T$ proves $P$" — i.e. *there exists a finite valid derivation of $P$ in $T$*.`,
+— i.e. @n{T} @n{turnstile} @n{P}, read "@n{T} proves @n{P}": *there exists a finite valid derivation of $P$ in $T$*. (Tap any symbol above to see what it means.)`,
     },
     {
       heading: "⊢ is syntax, not truth",
-      body: `$T \\vdash P$ is a statement about **symbol manipulation**: rules were applied to strings until $P$ appeared. It says nothing, on its own, about $P$ being *true*. A theory with a false axiom would happily prove false things.
+      body: `@n{T}@n{turnstile}@n{P} is a statement about **symbol manipulation**: rules were applied to strings until $P$ appeared. It says nothing, on its own, about $P$ being *true* (that is @n{models}, a different relation we reach in Stage 7). A theory with a false axiom would happily prove false things.
 
-The bridge from "provable" to "true" is a *separate* property called **soundness** (Stage 9): a theory is sound when everything it proves is true. PA is sound, so its theorems are true — but that is an extra fact about PA, not part of the meaning of $\\vdash$.`,
+The bridge from "provable" to "true" is a *separate* property called @t{soundness} (Stage 9): a theory is sound when everything it proves is true. PA is sound, so its theorems are true — but that is an extra fact about PA, not part of the meaning of @n{turnstile}.`,
     },
     {
       heading: "Finite — and that matters",

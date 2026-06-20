@@ -39,7 +39,7 @@ export const stage11: Lesson = {
       body: `Two superficially similar questions, very different status:
 
 - **"Is this finite string a valid proof of $P$?"** — *decidable*. Check each line is an axiom or a licensed inference; the proof is finite, so the check halts.
-- **"Is $P$ a theorem (does *some* proof exist)?"** — *undecidable* for theories as strong as PA. We can search all candidate proofs in order, so theoremhood is **r.e.**; but if no proof exists the search never stops, and no algorithm decides theoremhood in general.
+- **"Is $P$ a theorem (does *some* proof exist)?"** — *undecidable* for **consistent**, computably axiomatized theories strong enough for arithmetic (like PA). We can search all candidate proofs in order, so theoremhood is always **r.e.**; but if no proof exists the search never stops, and no algorithm decides theoremhood in general. (The consistency clause matters: an *inconsistent* theory proves *everything*, so its theoremhood is trivially decidable — always "yes".)
 
 So checking a given proof is easy; deciding provability is not. (This is the computability echo of Stage 4's checking-vs-search.)`,
     },

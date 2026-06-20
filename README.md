@@ -47,7 +47,16 @@ All **17 stages (0–16)** are authored, registered, and validated:
 
 `CONTENT_NOTES.md` records the math-correctness decisions (consistency vs
 soundness vs ω-consistency/Rosser; Fixed-Point Lemma; the two senses of
-"complete"; representability) applied across Stages 9–16.
+"complete"; representability) applied across Stages 9–16. `RUNNING_EXAMPLE.md`
+documents the fixed example cast and the inline-definition system.
+
+### Security note (dev dependency)
+`npm audit` flags an esbuild advisory (GHSA-67mh-4wv8-2f99) inherited via Vite.
+It affects **only the local dev server** (`npm run dev`) — a malicious website
+could read dev-server responses — and is **not present in the built static
+output** (`dist/`), which ships no esbuild/Vite. The only patched path is a major
+Vite upgrade (v8), a breaking change deferred for now. Mitigation: don't run the
+dev server on an untrusted network; the production bundle is unaffected.
 
 ### Acceptance criteria (from the spec)
 - [x] Separates well-formedness / provability / truth / metatheory / coding via
