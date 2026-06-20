@@ -42,7 +42,7 @@ $$T \\vdash P$$
       heading: "⊢ is syntax, not truth",
       body: `@n{T}@n{turnstile}@n{P} is a statement about **symbol manipulation**: rules were applied to strings until $P$ appeared. It says nothing, on its own, about $P$ being *true* (that is @n{models}, a different relation we reach in Stage 7). A theory with a false axiom would happily prove false things.
 
-The bridge from "provable" to "true" is a *separate* property called @t{soundness} (Stage 9): a theory is sound when everything it proves is true. PA is sound, so its theorems are true — but that is an extra fact about PA, not part of the meaning of @n{turnstile}.`,
+The bridge from "provable" to "true" is a *separate* property called **soundness** (introduced later, at the *Soundness/Completeness* node): a theory is sound when everything it proves is true. PA is sound, so its theorems are true — but that is an extra fact about PA, not part of the meaning of @n{turnstile}.`,
     },
     {
       heading: "Finite — and that matters",

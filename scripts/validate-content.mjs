@@ -173,6 +173,56 @@ for (const l of LESSONS) {
   }
 }
 
+// --- reference closure: no forward references (SPRINT CF2) ---
+// A @t{term} reference is valid only if the term is introduced (defined in a
+// lesson) at the referencing node itself or a transitive prerequisite — i.e. it
+// has "already been explained". Orientation nodes preview deliberately and are
+// exempt. @n{} notation chips are self-contained, so they're always available.
+{
+  const EXEMPT = new Set(["stage-0"]); // optional "Two Distinctions" orientation
+  const PRIMITIVES = new Set(["symbol", "string", "alphabet"]); // genuinely prior
+  const lessonNode = {};
+  for (const n of SKILL_GRAPH.nodes) if (n.lessonId) lessonNode[n.lessonId] = n.id;
+  const introducedAt = {};
+  for (const l of LESSONS) {
+    const nodeId = lessonNode[l.id];
+    if (!nodeId) continue;
+    for (const d of l.definitions) (introducedAt[d.term.toLowerCase()] ??= new Set()).add(nodeId);
+  }
+  const parents = {};
+  for (const n of SKILL_GRAPH.nodes) parents[n.id] = [];
+  for (const e of SKILL_GRAPH.edges) if (e.kind === "prerequisite_for") parents[e.target].push(e.source);
+  const ancCache = {};
+  const ancestors = (id) => {
+    if (ancCache[id]) return ancCache[id];
+    const seen = new Set(); const st = [...parents[id]];
+    while (st.length) { const u = st.pop(); if (seen.has(u)) continue; seen.add(u); st.push(...parents[u]); }
+    return (ancCache[id] = seen);
+  };
+  const TREF = /@t\{([^}|]+)(?:\|[^}]+)?\}/g;
+  for (const l of LESSONS) {
+    if (EXEMPT.has(l.id)) continue;
+    const nodeId = lessonNode[l.id];
+    if (!nodeId) continue;
+    const anc = ancestors(nodeId);
+    const strings = [
+      l.summary, l.masteryCheckpoint, ...l.objectives,
+      ...l.definitions.flatMap((d) => [d.short, d.expanded ?? "", d.example ?? ""]),
+      ...l.sections.map((s) => s.body),
+      ...l.confusions.flatMap((c) => [c.misconception, c.correction]),
+      ...l.quiz.map((q) => q.prompt + " " + (q.explanation ?? "")),
+    ];
+    for (const s of strings) for (const m of s.matchAll(TREF)) {
+      const term = m[1].toLowerCase();
+      if (PRIMITIVES.has(term)) continue;
+      const intro = introducedAt[term];
+      const available = intro && [...intro].some((nid) => nid === nodeId || anc.has(nid));
+      if (!available)
+        ok(false, `forward-ref stage ${l.stage} (${nodeId}): @t{${m[1]}} — ${intro ? "introduced only at [" + [...intro].join(",") + "], not a prerequisite" : "not defined in any lesson"}`);
+    }
+  }
+}
+
 // Glossary uniqueness
 const gterms = new Set();
 for (const g of GLOSSARY) {

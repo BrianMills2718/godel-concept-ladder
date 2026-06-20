@@ -23,14 +23,14 @@ export const NOTATION: Record<string, NotationEntry> = {
   T: {
     glyph: "T",
     name: "a formal theory",
-    meaning: "A stand-in for a specific theory: a fixed set of axioms plus inference rules. Our running theory is PA.",
-    example: "$T = \\mathrm{PA}$, Peano Arithmetic.",
+    meaning: "A stand-in for a specific theory: a fixed set of axioms plus rules for deriving new statements from them. Our running theory is PA (see the PA symbol).",
+    example: "$T = \\mathrm{PA}$ — the theory dissected at the Peano Arithmetic node.",
   },
   PA: {
     glyph: "\\mathrm{PA}",
     name: "Peano Arithmetic",
-    meaning: "The running first-order theory of the natural numbers over $0, S, +, \\times, =$.",
-    example: "$\\mathrm{PA}\\vdash 2+2=4$.",
+    meaning: "Our running theory: a standard set of axioms for the natural numbers, built from $0$ and the successor 'next number' operation $S$ (plus $+$, $\\times$, $=$). Dissected fully at the Peano Arithmetic node.",
+    example: "$\\mathrm{PA}\\vdash 2+2=4$ — PA proves $2+2=4$.",
   },
   P: {
     glyph: "P",
