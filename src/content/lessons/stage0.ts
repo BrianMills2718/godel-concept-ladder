@@ -1,142 +1,134 @@
 /**
- * Stage 0 — Two Distinctions (optional orientation).
+ * Stage 0 — Start Here: The Big Picture (optional orientation).
  *
- * NOTE: this node is an OPTIONAL, non-gating orientation (ADR-0001 reframe). It
- * deliberately previews ⊢/⊨/object-meta before they're taught, using
- * self-contained notation chips + spiral glosses, so it is exempt from the
- * forward-reference closure check (it is the "map," not a prerequisite).
- *
- * Replaces the earlier "four-level map": the four things were not co-equal
- * levels (proof lives on the syntactic side; metatheory is a vantage, not a
- * level). The faithful structure is one precondition + two orthogonal axes.
+ * This is the first thing a beginner might read, so it must NOT assume the frame.
+ * It opens in plain language, motivates with the running example, and defines
+ * each term as it appears. It is a non-gating orientation (exempt from the
+ * forward-reference closure check) and previews ⊢/⊨/object-meta gently.
  */
 import type { Lesson } from "../../types";
 
 export const stage0: Lesson = {
   id: "stage-0",
   stage: 0,
-  title: "Two Distinctions (orientation)",
+  title: "Start Here: The Big Picture",
   summary:
-    "An optional map. One precondition — is the string even well-formed? — and two independent distinctions that run through everything: provable (⊢) vs true (⊨), and talking inside a theory vs about it.",
+    "A short, skippable overview. Most of what makes Gödel feel mind-bending is really just a few different questions about a math statement getting mixed together — above all, “can we prove it?” versus “is it actually true?”. Those are not the same thing, and the gap between them is the whole story.",
   prerequisites: [],
   objectives: [
-    "Name the precondition (well-formedness) and the two distinctions.",
-    "State that @n{turnstile} (provable) and @n{models} (true) are different relations.",
-    "Recognize an object-level claim vs a metatheoretic one.",
+    "Hold onto one idea: “provable” and “true” are different things.",
+    "See the three different questions you can ask about a statement.",
+    "Know you can skip this and come back — it blocks nothing.",
   ],
   definitions: [
-    { term: "well-formed formula", short: "A string the grammar accepts — the precondition before truth or proof even apply.", example: "$2+2=5$ is well-formed (and false)." },
-    { term: "syntactic", short: "About symbol manipulation — proofs/derivations. @n{turnstile} lives here." },
-    { term: "semantic", short: "About truth in a structure. @n{models} lives here." },
-    { term: "metatheory", short: "Reasoning ABOUT a theory (its proofs, consistency) — a vantage point, not a level." },
+    { term: "well-formed formula", short: "A statement that's at least written by the rules — legal, whether or not it's true.", example: "$2+2=5$ is written correctly; it's just false." },
   ],
   sections: [
     {
-      heading: "First, a precondition",
-      body: `Before anything else: **is the string a legal formula at all?** Gibberish like $\\forall{+}{=}x))0$ isn't true, isn't false, isn't provable — it's simply not in the game. Well-formedness (grammar) is the gate. A *well-formed* sentence like $2+2=5$ can then be false; being legal says nothing about being true.
+      heading: "The one idea to take away",
+      body: `Take a simple statement like $2+2=5$. It's natural to lump together three things — *is it written correctly?*, *can we prove it?*, and *is it actually true?* — as if they were one judgment. **They're not.** Almost everything that makes Gödel's theorem feel paradoxical comes from quietly mixing them up. Keeping them apart is the entire skill this site teaches.
 
-Our running theory @n{T} is **PA** — @n{PA}, a standard formal theory of the natural numbers built from $0$ and successor (dissected fully at the *Peano Arithmetic* node). Our running structure is @n{N}, the ordinary natural numbers.`,
+You don't need any of the symbols or jargon yet. Just the idea: **"provable" and "true" are not automatically the same.**`,
     },
     {
-      heading: "Axis 1 — provable (⊢) vs true (⊨)",
-      body: `For a well-formed sentence @n{P}, two **different** relations can hold:
+      heading: "Three different questions about a statement",
+      body: `Pick any statement $P$ about numbers. You can ask three *separate* questions:
 
-- @n{T}@n{turnstile}@n{P} — *$P$ is provable in $T$*: there's a finite derivation. This is **syntactic** (symbol pushing).
-- @n{N}@n{models}@n{P} — *$P$ is true in $\\mathbb{N}$*. This is **semantic** (evaluation in a structure).
+1. **Is it even a legal statement?** Pure grammar. The gibberish $\\forall{+}{=}x))0$ isn't true or false — it's not a statement at all. But $2+2=5$ *is* a perfectly legal statement; it just happens to be wrong.
+2. **Can you prove it** from a fixed set of rules and starting assumptions (a "theory")? Our running theory is **PA** (a standard set of rules for the whole numbers). When PA can prove $P$, we'll later write @n{T}@n{turnstile}@n{P}.
+3. **Is it actually true** about the ordinary whole numbers? We'll later write @n{N}@n{models}@n{P}.
 
-They often agree on easy cases, which is exactly why people fuse them — but they are different arrows on the same sentence. **The gap between them is the whole subject:** Gödel builds a sentence that is true in @n{N} yet not provable in @n{T}.
-
-$$\\text{provable} \\;\\neq\\; \\text{true}$$`,
+On easy statements these answers march together — $2+2=4$ is legal, provable, *and* true — which is exactly why people fuse them. The shock of Gödel is a statement where question 2 and question 3 **come apart**: true, but not provable.`,
     },
     {
-      heading: "Axis 2 — object vs meta (orthogonal)",
-      body: `A separate distinction, at right angles to the first: are you speaking **inside** the theory or **about** it?
-
-- *Object level* — a claim of @n{T} about numbers: $2+2=4$.
-- *Metatheory* — a claim about @n{T} itself: "@n{T} proves $2+2=4$", "@n{T} is consistent".
-
-The symbol @n{turnstile} is not part of @n{T}'s language; it belongs to the metatheory describing @n{T}. (Later, **Gödel coding** is precisely the trick that smuggles metatheoretic claims back into object-level arithmetic — that's why coding matters.)`,
+      heading: "One more split — save it for later",
+      body: `There's a second, smaller distinction you'll meet near the end: the difference between talking *inside* a theory ("$2+2=4$") and talking *about* it ("PA can prove $2+2=4$" or "PA never contradicts itself"). It becomes the key trick of the proof (Gödel coding). **Don't worry about it now** — just know it's coming.`,
     },
     {
-      heading: "What to keep in your head",
-      body: `Not four stacked levels — **one gate and two crossing axes**: well-formed? then *provable vs true* and *object vs meta*. Almost every confusion about Gödel is a slip on one of these. The rest of the tree builds each one properly; come back to this map whenever you feel lost.`,
+      heading: "What to actually do",
+      body: `You don't have to master this page — it's a map, not a lesson. **Skip ahead and start with the first real topic** (the highlighted node on the tree). If you ever feel lost about whether something is *provable* versus *true* versus *legal*, come back here.`,
     },
   ],
   visualizations: [
     {
       id: "stage0-axes",
       kind: "typed-graph",
-      title: "One sentence, two relations (Axis 1), seen from a vantage (Axis 2)",
+      title: "The same statement, asked three ways",
       textualSummary:
-        "A single well-formed sentence P is the target of two different arrows: the theory T 'proves' P (syntactic, ⊢) and the structure ℕ 'satisfies' P (semantic, ⊨). Separately, the metatheory sits outside and makes claims ABOUT T and about these relations — that is the object-vs-meta axis, orthogonal to provable-vs-true.",
+        "A single legal statement P can be asked about in different ways: a theory T can try to prove it (written T ⊢ P), and the ordinary numbers ℕ either make it true or not (written ℕ ⊨ P). Separately, you can step outside and talk about the theory T itself. Provable and true are different relations on the same statement; the gap between them is incompleteness.",
       layers: ["syntax", "proof", "semantics", "metatheory"],
       nodes: [
-        { id: "P", type: "Sentence", layer: "syntax", label: "well-formed sentence @n{P}", position: { x: 320, y: 170 } },
-        { id: "T", type: "ObjectTheory", layer: "proof", label: "theory @n{T} (PA)", position: { x: 40, y: 40 } },
-        { id: "N", type: "Structure", layer: "semantics", label: "structure @n{N}", position: { x: 40, y: 300 } },
-        { id: "meta", type: "MetaTheory", layer: "metatheory", label: "metatheory (about $T$)", position: { x: 640, y: 170 } },
+        { id: "P", type: "Sentence", layer: "syntax", label: "a legal statement @n{P}", position: { x: 320, y: 170 } },
+        { id: "T", type: "ObjectTheory", layer: "proof", label: "rules/theory @n{T} (PA)", position: { x: 30, y: 40 } },
+        { id: "N", type: "Structure", layer: "semantics", label: "the numbers @n{N}", position: { x: 30, y: 300 } },
+        { id: "meta", type: "MetaTheory", layer: "metatheory", label: "stepping outside: talking *about* $T$", position: { x: 650, y: 170 } },
       ],
       edges: [
-        { id: "e1", source: "T", target: "P", type: "proves", label: "⊢ provable (syntactic)", layer: "proof" },
-        { id: "e2", source: "N", target: "P", type: "satisfies", label: "⊨ true (semantic)", layer: "semantics" },
-        { id: "e3", source: "meta", target: "T", type: "proves_about", label: "Axis 2: about $T$", layer: "metatheory" },
+        { id: "e1", source: "T", target: "P", type: "proves", label: "can it prove it? (⊢)", layer: "proof" },
+        { id: "e2", source: "N", target: "P", type: "satisfies", label: "is it true? (⊨)", layer: "semantics" },
+        { id: "e3", source: "meta", target: "T", type: "proves_about", label: "for later", layer: "metatheory" },
       ],
     },
   ],
   confusions: [
     {
-      misconception: "If a sentence is well-formed it must be true (or at least provable).",
+      misconception: "If a statement is written correctly, it must be true (or at least provable).",
       correction:
-        "Well-formedness is just the grammar gate. $2+2=5$ is well-formed and false. Legal ≠ true ≠ provable.",
+        "Being legal is just grammar. $2+2=5$ is written perfectly and is simply false. “Legal” tells you nothing about “true” or “provable.”",
     },
     {
-      misconception: "'True in ℕ' and 'provable in PA' are the same thing.",
+      misconception: "“True” and “provable” are the same — if it's true, some theory proves it.",
       correction:
-        "They are different relations (Axis 1). They agree on simple cases, but Gödel's sentence is true in @n{N} yet unprovable in @n{T} — that gap is incompleteness.",
+        "They agree on easy statements, but that's a coincidence of easy cases. Gödel builds a statement that's true about the numbers yet unprovable in the theory. That gap is the point.",
     },
     {
-      misconception: "Metatheory is just more statements inside T.",
+      misconception: "Gibberish like $\\forall{+}{=}x))0$ is a really weird false statement.",
       correction:
-        "'@n{T} is consistent' is a claim ABOUT @n{T} (Axis 2), one level up. Gödel later encodes such claims back into arithmetic — a separate, deliberate move.",
+        "It isn't false — it isn't a statement at all. Truth only applies once something is at least written by the rules.",
     },
   ],
   quiz: [
     {
       id: "s0q1",
-      type: "classification",
-      prompt: "Which distinction is each pair testing?",
-      buckets: ["Axis 1: provable vs true", "Axis 2: object vs meta", "Precondition: well-formed?"],
-      items: [
-        { id: "i1", label: "“$\\forall{+}{=}x))0$ is not a legal formula.”", correctBucket: "Precondition: well-formed?" },
-        { id: "i2", label: "“$2+2=4$ is true in $\\mathbb{N}$, but is it provable in PA?”", correctBucket: "Axis 1: provable vs true" },
-        { id: "i3", label: "“$2+2=4$” vs “PA proves $2+2=4$.”", correctBucket: "Axis 2: object vs meta" },
+      type: "multiple-choice",
+      prompt: "Which best describes $2+2=5$?",
+      options: [
+        "It's gibberish, so it has no truth value.",
+        "It's a legal, correctly-written statement that is simply false.",
+        "It's true but unprovable.",
+        "It's both false and not legal.",
       ],
+      correct: 1,
+      wrongExplanations: {
+        "0": "It parses fine — it's a normal equation, just a wrong one.",
+        "2": "It's plainly false in the ordinary numbers, not a subtle true-but-unprovable case.",
+      },
       explanation:
-        "Legality is the precondition; ⊢-vs-⊨ is Axis 1; a claim about PA's proofs (vs about numbers) is Axis 2.",
+        "“Written correctly” and “true” are different questions. $2+2=5$ passes the first and fails the second.",
     },
     {
       id: "s0q2",
       type: "true-false",
-      prompt: "True or false: a sentence must be provable in $T$ before we can ask whether it is true in $\\mathbb{N}$.",
+      prompt: "True or false: if a statement is true about the numbers, then some fixed theory like PA must be able to prove it.",
       correct: false,
       explanation:
-        "False. ⊢ and ⊨ are independent relations (Axis 1). Any well-formed sentence can be evaluated in $\\mathbb{N}$ whether or not $T$ proves it — and that independence is where the Gödel sentence lives.",
+        "False — this is exactly what Gödel disproves. There are true statements about the numbers that PA cannot prove. “True” and “provable” come apart.",
     },
     {
       id: "s0q3",
       type: "multiple-choice",
-      prompt: "Why is the metatheory called a 'vantage', not a fourth level?",
+      prompt: "What are the three separate questions this overview says people blur together?",
       options: [
-        "Because it is inside $T$.",
-        "Because 'about $T$' is a different axis from 'syntax vs semantics' — you can make object- or meta-level claims that are themselves syntactic or semantic.",
-        "Because it has no symbols.",
-        "Because it is always false.",
+        "Is it short? Is it famous? Is it useful?",
+        "Is it legal (written by the rules)? Is it provable from a theory? Is it true about the numbers?",
+        "Is it addition? Is it multiplication? Is it equality?",
+        "Is it Gödel's? Is it Peano's? Is it ours?",
       ],
       correct: 1,
       explanation:
-        "Object-vs-meta is orthogonal to provable-vs-true. Treating it as a peer 'level' stacked on the others is itself a category slip.",
+        "Legal vs provable vs true. They usually agree on easy cases, which is why they get mixed up — and Gödel pries provable and true apart.",
     },
   ],
   masteryCheckpoint:
-    "You can name the precondition (well-formed) and the two axes (⊢ vs ⊨; object vs meta), and say why proof and truth are different relations.",
+    "You can say, in plain words, that “written correctly”, “provable”, and “true” are three different questions — and that Gödel finds a statement that is true but not provable.",
 };

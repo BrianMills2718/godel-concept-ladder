@@ -153,7 +153,7 @@ export function SkillTree() {
           edges={edges}
           onNodeClick={onNodeClick}
           fitView
-          nodesDraggable={false}
+          nodesDraggable
           nodesConnectable={false}
           proOptions={{ hideAttribution: true }}
         >

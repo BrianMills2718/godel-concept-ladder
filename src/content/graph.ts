@@ -31,7 +31,7 @@ const achievement = (
 
 const NODES: SkillNode[] = [
   // --- concept nodes (content = stages) ---
-  concept("c-four-levels", "foundations", "stage-0", "Start Here: Two Distinctions", "Optional map: ⊢ vs ⊨, and object vs meta.", { x: 250, y: -150 }),
+  concept("c-four-levels", "foundations", "stage-0", "Start Here: The Big Picture", "A 2-min overview you can skip and return to.", { x: 250, y: -150 }),
   concept("c-syntax", "syntax", "stage-1", "Terms, Formulas, Sentences", "The grammatical ladder.", { x: 250, y: 40 }),
   concept("c-grammar", "syntax", "stage-2", "Grammar & Well-formedness", "Legal ≠ true ≠ provable.", { x: 500, y: 20 }),
   concept("c-proof", "proof-theory", "stage-3", "Axioms, Rules, Proofs", "⊢ is derivability, not truth.", { x: 250, y: 460 }),
