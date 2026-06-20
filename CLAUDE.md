@@ -13,6 +13,25 @@ metatheoretically known` visible. Not a generic "Gödel explainer."
   `docs/MIGRATION_PLAN.md`. The linear ladder = one topological ordering; content
   is preserved and attached to nodes.
 
+## Content invariants (enforced)
+- **No forward references (prerequisite closure).** Every concept a node uses must
+  be introduced at that node or a transitive prerequisite — "has this already been
+  explained?" is a build gate, not a hope. Enforced by the closure checker in
+  `scripts/validate-content.mjs`: a `@t{term}` ref must resolve to a lesson that
+  defines it at-or-before the node. `@n{}` notation chips are self-contained
+  (carry their own definition). Unavoidable early refs (PA) use **spiral glosses**
+  — a one-line working definition up front, deepened later — not a bare name-drop.
+  Orientation nodes (stage-0) preview deliberately and are exempt.
+- **Two distinctions, not four levels.** The faithful frame is one precondition
+  (well-formed) + two orthogonal axes: `⊢ vs ⊨` (provable vs true) and object vs
+  metatheory. Proof is on the syntactic side; metatheory is a vantage, not a
+  level. The DAG roots are the atoms (syntax, structures); the "Two Distinctions"
+  node is an optional, non-gating map.
+- **Beware recency over-indexing.** This project was spurred by the end of a long
+  ChatGPT thread; generated specs over-fixate on whatever was salient late
+  (the old "four levels", the 9 edge types, the elaborate judge schema). Pressure-
+  test foundational framings against standard sources, not the chat's last turn.
+
 ## Non-negotiables
 - **Math correctness is the product.** Apply `CONTENT_NOTES.md` (consistency vs
   soundness vs ω-consistency/Rosser; Fixed-Point Lemma; two senses of "complete";
