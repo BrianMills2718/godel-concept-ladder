@@ -38,6 +38,12 @@ export const NOTATION: Record<string, NotationEntry> = {
     meaning: "A placeholder for whatever sentence is under discussion.",
     example: "$P$ might be $2+2=4$, or the Gödel sentence $G_T$.",
   },
+  M: {
+    glyph: "M",
+    name: "a structure / model",
+    meaning: "A stand-in for an arbitrary structure: a domain of objects plus an interpretation of every symbol. The standard one for arithmetic is ℕ.",
+    example: "$\\mathbb{N}$ is one particular $M$.",
+  },
   N: {
     glyph: "\\mathbb{N}",
     name: "the standard natural numbers",

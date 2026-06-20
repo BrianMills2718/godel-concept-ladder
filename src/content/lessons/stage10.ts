@@ -36,7 +36,7 @@ The object theory talks about numbers; the **metatheory** talks about the object
     },
     {
       heading: "Same words, different level",
-      body: `"$2+2=4$" is object-level. "$\\mathrm{PA}\\vdash 2+2=4$" looks similar but is **metatheoretic** — it asserts something about PA's proof system. The symbol $\\vdash$ is *not* part of PA's language; it belongs to the metatheory describing PA. Likewise "$\\mathbb{N}\\models P$" is a metatheoretic semantic claim. Watch the level, not the surface.`,
+      body: `"$2+2=4$" is object-level. "@n{PA}@n{turnstile}$2+2=4$" looks similar but is **metatheoretic** — it asserts something about PA's proof system. The symbol @n{turnstile} is *not* part of PA's language; it belongs to the metatheory describing PA. Likewise "@n{N}@n{models}@n{P}" is a metatheoretic semantic claim. Watch the level, not the surface.`,
     },
     {
       heading: "Adding Con(T) climbs one rung",

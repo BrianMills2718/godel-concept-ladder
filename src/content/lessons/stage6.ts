@@ -20,7 +20,7 @@ export const stage6: Lesson = {
     "Distinguish a formal symbol from the object/function it is interpreted as.",
   ],
   definitions: [
-    { term: "structure", short: "A domain together with interpretations of all the language's symbols.", example: "$\\mathbb{N}=\\langle\\{0,1,2,\\dots\\},0,S,+,\\times,=\\rangle$." },
+    { term: "structure", short: "A domain together with interpretations of all the language's symbols.", example: "@n{N} $=\\langle\\{0,1,2,\\dots\\},0,S,+,\\times,=\\rangle$." },
     { term: "domain", short: "The set of objects variables range over.", example: "$\\{0,1,2,\\dots\\}$ for $\\mathbb{N}$." },
     { term: "interpretation", short: "The assignment of actual objects, functions, and relations to formal symbols." },
     { term: "model", short: "A structure that satisfies a chosen set of sentences (a theory's axioms)." },

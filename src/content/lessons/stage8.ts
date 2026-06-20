@@ -19,8 +19,8 @@ export const stage8: Lesson = {
     "Accept that a sentence can be true in $\\mathbb{N}$ yet unprovable in $T$.",
   ],
   definitions: [
-    { term: "syntactic", short: "About symbol manipulation — proofs, derivations. $\\vdash$ lives here." },
-    { term: "semantic", short: "About interpretation in a structure — truth. $\\models$ lives here." },
+    { term: "syntactic", short: "About symbol manipulation — proofs, derivations. @n{turnstile} lives here." },
+    { term: "semantic", short: "About interpretation in a structure — truth. @n{models} lives here." },
   ],
   sections: [
     {

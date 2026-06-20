@@ -21,7 +21,7 @@ export const stage12: Lesson = {
   ],
   definitions: [
     { term: "Gödel coding", short: "Assigning natural numbers to symbols, strings, formulas, and proofs." },
-    { term: "code number", short: "The natural number assigned to a syntactic object.", example: "$\\ulcorner P\\urcorner$ is the code of $P$." },
+    { term: "code number", short: "The natural number assigned to a syntactic object, written with @n{corner}.", example: "$\\ulcorner P\\urcorner$ is the code of @n{P}." },
     { term: "arithmetization of syntax", short: "Representing syntactic facts (well-formedness, proofhood) as arithmetic facts about code numbers." },
   ],
   sections: [

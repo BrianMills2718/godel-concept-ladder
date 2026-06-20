@@ -27,7 +27,7 @@ export const stage1: Lesson = {
     { term: "formula", short: "A well-formed expression that is true or false once interpreted and its free variables are assigned.", example: "$x+0=x$." },
     { term: "sentence", short: "A formula with no free variables.", example: "$\\forall x(x+0=x)$." },
     { term: "free variable", short: "A variable occurrence not bound by a quantifier." },
-    { term: "bound variable", short: "A variable occurrence governed by $\\forall$ or $\\exists$." },
+    { term: "bound variable", short: "A variable occurrence governed by @n{forall} or @n{exists}." },
   ],
   sections: [
     {
@@ -42,8 +42,8 @@ A **string** is any finite sequence of these symbols. Most strings are gibberish
       heading: "Terms name objects; formulas make claims",
       body: `A **term** is a legal expression that denotes an *object* — here, a number. Terms are the noun phrases of arithmetic. They are built up by rules:
 
-- $0$ is a term.
-- if $t$ is a term, then $S(t)$ is a term.
+- @n{zero} is a term.
+- if $t$ is a term, then @n{succ}$(t)$ is a term.
 - if $s$ and $t$ are terms, then $(s+t)$ and $(s\\times t)$ are terms.
 
 A term is **never true or false** — "$S(S(0))$" is no more true-or-false than the English word "four."

@@ -27,11 +27,11 @@ export const stage0: Lesson = {
     },
     {
       term: "proof theory",
-      short: "Which formulas are derivable from axioms by inference rules. Written $T \\vdash P$.",
+      short: "Which formulas are derivable from axioms by inference rules. Written @n{T}@n{turnstile}@n{P}.",
     },
     {
       term: "semantics",
-      short: "Which formulas are true in a structure / model. Written $M \\models P$.",
+      short: "Which formulas are true in a structure / model. Written @n{M}@n{models}@n{P} (for the standard model, @n{N}@n{models}@n{P}).",
     },
     {
       term: "metatheory",
@@ -44,9 +44,9 @@ export const stage0: Lesson = {
       body: `Most confusion about Gödel comes from collapsing four different questions into one. Keep them apart from the start.
 
 1. **Syntax** — *Is this string a legal formula?* This is grammar. It has nothing to do with truth.
-2. **Proof theory** — *Can this formula be derived from the axioms?* Written $T \\vdash P$. This is symbol manipulation.
-3. **Semantics** — *Is this formula true in a structure?* Written $M \\models P$. This is about interpretation, e.g. truth in the standard natural numbers $\\mathbb{N}$.
-4. **Metatheory** — *What can we prove about the theory itself?* For example: "PA is consistent", or "PA does not prove $G$".`,
+2. **Proof theory** — *Can this formula be derived from the axioms?* Written @n{T}@n{turnstile}@n{P}. This is symbol manipulation.
+3. **Semantics** — *Is this formula true in a structure?* Written @n{M}@n{models}@n{P}. This is about interpretation, e.g. truth in the standard natural numbers @n{N}.
+4. **Metatheory** — *What can we prove about the theory itself?* For example: "PA is consistent", or "PA does not prove @n{GT}".`,
     },
     {
       heading: "The slogan",

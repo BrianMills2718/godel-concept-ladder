@@ -22,10 +22,10 @@ export const stage15: Lesson = {
     "Distinguish 'unprovable in $T$' from 'absolutely unprovable'.",
   ],
   definitions: [
-    { term: "consistent", short: "$T$ proves no contradiction; $T\\nvdash 0=1$." },
+    { term: "consistent", short: "@n{T} proves no contradiction; @n{T}@n{nturnstile}$0=1$." },
     { term: "computably axiomatized", short: "$T$'s axioms can be mechanically recognized/listed (effectively axiomatized)." },
     { term: "strong enough", short: "$T$ represents enough arithmetic to encode syntax and proof-checking (e.g. PA, or even Robinson's Q)." },
-    { term: "incomplete", short: "Some sentence $P$ has neither $T\\vdash P$ nor $T\\vdash\\neg P$." },
+    { term: "incomplete", short: "Some sentence @n{P} has neither @n{T}@n{turnstile}@n{P} nor $T\\vdash\\neg P$." },
   ],
   sections: [
     {

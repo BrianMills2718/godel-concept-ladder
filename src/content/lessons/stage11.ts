@@ -49,7 +49,7 @@ So checking a given proof is easy; deciding provability is not. (This is the com
     },
     {
       heading: "The computability hooks for Gödel",
-      body: `Pin these for later: proof-checking isn't merely decidable — it is **primitive recursive**, and every primitive recursive relation is **representable** inside PA (Stage 13). That is what lets the metatheoretic relation "$p$ is a proof of $q$" become an *arithmetic formula* $\\mathrm{Proof}_T(p,q)$. (Decidability alone is weaker than primitive recursiveness in general; the point is that this particular relation has the stronger property.)`,
+      body: `Pin these for later: proof-checking isn't merely decidable — it is **primitive recursive**, and every primitive recursive relation is **representable** inside PA (Stage 13). That is what lets the metatheoretic relation "$p$ is a proof of $q$" become an *arithmetic formula* @n{ProofT}. (Decidability alone is weaker than primitive recursiveness in general; the point is that this particular relation has the stronger property.)`,
     },
   ],
   visualizations: [

@@ -24,7 +24,7 @@ export const stage4: Lesson = {
     { term: "proof DAG", short: "A directed acyclic proof graph where a shared lemma is proved once and reused." },
     { term: "proof checking", short: "Verifying a given finite proof is valid. Usually decidable." },
     { term: "proof search", short: "Trying to find a proof of a target. May run forever if none exists." },
-    { term: "provability", short: "The existence of some valid proof: $T \\vdash P$." },
+    { term: "provability", short: "The existence of some valid proof: @n{T}@n{turnstile}@n{P}." },
   ],
   sections: [
     {

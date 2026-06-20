@@ -19,9 +19,9 @@ export const stage9: Lesson = {
     "Separate Gödel's Completeness Theorem (about FOL) from completeness of a theory.",
   ],
   definitions: [
-    { term: "soundness", short: "Everything provable is true in the intended structure: $T\\vdash P \\Rightarrow \\mathbb{N}\\models P$. 'No false theorems.'" },
+    { term: "soundness", short: "Everything provable is true in the intended structure: @n{T}@n{turnstile}@n{P} $\\Rightarrow$ @n{N}@n{models}@n{P}. 'No false theorems.'" },
     { term: "completeness", short: "Of a theory: for every sentence $P$, $T\\vdash P$ or $T\\vdash\\neg P$. ('Every sentence is decided.')" },
-    { term: "consistency", short: "$T$ proves no contradiction; equivalently $T\\nvdash 0=1$." },
+    { term: "consistency", short: "@n{T} proves no contradiction; equivalently @n{T}@n{nturnstile}$0=1$." },
     { term: "contradiction", short: "A sentence and its negation together, or a canonical falsehood like $0=1$." },
   ],
   sections: [

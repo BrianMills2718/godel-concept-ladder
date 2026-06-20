@@ -20,7 +20,7 @@ export const stage16: Lesson = {
     "Explain why adding $\\mathrm{Con}(T)$ never permanently escapes incompleteness.",
   ],
   definitions: [
-    { term: "Con(T)", short: "The arithmetic sentence saying $T$ is consistent: $\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$ (no proof of a contradiction)." },
+    { term: "Con(T)", short: "The arithmetic sentence saying @n{T} is consistent: @n{ConT} $=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$ (no proof of a contradiction)." },
   ],
   sections: [
     {

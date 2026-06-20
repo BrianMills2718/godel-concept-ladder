@@ -20,7 +20,7 @@ export const stage13: Lesson = {
   ],
   definitions: [
     { term: "predicate", short: "A formula expressing a property or relation of its arguments." },
-    { term: "provability predicate", short: "An arithmetic formula $\\mathrm{Prov}_T(q)$ representing 'the formula coded by $q$ is provable in $T$'." },
+    { term: "provability predicate", short: "An arithmetic formula @n{ProvT} representing 'the formula coded by $q$ is provable in @n{T}'." },
   ],
   sections: [
     {

@@ -19,7 +19,7 @@ export const stage14: Lesson = {
   ],
   definitions: [
     { term: "diagonalization", short: "A construction yielding a sentence that refers to its own code, via the Fixed-Point Lemma." },
-    { term: "Gödel sentence", short: "A sentence $G_T$ with $T\\vdash G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ — it 'says' it is unprovable in $T$." },
+    { term: "Gödel sentence", short: "A sentence @n{GT} with $T\\vdash G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ — it 'says' it is unprovable in @n{T}." },
   ],
   sections: [
     {

@@ -21,8 +21,8 @@ export const stage7: Lesson = {
     "Keep $\\models$ (truth) distinct from $\\vdash$ (provability).",
   ],
   definitions: [
-    { term: "satisfaction", short: "The relation $M\\models P$: structure $M$ makes formula $P$ true, defined recursively." },
-    { term: "truth in a structure", short: "Truth relative to a fixed interpretation. $\\mathbb{N}\\models P$ means $P$ is true in the standard naturals." },
+    { term: "satisfaction", short: "The relation @n{M}@n{models}@n{P}: structure $M$ makes formula $P$ true, defined recursively." },
+    { term: "truth in a structure", short: "Truth relative to a fixed interpretation. @n{N}@n{models}@n{P} means $P$ is true in the standard naturals." },
   ],
   sections: [
     {

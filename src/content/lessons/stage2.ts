@@ -32,10 +32,10 @@ export const stage2: Lesson = {
 
 **Generation** — start from atoms and build outward:
 
-- $0$ is a term; if $t$ is a term so is $S(t)$.
+- @n{zero} is a term; if $t$ is a term so is @n{succ}$(t)$.
 - if $s,t$ are terms then $(s+t)$ and $(s\\times t)$ are terms.
 - if $s,t$ are terms then $(s=t)$ is a formula.
-- if $P$ is a formula so is $\\neg P$; if $P,Q$ are formulas so is $(P\\to Q)$; if $P$ is a formula so is $\\forall x\\,P$.
+- if @n{P} is a formula so is @n{neg}$P$; if $P,Q$ are formulas so is $(P$ @n{implies} $Q)$; if $P$ is a formula so is @n{forall}$x\\,P$.
 
 **Recognition** — take a string and try to *parse* it by those same rules. If a parse exists, the string is legal; if not, it's gibberish. Recognition is the algorithm behind "well-formed?" and (we'll see in Stage 11) it is **decidable**.`,
     },

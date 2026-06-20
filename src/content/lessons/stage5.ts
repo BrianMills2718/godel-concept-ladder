@@ -21,7 +21,7 @@ export const stage5: Lesson = {
     "Explain why proving $2+2=4$ does not make every truth provable.",
   ],
   definitions: [
-    { term: "Peano Arithmetic", short: "A first-order theory of $\\mathbb{N}$ over $0, S, +, \\times, =$, with induction. Abbreviated PA." },
+    { term: "Peano Arithmetic", short: "A first-order theory of @n{N} over @n{zero}, @n{succ}, $+, \\times, =$, with induction. Abbreviated PA." },
     { term: "numeral", short: "The formal name of a number as iterated successor.", example: "$3 = S(S(S(0)))$." },
     { term: "recursive definition", short: "A definition with a base case and a step case.", example: "$x+0=x$ (base); $x+S(y)=S(x+y)$ (step)." },
   ],
