@@ -25,7 +25,8 @@ writeFileSync(
   `export { LESSONS } from ${JSON.stringify(process.cwd() + "/src/content/lessons/index.ts")};
    export { GLOSSARY } from ${JSON.stringify(process.cwd() + "/src/content/glossary.ts")};
    export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};
-   export { SKILL_GRAPH, ROOT_GOAL_ID } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};`,
+   export { SKILL_GRAPH, ROOT_GOAL_ID } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};
+   export { ASSESSMENTS, ASSESSMENT_BY_ID, RUBRICS } from ${JSON.stringify(process.cwd() + "/src/content/assessments.ts")};`,
 );
 await build({
   entryPoints: [stub],
@@ -35,7 +36,7 @@ await build({
   logLevel: "error",
 });
 
-const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID } = await import(pathToFileURL(out).href);
+const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID, RUBRICS } = await import(pathToFileURL(out).href);
 
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
@@ -84,6 +85,22 @@ const ok = (cond, msg) => { if (!cond) errors.push(msg); };
   for (const n of SKILL_GRAPH.nodes)
     if (n.kind === "achievement") ok(reach.has(n.id), `graph: achievement ${n.id} unreachable from roots`);
   ok(nodeIds.has(ROOT_GOAL_ID), `graph: ROOT_GOAL_ID ${ROOT_GOAL_ID} is not a node`);
+
+  // assessments: each achievement's assessmentIds resolve; each task targets an
+  // achievement node; remediation + rubric refs resolve.
+  for (const n of SKILL_GRAPH.nodes) {
+    if (n.kind !== "achievement") continue;
+    for (const aid of n.assessmentIds ?? [])
+      ok(!!ASSESSMENT_BY_ID[aid], `graph: achievement ${n.id} → unknown assessment ${aid}`);
+  }
+  for (const t of Object.values(ASSESSMENT_BY_ID)) {
+    const target = SKILL_GRAPH.nodes.find((n) => n.id === t.nodeId);
+    ok(target && target.kind === "achievement", `assessment ${t.id}: nodeId ${t.nodeId} is not an achievement node`);
+    if (t.openEnded) ok(!!RUBRICS[t.openEnded.rubricId], `assessment ${t.id}: unknown rubric ${t.openEnded.rubricId}`);
+    for (const m of t.fatalMisconceptions)
+      for (const r of m.remediationNodeIds)
+        ok(nodeIds.has(r), `assessment ${t.id}: misconception ${m.id} → unknown remediation node ${r}`);
+  }
 }
 
 // Every @n{key}/@t{slug} reference must resolve — no undefined symbols (fail loud).
