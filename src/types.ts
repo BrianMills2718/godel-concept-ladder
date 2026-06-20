@@ -282,3 +282,133 @@ export interface GlossaryEntry {
   example?: string;
   related: string[];
 }
+
+// ---------------------------------------------------------------------------
+// Skill DAG (ADR-0001) — the prerequisite graph that is the primary navigation.
+// A "lesson" is content attached to a concept node; the linear ladder is one
+// topological ordering of this graph.
+// ---------------------------------------------------------------------------
+
+export type NodeKind = "concept" | "skill" | "achievement";
+
+/** v1 authors only these three. meta_level_of / encodes_as / contrasts_with are
+ *  reserved in the type but deliberately not authored yet (ADR-0001). */
+export type EdgeKind =
+  | "prerequisite_for"
+  | "assesses"
+  | "remediates"
+  | "meta_level_of"
+  | "encodes_as"
+  | "contrasts_with";
+
+export type Branch =
+  | "foundations"
+  | "syntax"
+  | "proof-theory"
+  | "peano-arithmetic"
+  | "semantics"
+  | "provability-vs-truth"
+  | "theory-properties"
+  | "metatheory"
+  | "computability"
+  | "godel-coding"
+  | "provability-predicate"
+  | "diagonalization"
+  | "incompleteness";
+
+export interface SkillNode {
+  id: string;
+  kind: NodeKind;
+  title: string;
+  shortDescription: string;
+  branch: Branch;
+  /** concept/skill nodes: the stage id whose content this node renders. */
+  lessonId?: string;
+  /** achievement nodes: the capstone task id(s) that earn this node. */
+  assessmentIds?: string[];
+  /** hand-laid position for the homepage DAG layout. */
+  position?: { x: number; y: number };
+}
+
+export interface SkillEdge {
+  id: string;
+  source: string;
+  target: string;
+  kind: EdgeKind;
+  label?: string;
+}
+
+export interface SkillGraph {
+  nodes: SkillNode[];
+  edges: SkillEdge[];
+}
+
+/** Runtime state of a node for the learner, derived from progress + edges. */
+export type NodeState = "locked" | "available" | "passed" | "current";
+
+// ---------------------------------------------------------------------------
+// Assessment (achievement = demonstrated capability)
+// ---------------------------------------------------------------------------
+
+export type AssessmentKind = "deterministic" | "llm-judged" | "hybrid";
+
+export interface Misconception {
+  id: string;
+  description: string;
+  /** nodes to revisit when this misconception is detected. */
+  remediationNodeIds: string[];
+  /** a fatal misconception fails the task regardless of other credit. */
+  fatal?: boolean;
+}
+
+export interface RubricCriterion {
+  id: string;
+  description: string;
+  maxScore: number;
+}
+
+export interface Rubric {
+  id: string;
+  criteria: RubricCriterion[];
+}
+
+export interface AssessmentTask {
+  id: string;
+  /** the achievement node this capstone earns. */
+  nodeId: string;
+  kind: AssessmentKind;
+  title: string;
+  /** capstone prompt (KaTeX/markdown + @n/@t chips). */
+  prompt: string;
+  /** deterministic component, graded by the existing Quiz engine. */
+  deterministic?: QuizQuestion[];
+  /** open-ended component: the learner writes an explanation graded by the LLM
+   *  judge (Phase C). Stored locally until then. */
+  openEnded?: {
+    /** prompt for the written part. */
+    prompt: string;
+    rubricId: string;
+  };
+  requiredConcepts: string[];
+  fatalMisconceptions: Misconception[];
+  /** default 0.8. */
+  passThreshold: number;
+}
+
+/** Structured result returned by the LLM judge backend (Phase C). */
+export interface JudgeResult {
+  score: number; // 0..100
+  passed: boolean;
+  confidence: "low" | "medium" | "high";
+  criterionScores: {
+    criterionId: string;
+    score: number;
+    maxScore: number;
+    comment: string;
+  }[];
+  detectedMisconceptions: string[];
+  missingConcepts: string[];
+  feedbackForLearner: string;
+  suggestedRemediationNodeIds: string[];
+  followUpQuestion?: string | null;
+}

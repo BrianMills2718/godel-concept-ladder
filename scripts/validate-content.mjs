@@ -24,7 +24,8 @@ writeFileSync(
   stub,
   `export { LESSONS } from ${JSON.stringify(process.cwd() + "/src/content/lessons/index.ts")};
    export { GLOSSARY } from ${JSON.stringify(process.cwd() + "/src/content/glossary.ts")};
-   export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};`,
+   export { NOTATION } from ${JSON.stringify(process.cwd() + "/src/content/notation.ts")};
+   export { SKILL_GRAPH, ROOT_GOAL_ID } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};`,
 );
 await build({
   entryPoints: [stub],
@@ -34,10 +35,56 @@ await build({
   logLevel: "error",
 });
 
-const { LESSONS, GLOSSARY, NOTATION } = await import(pathToFileURL(out).href);
+const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID } = await import(pathToFileURL(out).href);
 
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
+
+// --- skill DAG invariants (ADR-0001) ---
+{
+  const lessonIds = new Set(LESSONS.map((l) => l.id));
+  const nodeIds = new Set();
+  for (const n of SKILL_GRAPH.nodes) {
+    ok(!nodeIds.has(n.id), `graph: duplicate node id ${n.id}`);
+    nodeIds.add(n.id);
+    if (n.kind === "concept" || n.kind === "skill")
+      ok(lessonIds.has(n.lessonId), `graph: node ${n.id} lessonId "${n.lessonId}" not a real stage`);
+    if (n.kind === "achievement")
+      ok(Array.isArray(n.assessmentIds) && n.assessmentIds.length > 0, `graph: achievement ${n.id} has no assessmentIds`);
+  }
+  // edges reference existing nodes
+  for (const e of SKILL_GRAPH.edges) {
+    ok(nodeIds.has(e.source), `graph: edge ${e.id} bad source ${e.source}`);
+    ok(nodeIds.has(e.target), `graph: edge ${e.id} bad target ${e.target}`);
+  }
+  // acyclic (DFS over prerequisite_for)
+  const adj = {};
+  for (const id of nodeIds) adj[id] = [];
+  for (const e of SKILL_GRAPH.edges) if (e.kind === "prerequisite_for") adj[e.source].push(e.target);
+  const WHITE = 0, GREY = 1, BLACK = 2;
+  const color = {};
+  for (const id of nodeIds) color[id] = WHITE;
+  let cycle = null;
+  const visit = (u, path) => {
+    color[u] = GREY;
+    for (const v of adj[u]) {
+      if (color[v] === GREY) { cycle = [...path, u, v].join(" → "); return; }
+      if (color[v] === WHITE) { visit(v, [...path, u]); if (cycle) return; }
+    }
+    color[u] = BLACK;
+  };
+  for (const id of nodeIds) { if (color[id] === WHITE) visit(id, []); if (cycle) break; }
+  ok(!cycle, `graph: prerequisite cycle: ${cycle}`);
+  // every achievement reachable from a root (a node with no prereqs)
+  const hasPrereq = new Set(SKILL_GRAPH.edges.filter((e) => e.kind === "prerequisite_for").map((e) => e.target));
+  const roots = [...nodeIds].filter((id) => !hasPrereq.has(id));
+  const reach = new Set(roots);
+  const q = [...roots];
+  while (q.length) { const u = q.shift(); for (const v of adj[u]) if (!reach.has(v)) { reach.add(v); q.push(v); } }
+  for (const n of SKILL_GRAPH.nodes)
+    if (n.kind === "achievement") ok(reach.has(n.id), `graph: achievement ${n.id} unreachable from roots`);
+  ok(nodeIds.has(ROOT_GOAL_ID), `graph: ROOT_GOAL_ID ${ROOT_GOAL_ID} is not a node`);
+}
 
 // Every @n{key}/@t{slug} reference must resolve — no undefined symbols (fail loud).
 const notationKeys = new Set(Object.keys(NOTATION));
@@ -124,4 +171,4 @@ if (errors.length) {
   for (const e of errors) console.error("  - " + e);
   process.exit(1);
 }
-console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, ${Object.keys(NOTATION).length} symbols, all quizzes/graphs/@refs consistent`);
+console.log(`✓ content valid: ${LESSONS.length} stages, ${GLOSSARY.length} glossary terms, ${Object.keys(NOTATION).length} symbols, ${SKILL_GRAPH.nodes.length} graph nodes / ${SKILL_GRAPH.edges.length} edges (acyclic), all consistent`);
