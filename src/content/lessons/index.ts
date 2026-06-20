@@ -14,17 +14,18 @@ import { stage5 } from "./stage5";
 import { stage6 } from "./stage6";
 import { stage7 } from "./stage7";
 import { stage8 } from "./stage8";
+import { stage9 } from "./stage9";
+import { stage10 } from "./stage10";
+import { stage11 } from "./stage11";
 
 export const LESSONS: Lesson[] = [
   stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8,
+  stage9, stage10, stage11,
 ];
 
 /** Titles of the not-yet-authored stages, shown greyed in the sidebar so the
  *  learner sees the whole trajectory and where they are in it. */
 export const UPCOMING: { stage: number; title: string }[] = [
-  { stage: 9, title: "Soundness & Completeness" },
-  { stage: 10, title: "Object Theory vs Metatheory" },
-  { stage: 11, title: "Computability" },
   { stage: 12, title: "Gödel Coding" },
   { stage: 13, title: "Proof_T(p,q) and Prov_T(q)" },
   { stage: 14, title: "Diagonalization & the Gödel Sentence" },
