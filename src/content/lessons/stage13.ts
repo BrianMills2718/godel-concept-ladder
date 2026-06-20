@@ -38,7 +38,7 @@ Unwound, $\\mathrm{Proof}_T(p,q)$ checks, *arithmetically*, that:
     },
     {
       heading: "Why this can be an arithmetic formula",
-      body: `Each of those four checks is *mechanical and terminating* — proof-checking is **decidable** (Stage 11). A decidable syntactic relation of this kind is **primitive recursive**, and every primitive recursive relation is **representable** in PA: there is an actual arithmetic formula that holds of exactly the right numbers. That representability — not magic — is why $\\mathrm{Proof}_T(p,q)$ exists *inside* arithmetic.`,
+      body: `Each of those four checks is *mechanical and terminating* — proof-checking is **decidable** (Stage 11), and in fact **primitive recursive**. Every primitive recursive relation is **representable** in PA: there is an actual arithmetic formula that holds of exactly the right numbers. That representability — not magic — is why $\\mathrm{Proof}_T(p,q)$ exists *inside* arithmetic.`,
     },
     {
       heading: "The provability predicate",
