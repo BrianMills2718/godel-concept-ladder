@@ -1,0 +1,9 @@
+{
+  "_comment": "Tier-1 edge-review verdicts overlay (ROADMAP M3). Default verdict is 'correct'; only non-correct calls are listed. Keyed 'concept>prereq'. Source: adversarial independent review 2026-06-21 (102 correct / 6 arguable / 0 wrong). 'arguable' edges await human expert sign-off (METHODOLOGY §13).",
+  "term>object": { "verdict": "arguable", "note": "a term 'denotes an object' only under an interpretation; at the pure syntax level a term denotes nothing, so this defined-via link leans on semantics." },
+  "satisfaction>sentence": { "verdict": "arguable", "note": "satisfaction is defined over formulas+assignments first; 'sentence' is the derived assignment-independent special case, so as a prerequisite it slightly inverts the definitional order." },
+  "recursively-enumerable>decidable": { "verdict": "arguable", "note": "r.e. is *weaker* than decidable, so kind `refines` (connoting strengthening) points the wrong way, though learning decidable first is reasonable." },
+  "primitive-recursive>decidable": { "verdict": "arguable", "note": "true as containment (PR ⊆ decidable), but PR is usually introduced before general decidability/Turing-computability, so decidable-as-prerequisite is pedagogically backwards." },
+  "representable>primitive-recursive": { "verdict": "arguable", "note": "'PR relations are representable' is a theorem, not the *definition* of representability; kind `defined-via` frames a theorem as a definition." },
+  "representable>arithmetization": { "verdict": "arguable", "note": "representability is defined via *provability in T* (T ⊢), not via arithmetization; arithmetization motivates but doesn't define it. Strongest candidate for a future refinement (tie representable to provability)." }
+}
