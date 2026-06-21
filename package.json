@@ -10,7 +10,8 @@
     "typecheck": "tsc -b --noEmit",
     "validate": "node scripts/validate-content.mjs",
     "completeness": "node scripts/completeness-report.mjs",
-    "check": "tsc -b --noEmit && node scripts/validate-content.mjs && vite build",
+    "test": "node scripts/test-order-score.mjs",
+    "check": "tsc -b --noEmit && node scripts/validate-content.mjs && node scripts/test-order-score.mjs && vite build",
     "e2e": "node scripts/e2e-gate.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
