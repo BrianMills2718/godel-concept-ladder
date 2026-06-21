@@ -1,13 +1,14 @@
-# Constructing Optimal† Educational Output: A Concept-Graph-First Methodology
+# A Concept-Graph-First Methodology for Well-Structured Educational Content
 ### (for topics with a representable prerequisite structure)
 
-> **† "Optimal" here means *structurally* optimal — a defined term, not a
-> superlative claim.** It names satisfaction of a set of structural form-checks
-> (fully defined in §14), is **necessary, not sufficient** for good learning, and is
-> *not* an efficacy claim. A reader who prefers **well-structured** may substitute it
-> throughout without loss. The word is kept because the project's aim is the
-> *structurally optimal substrate*; the body (reading contract, §14) is scrupulous
-> that this is all it means.
+> **A note on terms.** This paper uses **"structurally optimal"** as a *defined
+> internal term* (§14): satisfaction of a fixed set of structural form-checks —
+> **necessary, not sufficient** for good learning, and **not** an efficacy claim. It is
+> deliberately kept *out of the title*: the method produces a **well-structured**
+> curriculum artifact; whether that artifact teaches better is the deferred empirical
+> question (§13). (Earlier drafts titled this "Optimal Educational Output"; three
+> reviews flagged that as a predictable overclaim, so the title now states only what
+> the method establishes.)
 
 *A construction theory, not an efficacy study. It specifies how to build a
 learnable treatment of a topic — ordered lessons, a navigable skill map,
@@ -35,8 +36,8 @@ is explicit (§13–§15) about the empirical claims it deliberately does **not*
 
 ## Reading contract
 
-> **"Optimal" is stipulative and structural — a spiral gloss here, fully defined in
-> §14.** Until §14, read *optimal educational output* as a one-line working
+> **"Structurally optimal" is stipulative — a spiral gloss here, fully defined in
+> §14.** Until §14, read *structurally optimal* as a one-line working
 > definition: a treatment with **six gate-enforced** properties — *gap-free,
 > decomposed* (acyclic), *derived, inspectable, verifiable, misconception-targeted* —
 > **plus one aspirational, review-owed** property, *dependency-faithful* (the edges
