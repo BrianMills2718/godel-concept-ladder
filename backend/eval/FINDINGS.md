@@ -1,4 +1,18 @@
-# Judge validation findings — cap-distinguish
+# Judge validation findings
+
+> **ROADMAP M2d status (2026-06-21).** The runner `eval/run.py` is generalized to
+> measure **every** judged task from one-file-per-task case sets in `eval/cases/`,
+> and certifies only if all present tasks clear the bar. **Authored so far: 2 of 12**
+> — `cap-distinguish` (measured PASS, below) and `cap-first` (authored, probing the
+> soundness-vs-consistency precision; **not yet measured here** — no API key in this
+> environment). The remaining **10** judged tasks (`cap-classify`, `cap-prove-224`,
+> `cap-proof-graph`, `cap-evaluate-N`, `cap-sound-complete`, `cap-object-meta`,
+> `cap-computability`, `cap-encode`, `cap-prov-predicate`, `cap-second`) still need
+> frozen sets. **The measurement is blocked on `OPENROUTER_API_KEY`**: run
+> `cd backend && python -m eval.run` with a key to certify all present sets. Until
+> 12/12 are measured PASS, only `cap-distinguish` is a validated gate.
+
+## cap-distinguish — measured
 
 Frozen set: 8 cases (3 expect-pass, 5 expect-fail).
 

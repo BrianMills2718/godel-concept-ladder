@@ -1,0 +1,45 @@
+{
+  "taskId": "cap-first",
+  "cases": [
+    {
+      "id": "strong",
+      "expect_pass": true,
+      "answer": "First Incompleteness: if T is consistent, computably (effectively) axiomatized, and strong enough to represent arithmetic, then there is a sentence G_T with T⊬G_T, and G_T is true in ℕ. G_T is built by the Fixed-Point Lemma so that T ⊢ G_T ↔ ¬Prov_T(⌜G_T⌝): it 'says' it is unprovable. T⊬G_T needs only consistency (if T proved G_T it would prove Prov_T(⌜G_T⌝) and, via the biconditional, its negation). Truth of G_T also needs only consistency: the biconditional is a theorem of the base arithmetic, so it holds in ℕ regardless of T, and consistency gives no proof, hence ℕ⊨¬Prov_T(⌜G_T⌝), so ℕ⊨G_T. Soundness is sufficient but not necessary — e.g. PA+¬Con(PA) is consistent but unsound, yet its Gödel sentence is still true. Unprovable here means unprovable in T, not absolutely: a stronger theory (e.g. PA+G_PA, or set theory) proves it. (T⊬¬G_T separately needs ω-consistency, or Rosser's sentence to drop to plain consistency.)"
+    },
+    {
+      "id": "correct-terse",
+      "expect_pass": true,
+      "answer": "If T is consistent, effectively axiomatized, and strong enough for arithmetic, there's a G_T with T⊬G_T that is true in ℕ. G_T says 'I am unprovable' via Gödel coding (the fixed-point lemma). Consistency alone gives both unprovability and truth — the G↔¬Prov biconditional holds in ℕ because the weak base arithmetic proves it, and there's no actual proof, so G_T is true. It's unprovable in T but a stronger theory can prove it, so this isn't absolute unprovability."
+    },
+    {
+      "id": "minor-imprecision",
+      "expect_pass": true,
+      "answer": "Gödel's first theorem: a consistent, computably axiomatized, sufficiently strong T has a sentence G that it can't prove but which is true in the standard model (assuming T is sound). G is constructed to assert its own unprovability. The unprovability uses only consistency. The point is that truth outruns provability, and G is only unprovable inside T — not unprovable in principle."
+    },
+    {
+      "id": "true-equals-provable",
+      "expect_pass": false,
+      "answer": "The first incompleteness theorem says the Gödel sentence is true because the theory proves it — true and provable are the same thing for arithmetic. So G_T is provable and that's why we know it's true. Incompleteness just means there are lots of these provable-true sentences."
+    },
+    {
+      "id": "absolute-unprovable",
+      "expect_pass": false,
+      "answer": "Gödel showed there are truths that no system, no method, and no amount of reasoning can ever prove — the Gödel sentence is absolutely unprovable, forever beyond mathematics. It shows the human mind hits a wall: some facts are just unknowable in principle."
+    },
+    {
+      "id": "no-conditions",
+      "expect_pass": false,
+      "answer": "Gödel's first incompleteness theorem says every formal system is incomplete: in any system whatsoever there is always a true statement it can't prove. There are no special conditions — it applies to all of mathematics and any set of rules you could write down."
+    },
+    {
+      "id": "slogan-no-substance",
+      "expect_pass": false,
+      "answer": "Gödel proved mathematics is incomplete: there are true but unprovable statements. This was a profound discovery that shows the limits of formal systems and shook the foundations of math. It's one of the most important theorems ever."
+    },
+    {
+      "id": "off-topic",
+      "expect_pass": false,
+      "answer": "The first incompleteness theorem is about how computers can't solve the halting problem because programs can loop forever, so you can't decide in advance whether code terminates. Turing proved this with a diagonal argument about machines."
+    }
+  ]
+}
