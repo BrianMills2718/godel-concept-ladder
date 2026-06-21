@@ -1,575 +1,570 @@
-# Constructing Optimal Educational Output for Any Topic: A Concept-Graph-First Methodology
+# Constructing Optimal Educational Output: A Concept-Graph-First Methodology
+### (for topics with a representable prerequisite structure)
 
-*A methodology and theory paper. It specifies how to construct a learnable
-treatment of an arbitrary topic — ordered lessons, a navigable skill map,
-assessments, visualizations, and a glossary — by making the topic's **conceptual
-dependency structure** an explicit, verifiable artifact and **deriving** the
-curriculum from it. It is grounded in a working reference architecture (the
-"Concept Ladder" for Gödel's incompleteness theorems) but is written to apply to
-any subject. It is a construction theory, not an efficacy study: it argues for
-**structural** optimality and is explicit (§9–§11) about what empirical validation
-would still be owed.*
+*A construction theory, not an efficacy study. It specifies how to build a
+learnable treatment of a topic — ordered lessons, a navigable skill map,
+assessments, visualizations, a glossary — by making the topic's **conceptual
+dependency structure** an explicit, machine-checked artifact and **deriving** the
+curriculum from it. It is grounded in a deployed reference architecture (the
+"Concept Ladder" for Gödel's incompleteness theorems) but written to apply to any
+topic that can be represented as concepts plus prerequisite relations. It argues
+for **structural** optimality and is explicit (§13–§15) about the empirical claims
+it deliberately does **not** make.*
 
 ---
 
-## Genre and reading contract
+## Reading contract
 
-> **What "optimal" means here — and what it does not.** Throughout, *optimal
-> educational output* is shorthand for **structurally optimal**: a treatment in
-> which (1) no concept is used before the concepts it depends on are introduced,
-> (2) the introduction order is *derived* from the dependency structure rather
-> than guessed, (3) apparent circularities have been resolved by decomposition,
-> (4) every term and claim is traceable to a defined concept, and (5) the whole
-> thing is gated by automated checks. This is a **necessary, not sufficient**,
-> condition for good learning. Prose quality, motivation, affect, and measured
-> learning gains are separate axes; this paper does not claim to optimize them and
-> §9 states the efficacy validation it would require. Where a strong claim is not
-> earned, it is named as owed.
+> **"Optimal" is stipulative and structural — a spiral gloss here, fully defined in
+> §14.** Until §14, read *optimal educational output* as a one-line working
+> definition: a treatment that is dependency-faithful, gap-free, acyclic,
+> derived-order, inspectable, verifiable, and misconception-targeted. This names
+> *satisfaction of structural constraints*, not maximization against a measured
+> objective. A reader who prefers **well-structured** or **sound** may substitute it
+> throughout without loss. (Introducing a term by a one-line gloss and deepening it
+> at its own node is itself a method device — §11; this paper uses it on its own
+> headline term.)
 >
-> Two clarifications a careful reader will demand. First, **"optimal" here is
-> *stipulative*** — it names satisfaction of the structural constraints above, not
-> maximization against a measured objective; a reader who prefers *well-structured*
-> or *sound* may substitute it throughout without loss. Second, the automated
-> checks verify the **form** of the structure (closure, acyclicity, coherence) —
-> **not** the **correctness** of any individual prerequisite judgment. A graph can
-> be perfectly well-formed and still encode the wrong dependencies; deciding
-> whether an edge is *true* is expert work the gates support but cannot replace
-> (§9). Throughout, read "verified" as "verified well-formed," never "verified
-> correct."
-
-> **Reference architecture.** Claims are grounded in a deployed system: a static
-> site that teaches the prerequisites for Gödel's incompleteness theorems as a
-> derived skill map over **60 concepts across 17 stages**. Its source of truth is
-> a concept graph (`src/content/concepts.ts`); the skill map is computed from it
-> (`src/content/derive.ts`, `src/content/graph.ts`); invariants are enforced by a
-> build gate (`scripts/validate-content.mjs`). Design decisions are recorded in
-> ADR-0002 (the concept layer), ADR-0003 (deriving the map), and ADR-0004 (the
-> process). This paper generalizes that architecture; file references are
-> illustrative, not requirements.
-
----
-
-## Abstract
-
-We propose a methodology for constructing the educational treatment of an
-arbitrary topic by inverting the usual authoring order. Conventional curricula
-encode their dependency structure *implicitly* — once in the prose order, once in
-any navigation — so the two drift and "has this concept been introduced yet?" is a
-hope rather than a guarantee. We instead make the **conceptual dependency graph**
-the single explicit artifact: every idea is a node carrying a definition, an
-example, an optional check, and a list of the concepts one must already understand
-to understand it. From this graph the curriculum is *derived*: the introduction
-order is a topological order of the graph; the navigable skill map is the graph
-quotiented by a grouping; assessments target the misconceptions the structure
-predicts. The methodology rests on seven principles, the sharpest being that the
-dependency relation is **kept acyclic by construction** — an apparent cycle is
-treated as a decomposition signal, not a feature, and resolves into one of four
-forms (a missing primitive; an inductive definition mistaken for a dependency; a
-contrast mislabeled as a dependency; or co-constitutive concepts split into
-acyclic *maturity versions*). We give the data model, a topic-agnostic
-construction procedure, a theory of how content is attached to the structure, an
-assessment theory, and an honest two-tier account of validation. We are careful
-about what the automated gates do and do not establish: they verify the structure
-is **well-formed**, not that its prerequisite judgments are **correct** or that it
-maximizes learning — both are owed empirical claims the methodology is designed to
-*support*, not assert.
+> **Form is not correctness — the single most important caveat (stated once,
+> referenced after).** The gates verify the **form** of the structure (closure,
+> acyclicity, coherence, traceability). They do **not** verify that any individual
+> prerequisite judgment is **true**, nor that learners learn better. A graph can be
+> perfectly well-formed and encode entirely wrong dependencies. Deciding whether an
+> edge is *correct* is expert work the gates support but cannot replace (§13, Tier
+> 1). Read "verified" as "verified well-formed," never "verified correct,"
+> everywhere below.
+>
+> **Empirical efficacy testing is deferred by design — a deliberate sequence, not an
+> omission.** This paper claims only structural well-formedness. Measuring whether
+> the treatment actually teaches better (learning gain, transfer, retention — §13
+> Tier 2) is **intentionally postponed until the construction system is complete**:
+> you cannot run a clean ablation isolating "derived structure" until the
+> structure-producing pipeline is stable, so the engineering order is *build the
+> deterministic substrate → layer soft optimization → then measure*. The honest cost
+> of that choice: **the internal metrics this paper optimizes (closure, acyclicity,
+> coverage %, group coherence) are unvalidated proxies for learnability, with
+> unknown — possibly zero, conceivably negative — correlation to actual learning.**
+> "Necessary, not sufficient" understates it: a proxy can also *mislead* (maximal
+> decomposition satisfies group-coherence yet may cause the atomization/fatigue
+> failure of §16). Every design decision made before Tier 2 — granularity, the four
+> cycle-resolution moves, the ordering heuristics — is therefore **provisional and
+> may be reversed by efficacy data.**
+>
+> **Reference architecture (the numbers the paper cites).** A deployed static site
+> teaches the prerequisites for Gödel's incompleteness theorems as a derived skill
+> map over **60 concepts / 17 stages / 106 prerequisite edges** (each edge carries a
+> mandatory justification and a semantic kind). Source of truth:
+> `src/content/concepts.ts`; derivation: `derive.ts` + `graph.ts`; build gate:
+> `scripts/validate-content.mjs`; design records: ADR-0002…ADR-0007. File references
+> are illustrative, not requirements. **The reference topic is a near-best-case
+> instance** (formal, definitional, compositional, single terminal theorem,
+> uncontested), which §15 weighs honestly.
 
 ---
 
-## 1. The problem: most educational material is structurally unsound
+## §0. How this paper is built — by its own method
 
-The dominant failure of explanatory material is not bad prose; it is **using
-ideas before they are earned**. A definition leans on a term defined three
-chapters later; an example presumes a distinction not yet drawn; an "intuitive"
-ordering follows the author's associative memory rather than the learner's
-dependency needs. This is the *curse of knowledge*: an expert cannot easily see
-which prerequisites they are silently assuming.
+To dogfood the methodology, the paper's own ideas are treated as a concept graph:
+each section is a concept with **local prerequisites**, and the **section order is a
+topological order of that graph** — derived, not hand-sequenced. The full
+node→prerequisite listing is Appendix A; the shape is:
 
-Three structural defects follow:
+```
+ the-problem        ── (root)
+ concept            ── (root)
+   prerequisite           ← concept
+   relation-typing        ← prerequisite
+ concept-graph            ← concept, prerequisite
+ acyclicity               ← concept-graph
+ cycle-resolution         ← acyclicity, relation-typing
+ definition-closure       ← concept-graph, relation-typing
+ grouping                 ← concept-graph, acyclicity
+ skill-map-derivation     ← grouping, acyclicity
+ goal / goal-closure      ← concept-graph, goal
+ ordering                 ← skill-map-derivation, goal-closure
+ propose-then-dispose     ← ordering, definition-closure, cycle-resolution
+ content-attachment       ← ordering, concept
+   PEA, running-artifact, ladder, spiral-gloss   ← content-attachment (+goal)
+ assessment               ← concept, ordering, goal-closure
+ validation-tiers         ← assessment, skill-map-derivation
+ optimal-output           ← definition-closure, acyclicity, ordering, goal-closure   [goal]
+ transfer-limits          ← optimal-output, validation-tiers                          [goal]
+```
 
-1. **Implicit, duplicated dependency structure.** The order of prerequisites
-   lives in the prose and (separately) in any table of contents or course graph.
-   Nothing reconciles them; they drift.
-2. **Hand-guessed ordering.** "What should come first" is decided by intuition,
-   topic by topic, with no check that an introduction is preceded by everything it
-   uses.
-3. **Ungrounded, unverifiable claims.** A term's first use is not mechanically
-   tied to its definition, so "is every word defined before use?" cannot be
-   answered except by re-reading.
+Two self-applications are visible here. **Closure:** each section below uses only
+concepts introduced in earlier sections — the same gate the method imposes on
+content. **Spiral gloss:** `optimal-output` is a goal node (it depends on every
+invariant), so its full definition can only land in §14; the reading contract gives
+it the mandatory one-line gloss up front. This section is the *orientation node* and
+is, by design, exempt from closure (it previews everything).
 
-A method that fixes these must make the dependency structure **explicit,
-singular, and checkable**, and must make the curriculum a *consequence* of that
-structure rather than a parallel artifact.
+---
 
-## 2. Thesis and the definition of "optimal output"
+## §1. The problem: most educational material is structurally unsound
 
-**Thesis.** A treatment's conceptual dependency structure is a **necessary
-substrate** for learnability. Making that structure explicit, typed, and
-mechanically checked removes a definite class of authoring defects (§1) and
-creates an auditable basis for sequencing, navigation, assessment, and empirical
-evaluation. It does not, by itself, determine that learning occurs — prose,
-motivation, pacing, and the *correctness* of the dependency judgments are separate
-questions (§9–§11). The method's contribution is to make the substrate a single
-explicit artifact and to **derive** ordering, navigation, and assessment from it.
+The dominant failure of explanatory material is not bad prose; it is **using ideas
+before they are earned**. A definition leans on a term defined three chapters later;
+an example presumes a distinction not yet drawn; an "intuitive" order follows the
+author's associative memory, not the learner's dependency needs. This is the *curse
+of knowledge*: an expert cannot easily see which prerequisites they silently assume.
 
-A treatment is **structurally optimal** (the only sense this paper claims) when:
+Three structural defects follow, all from one root cause — the dependency structure
+is never written down as a checkable object:
 
-- **Dependency-faithful** — each concept's prerequisites are the concepts one
-  genuinely must understand first, and nothing more.
-- **Gap-free (no forward references)** — every term or claim a unit uses is
-  introduced at that unit or a transitive prerequisite. Enforced, not hoped.
-- **Derived-order** — the introduction sequence and the navigation graph are
-  computed from the dependency structure, not authored in parallel.
-- **Decomposed** — the dependency relation is acyclic; apparent cycles have been
-  resolved by clarifying or splitting concepts.
-- **Inspectable** — every rendered term, claim, and ordering traces to a concept
-  record and its dependencies.
-- **Verifiable** — the above are machine-checked on every change.
-- **Misconception-targeted** — assessment is by demonstrated capability aimed at
-  the confusions the structure predicts, not by content exposure.
+1. **Implicit, duplicated structure.** Prerequisite order lives in the prose *and*
+   (separately) in any table of contents or course map. Nothing reconciles them;
+   they drift.
+2. **Hand-guessed ordering.** "What comes first" is decided by intuition, with no
+   check that each introduction is preceded by everything it uses.
+3. **Ungrounded claims.** A term's first use is not mechanically tied to its
+   definition, so "is every word defined before use?" can only be answered by
+   re-reading.
 
-These are necessary conditions. They do not guarantee a learner *will* learn well
-(motivation, prose, pacing, and measured gains are out of scope; §9). They
-guarantee the treatment is free of the structural defects of §1 — but only at the
-level of **form**: a gate can confirm an edge set is acyclic and closed, not that
-the edges encode the *right* dependencies. "Dependency-faithful" is therefore an
-authoring *aspiration the gates support*, not a property they certify (§9 gives
-the review and validation that would).
+The fix must make the dependency structure **explicit, singular, and checkable**,
+and make the curriculum a *consequence* of it rather than a parallel artifact.
 
-## 3. Design principles
+## §2. Concept and prerequisite — and two relation axes
 
-1. **The dependency structure is the artifact.** Model it explicitly and
-   separately from prose. The prose is attached *to* the structure, not the other
-   way round.
-2. **Dependencies are acyclic; a cycle is a decomposition signal.** A
-   prerequisite cycle would mean "A cannot be understood *at all* without first
-   *fully* understanding B, and vice versa." But learners acquire co-constitutive
-   pairs (supply/demand, force/mass/acceleration) by holding **partial, revisable
-   versions** of several ideas at once — which means the right model is not a cycle
-   but **versioned concepts** at increasing maturity (`force-informal` →
-   Newton's-law → `force-formal`), and those *are* acyclic. So an apparent cycle is
-   a signal to decompose or version (§5, Step 3), not a feature to embrace. (This
-   is a defended methodological *choice*, not a claim that every domain is natively
-   acyclic; §11 marks its limits.)
-3. **Separate dependency from association — and mention from requirement.** "You
-   must understand X first," "X is illuminated by contrast with Y," and "X is named
-   here only to motivate, with full treatment later" are different relations. Only
-   the first is a directed, acyclic *prerequisite* that gates and orders. Contrasts
-   and forward *glosses/foreshadows* never gate. Conflating *lexical mention* with
-   *conceptual requirement* both manufactures false cycles and over-constrains
-   authors (§4 relation types; §5 Step 3).
-4. **Derive, do not author, the order and the map.** The introduction order is a
-   topological order of the concept graph; the navigable skill map is the graph
-   grouped and condensed. The curriculum is *output*; editing it means editing
-   concepts.
-5. **No forward references — as a build gate, on *requirement* references only.**
-   Every concept a definition names *as a requirement* must be a
-   prerequisite-or-equal of it. This makes "defined before use" a property the
-   build enforces at term granularity. The gate governs **requirement** references,
-   not every mention: a motivational mention is typed as a `gloss`/`foreshadow`
-   that points *forward* without gating. The known hole is that the gate sees only
-   *typed* references — bare prose can still smuggle a requirement (§10); the
-   mitigation is to require requirement-bearing terms to be typed.
-6. **Assess demonstrated capability; target predicted misconceptions.** A unit is
-   passed by performing a task, not by viewing content. Tasks are built around the
-   category errors the dependency structure predicts a learner will make.
-7. **Inspectable and verifiable end to end.** Every output traces to evidence in
-   the concept graph; invariants are machine-checked; UI claims are confirmed by
-   running the artifact, not assumed.
+A **concept** is one teachable idea, recorded as: an `id` and display term; a
+one-line **definition** (first-encounter readable) and optional expansion; a
+concrete **example**; an optional **micro-check**; a **group** (its skill-map node);
+and a **`primitive`** flag for ideas with no in-topic prerequisite. (Full record:
+Appendix A of ADR-0002; the data-model details are deferred to keep this spine
+compact.)
 
-## 4. The objects (data model)
+A **prerequisite** is a *directed* relation "you must understand X before you can
+understand Y." It is the one relation that **gates and orders**. The central
+discipline is to keep it distinct from two things it is easily confused with:
 
-- **Concept** — one idea, as a record:
-  - `id`, display term;
-  - a one-line **definition** and optional expansion (first-encounter readable);
-  - a concrete **example** (drawn from a fixed running cast — §6);
-  - an optional **micro-assessment** (a self-check for just this concept);
-  - **`prerequisites`** — concept ids one must already understand. *Acyclic.*
-  - **`contrasts`/`relates`** — undirected associations; never gate or order.
-  - a **group** — the skill-map node this concept belongs to;
-  - a **`primitive`** flag for ideas with no prerequisite within the topic.
-- **Concept versioning (for co-constitutive domains).** A concept may carry a
-  **maturity level** (`informal` / `operational` / `formal`); a later version
-  lists earlier versions and the coordinating concept as prerequisites
-  (`force-informal` → `newtons-second-law` → `force-formal`). This is how the
-  method represents "concepts learned together as successive approximations"
-  *without* a cycle. *Status:* a recommended extension; the reference
-  implementation uses single-version concepts (its domain decomposes cleanly).
-- **Relations have two orthogonal axes** (ADR-0005):
-  - **Gating axis** — does it mean "understand first"? Gating **`prerequisite`**
-    vs non-gating **`contrasts`** / (per domain need) `soft-prerequisite` /
-    `corequisite` / `gloss` / `foreshadow`. Only `prerequisite` participates in
-    closure, acyclicity, and derivation.
-  - **Semantic-kind axis** — *what kind* of prerequisite, a small controlled
-    vocabulary that **annotates** (it does not change gating):
-    `{ is-a, part-of, defined-via, operates-on, refines, assumes }`. The kind is
-    the always-on edge label (the `why` is the on-hover detail), so every edge is
-    legible at a glance and the *shape* of the structure shows. `refines` is where
-    maturity-versioning lives. *Status:* reference impl ships `prerequisite` +
-    `contrasts` + the kind vocabulary; the other gating types are added per need.
-  - **Discipline:** keep the kind vocabulary small and earned from real edges;
-    allow a "primary flavor" (the `why` carries nuance). Only the gating axis is a
-    principled rule — the kind is annotation.
-- **Concept graph** — all concepts and their `prerequisites`. The single source of
-  truth for **dependency**; the other relation types annotate it without changing
-  the derived order.
-- **Skill map** — the derived, acyclic, navigable graph of concept *groups*, plus
-  a hand-authored **overlay**: assessments, layout positions, learning goals, and
-  any deliberately pedagogical (non-dependency) sequencing edges.
-- **Typed references** — inside definitions and prose, a concept is named by a
-  typed reference (e.g. a chip) so closure (§5, Step 2) is checkable and the
-  reference can render as a drill-down to the referenced concept.
+- **Gating axis — requirement vs association vs mention.** "Understand X first"
+  (gating `prerequisite`), "X is illuminated by contrast with Y" (non-gating,
+  symmetric `contrasts`), and "X is named now only to motivate, treated fully later"
+  (forward `gloss`/`foreshadow`, never gating) are different relations. Conflating
+  *lexical mention* with *conceptual requirement* both manufactures false cycles and
+  over-constrains authors. Only `prerequisite` participates in closure, acyclicity,
+  and derivation.
+- **Semantic-kind axis — *what kind* of prerequisite.** A small controlled
+  vocabulary `{ is-a, part-of, defined-via, operates-on, refines, assumes }`
+  **annotates** an edge without changing its gating. The kind is the always-on edge
+  label (the per-edge justification is the on-hover detail), so the *shape* of the
+  structure is legible at a glance. `refines` is where maturity-versioning (§5) lives.
 
-*Reference architecture:* `Concept`/`ConceptGraph` types; concepts authored in
-`concepts.ts`; the skill-map overlay (achievement nodes, positions, goals) in
-`graph.ts`; the derivation in `derive.ts`.
+These axes are orthogonal: gating is a principled rule; kind is annotation. Keep the
+kind vocabulary small and earned from real edges. *(Reference impl ships
+`prerequisite` + `contrasts` + the kind vocabulary; other gating types —
+`soft-prerequisite`, `corequisite` — are added per domain need, ADR-0005.)*
 
-## 5. The construction procedure (topic-agnostic)
+## §3. The concept graph as the single source of truth
 
-### Step 1 — Enumerate concepts and *local* prerequisites, not order
+The **concept graph** is all concepts and their `prerequisite` edges. It is the one
+explicit artifact for *dependency*; everything else — order, navigable map,
+glossary panels, assessment hooks — is **derived** from it or attached **to** it.
+The other relation types annotate it without changing the derived order. To change
+the curriculum's structure you edit concepts, never the derived outputs.
 
-For each idea the topic uses, write its record and list only the **concepts one
-must already understand to understand this one**. Do not impose a global sequence;
-list local dependencies. Mark genuine **primitives** (no in-topic prerequisite).
+A consequence for tooling: inside definitions and prose, a concept is named by a
+**typed reference** (e.g. a chip), so closure (§6) is checkable and the reference can
+render as a drill-down into the named concept.
 
-### Step 2 — Decompose against the gates
+## §4. Acyclicity by construction
 
-Encode the invariants as a build gate so the model cannot lie:
+The prerequisite relation is **kept acyclic** — a deliberate methodological choice,
+defended here, not a claim that every domain is natively acyclic (§15 marks the
+limit). A prerequisite cycle would assert "A cannot be understood *at all* without
+first *fully* understanding B, and vice versa." Yet learners do acquire
+co-constitutive pairs (supply/demand; force/mass/acceleration) — by holding
+**partial, revisable versions** of several ideas at once. The honest model of that
+is not a cycle but **versioned concepts at increasing maturity** (§5, move 4), which
+*are* acyclic.
 
-- **Definition closure.** Every concept a definition *names* must be a transitive
-  prerequisite-or-equal — never a downstream concept. This catches "uses a word it
-  hasn't earned" at term granularity.
-- **Acyclicity.** `prerequisites` must contain no cycle.
-- **Group coherence.** The grouping into skill-map nodes, lifted to the group
-  level, must also be acyclic (a cross-group cycle means a concept is mis-grouped).
+So an apparent cycle is treated as a **decomposition signal** (§5), and acyclicity
+is enforced as a hard build gate. **Caveat (§15):** this makes the method
+all-or-nothing per topic — there is no degraded mode; a domain with a genuinely
+irreducible cycle cannot ship. Whether "a cycle always means better decomposition is
+possible" holds *universally* is unproven and, for genuinely co-defined concepts,
+arguably circular — §15 states this plainly.
 
-Authoring *is* the act of satisfying these gates. Every rejection is a content
-decision surfaced: a missing primitive, a sloppy definition, a real cycle.
+**Acyclic substrate, spiral experience.** Keeping the *substrate* acyclic is not a
+claim that understanding is non-holistic. Mutuality is represented elsewhere — in
+`refines`/maturity-versioned concepts and in the *traversal* (a deliberate
+revisit-and-deepen order) — never as a cyclic prerequisite edge. Designing that
+spiral is a pedagogy decision (§9), not a graph property.
 
-### Step 3 — Resolve apparent cycles by decomposition
+## §5. Resolving apparent cycles — the four moves
 
-When the acyclicity gate fires, the cycle resolves into one of three forms:
+When the acyclicity gate fires, the cycle resolves into **one of four forms**
+(matching ADR-0004 as amended):
 
-1. **Sloppy / mutual definitions → name a primitive.** *Reference case:* "a
-   *symbol* is a mark from the *alphabet*" while "an *alphabet* is a set of
-   *symbols*." Fixed by making `symbol` primitive ("an atomic mark") and
-   `alphabet` depend on it.
-2. **An inductive definition mistaken for a dependency cycle.** A recursive
-   definition ("a *formula* can be `∀x P` where P is a formula") is *well-founded*
-   — it bottoms out at a base case (atomic formulas). The recursion is generative,
-   not a prerequisite: you grasp the concept from the base case plus the building
-   rules, with the recursive occurrence as a schematic placeholder. *Reference
-   case:* `formula` depends on `atomic-formula`; the construct `quantifier` then
-   depends on `formula`. Acyclic, and more accurate.
-3. **A contrast mislabeled as a dependency.** Pairs understood *against* each
-   other (in the reference topic: provability `⊢` vs truth `⊨`; object theory vs
-   metatheory) are *associations*, not prerequisites. Move them to `contrasts`.
+1. **Sloppy / mutual definition → name a primitive.** *Reference case:* "a *symbol*
+   is a mark from the *alphabet*" while "an *alphabet* is a set of *symbols*." Fixed
+   by making `symbol` primitive ("an atomic mark") and `alphabet` depend on it.
+2. **An inductive definition mistaken for a dependency.** A recursive definition ("a
+   *formula* can be `∀x P` where P is a formula") is *well-founded* — it bottoms out
+   at a base case. The recursion is generative, not a prerequisite. *Reference case:*
+   `formula` depends on `atomic-formula`; the construct `quantifier` then depends on
+   `formula`. Acyclic and more accurate.
+3. **A contrast mislabeled as a dependency.** Pairs understood *against* each other
+   (provability `⊢` vs truth `⊨`; object theory vs metatheory) are *associations*,
+   not prerequisites. Move them to `contrasts`.
 4. **Co-constitutive concepts → split by maturity (versioning).** When concepts
-   genuinely develop together (supply/demand; force/mass/acceleration; in
-   programming, variable/assignment/state often need a runnable example before the
-   formal distinction stabilizes), the cycle dissolves into an acyclic chain of
-   *versions*: an informal form of each, a coordinating concept that depends on the
-   informal forms, then refined formal forms that depend on the coordinator. This
-   is the honest model of "successive approximations," and it preserves acyclicity
-   rather than abandoning it.
+   genuinely develop together, the cycle dissolves into an acyclic chain of
+   *versions*: an informal form of each, a coordinating concept depending on the
+   informal forms, then refined formal forms depending on the coordinator
+   (`force-informal` → `newtons-second-law` → `force-formal`). This is the honest
+   model of "successive approximations."
 
-A strongly-connected-component (SCC) linter over `prerequisites` reports cycles so
-the author can apply (1)–(4). Because the relation is acyclic, every component is a
-singleton — the SCC pass is a *guard*, not a derivation step.
+   > **Move 4 is the method's answer to its hardest objection, and it is the least
+   > proven part.** Maturity-versioning is *unimplemented and untested*: the
+   > reference instance ships **zero** versioned concepts (its domain decomposes
+   > cleanly without it). Whether arbitrary co-defined pairs *cleanly stratify* into
+   > acyclic versions — rather than resisting decomposition entirely — is a
+   > **conjecture**, not a result (§15). Moves 1–3 are exercised and solid; move 4 is
+   > a recommended extension carrying disproportionate load.
 
-**Acyclic substrate, spiral experience (ADR-0005).** Keeping the prerequisite
-relation acyclic is not a claim that understanding is non-holistic — concepts
-co-constitute, and real learning *spirals* (revisit and deepen). The resolution is
-to separate two things: the **dependency substrate stays acyclic** (so it is
-mechanically checkable), and the **mutuality is represented elsewhere** — in
-`refines` / maturity-versioned concepts and in the *traversal* (a deliberate
-revisit-and-deepen order), never as cyclic prerequisite edges. Designing that
-spiral is a pedagogy decision (Step 6), not a graph property.
+A strongly-connected-component (SCC) linter reports cycles. Once the gate is green
+every component is a singleton; the linter earns its keep **at authoring time** as
+the cycle detector that forces moves 1–4 — it is a guard on the shipped graph, a
+diagnostic during construction.
 
-### Step 4 — Group, derive the map, and audit it
+## §6. Definition closure — no forward references
 
-- **Skill-map nodes** = concept groups (the grouping is the abstraction function
-  from concepts to navigable units).
-- **Skill-map edges** = `prerequisites` *lifted* to the group level (group A → B
-  iff some concept in B depends on some concept in A, cross-group only),
-  de-duplicated and **transitively reduced** for a minimal, clean graph.
-- **Audit against any prior hand-authored map** by comparing *reachability*, not
-  raw edges (derivation legitimately adds transitive shortcuts). Two actionable
-  outputs:
-  - *Authored-but-unexplained edges* → either a missing concept dependency (add
-    it) or a genuinely pedagogical edge (keep it, explicitly, in the overlay).
-  - *Derived-but-absent edges* → a structural fact the hand map missed (adopt it).
-  - A coverage percentage is a health metric for the model.
-  *Reference outcome:* the concept graph explains ~79% of a hand-authored map's
-  edges; the audit surfaced a missing prerequisite (proofs are needed before
-  "derive 2+2=4") and a wrong root (the structures unit actually depends on
-  syntactic atoms). Both were adopted. A separate goal-closure pass found 45 of
-  60 concepts on the critical path to the terminal goal (the rest are deliberate
-  enrichment).
+**Every concept a definition references *as a requirement* must be a transitive
+prerequisite-or-equal** — never a downstream concept. This makes "defined before
+use" a property the build enforces at term granularity, not a hope.
 
-### Step 5 — Attach content to the structure (§6)
+The gate governs **requirement** references only: a motivational mention is typed as
+a `gloss`/`foreshadow` that points forward without gating. **The known hole, stated
+once:** the gate sees only *typed* references — bare prose can still smuggle an
+untyped requirement (§16). The mitigation is to require requirement-bearing terms to
+be typed and to lint prose for known terms; the gate does **not** certify that every
+*word* is earned, only that every *typed reference* is.
 
-Write each concept's definition (closure-checked), example (fixed running cast),
-optional visualization (typed — §6), and the "common confusions" that name the
-misconceptions the dependency structure predicts.
+Unavoidable early mentions use a **spiral gloss** (§11); the orientation/overview
+unit is exempt from closure by design (as §0 is here).
 
-### Step 6 — Generate ordering and lessons from the graph
+## §7. Grouping and the derived skill map
+
+- **Skill-map nodes** = concept **groups** (the abstraction function from concepts
+  to navigable units). **Group coherence** is gated: the grouping lifted to the
+  group level must *also* be acyclic — a cross-group cycle means a concept is
+  mis-grouped, and fails the build.
+- **Skill-map edges** = `prerequisite` edges *lifted* to the group level (group A→B
+  iff some concept in B depends on some concept in A, cross-group only), deduplicated
+  and **transitively reduced**. *On the group-lifted graph — which is acyclic by the
+  group-coherence gate above — transitive reduction is unique and reachability-
+  preserving;* this is why the audit below can compare reachability rather than raw
+  edges.
+- **Audit against a prior hand-authored map** by comparing *reachability*:
+  *authored-but-unexplained* edges are either a missing concept dependency (add it)
+  or a genuinely pedagogical edge (keep it, explicitly, in the overlay);
+  *derived-but-absent* edges are structure the hand map missed (adopt it).
+
+*Reference outcome (an existence proof only — see §13):* of the curated map's **19**
+group-level edges, the concept graph explains **79% (15)**; the **21% (4)**
+unexplained surfaced a real missing prerequisite (proofs are needed before "derive
+2+2=4") and a wrong root (the structures unit depends on syntactic atoms) — both
+adopted. The derivation produced **33** group-level edges and added **no** edges
+outside the curated map's closure.
+
+## §8. Goals and goal-closure — core vs enrichment
+
+Declare the topic's **goals** (terminal concepts / achievements). A concept is
+**core** if it lies on some goal's backward closure (the learner genuinely needs it
+to reach a goal), **enrichment** if reachable but off every critical path, and an
+**orphan** (a warning) if in no goal's closure and not itself a goal.
+
+*Reference outcome:* **45 of 60** concepts are core; **15** are deliberate
+enrichment; no unexplained orphans. **Caveat:** this lens is only interpretable for
+topics with a *definable terminal goal* to derive backward from — Gödel has a crisp
+one (the incompleteness theorems); survey topics ("20th-century art"), open
+empirical sciences, and skill domains often do not (§15).
+
+## §9. Ordering — topological, then optimized
 
 The recommended linear path is a **topological order** of the concept graph.
-(Production builds *hard-fail* on a cycle, per Step 2, so a published order is
-always over an acyclic graph; the traversal is written cycle-tolerant — a DFS
-post-order that will not silently drop nodes — purely as a defensive belt for
-debug/inspection views, never as license to ship a cyclic graph.)
+(Production builds *hard-fail* on a cycle per §4, so a published order is always over
+an acyclic graph; the traversal is written cycle-tolerant only as a defensive belt
+for debug views, never as license to ship a cyclic graph.)
 
-A topological order is **necessary but not sufficient** — many valid orders exist
-and some are pedagogically poor (overloaded, too abstract, unmotivated). Choosing
-among them is a second optimization *after* prerequisite satisfaction. Sensible
-secondary criteria (heuristics, not laws):
+A topological order is **necessary but not sufficient**: many valid orders exist and
+some are pedagogically poor (overloaded, too abstract, unmotivated). **The two halves
+must be kept distinct in any claim of "derived order":** the *navigable map and a
+valid order* are fully derived and done; *selecting the pedagogically good order
+among the valid ones* is a second optimization that is **specified but not
+implemented** — the reference instance was authored middle-out, so it ships *a* valid
+order, not yet an *optimized* one. Sensible secondary criteria (heuristics, not laws,
+and themselves provisional per the proxy caveat):
 
-1. minimize the count of *new* symbols/terms introduced per unit;
+1. minimize *new* symbols/terms per unit;
 2. alternate abstraction with worked examples (don't stack definitions);
 3. prefer high-fan-out prerequisites earlier (they unblock the most);
 4. cap chain length without an interleaved check or payoff;
 5. place motivational payoffs at bounded intervals.
 
-A "lesson" is the content attached to a group, presented in the chosen order. The
-map shows the learner the choices a goal allows.
+There is no objective function tying these together yet; "optimize within the
+envelope" is a direction, not an executable algorithm.
 
-**This is where the LLM belongs — "propose, then dispose" (ADR-0005).** A
-mechanical derivation guarantees *correctness* (a valid order), not *optimality*;
-choosing among valid orders, grouping, pacing, the spiral revisits, and the prose
-is judgment an algorithm cannot do well. So the division of labor is: the
-**deterministic layer defines the feasible set and enforces the hard invariants**
-(closure, acyclicity, traceability — the things you want *guaranteed*, not
-LLM-judged); the **LLM optimizes within that envelope** (which valid ordering,
-grouping, motivation, spiral, decompositions, the edge *kind*, the prose). Every
-LLM output round-trips through the gates, so you get LLM-quality pedagogy with
-mechanically-guaranteed correctness. The LLM must never adjudicate the hard
-invariants ("looks acyclic" is not a guarantee) — only the soft optimization.
+## §10. Propose, then dispose — where the LLM belongs
 
-### Step 7 — Verify and iterate
+A mechanical derivation guarantees *correctness* (a valid order), not *optimality*.
+Choosing among valid orders, grouping, pacing, the spiral revisits, decompositions,
+and prose is judgment an algorithm does poorly and an LLM does well. The division of
+labor (ADR-0005):
 
-Run the gate on every change (closure + acyclicity + group coherence + assessment
-integrity). For anything rendered, confirm by **running the artifact** — not by
-assuming. The **artifact gate** has two halves (ADR-0005): *hard structural
-assertions* (the diagram's structure matches its stated claims — e.g. "claims a
-reused lemma ⇒ some node has ≥2 out-edges"; no unresolved references; no raw
-tokens) and a *slower visual/e2e pass* (puppeteer) for what structure can't catch.
-Soft visual judgment alone misses "wrong"; pair it with hard checks. When the
-proposer is an agentic coder (ADR-0005), it runs these in its own loop — but an
-**independent** run certifies. Treat a failed gate as a content discovery.
+- The **deterministic layer defines the feasible set and enforces the hard
+  invariants** — closure, acyclicity, group coherence, traceability. These are
+  *guaranteed*, never LLM-judged ("looks acyclic" is not a guarantee).
+- The **LLM optimizes within that envelope** — which valid ordering, grouping,
+  motivation, spiral, the edge *kind*, the prose. Every LLM output round-trips
+  through the gates.
 
-## 6. Content-attachment theory
+You get LLM-quality pedagogy with mechanically-guaranteed correctness. *Status: the
+agentic-coder propose→gate→revise loop is **specified, not built** (§15); today the
+separation is authoring discipline, not CI.*
 
-Structure is necessary but inert; content makes it teachable. Disciplines:
+## §11. Attaching content to the structure
 
-- **First-encounter-readable definitions.** Precise but legible on first contact;
-  depth is added by the expansion and by drilling into referenced concepts, not by
-  front-loading rigor. **Show then tell** (concrete before abstract).
+Structure is necessary but inert. Disciplines for the prose and artifacts hung on it:
+
+- **First-encounter-readable definitions; show then tell.** Precise but legible on
+  first contact; depth is added by expansion and drill-down, not front-loaded rigor.
+  Concrete (picture/example) before abstract (definition). The sequence is a
+  problem→solution story ("Therefore & But"), not an "and-then" topological listicle.
 - **PEA, distinguished by domain (ADR-0006).** *Pictures* (a visual of the real
-  thing) and *Examples* (an instance from the concept's own domain) are
-  **in-domain** — faithful, and they can *grow*. *Analogies* (a mapping to a
-  familiar foreign domain) are **out-of-domain** — lossy and *local*.
-- **One in-domain through-line, derived backward.** Prefer a single running
-  example + its picture/artifact that **accretes sophistication** across the arc,
-  derived backward from the *terminal* artifact (the one embodying the end goal) —
-  the example track is a second backward derivation, aligned to the concept track
-  by closure (the artifact at stage N uses only concepts available by N).
-  **Honest fallback:** a *small consistent cast* where one object cannot span a
-  stretch (the reference cast: `PA`, `ℕ`, `2+2=4`, `2+2=5`, a malformed foil,
-  `G_PA`) — fix a small cast rather than fake a through-line.
+  thing) and *Examples* (an instance from the concept's own domain) are **in-domain**
+  — faithful, and they can *grow*. *Analogies* (a mapping to a familiar foreign
+  domain) are **out-of-domain** — lossy and *local*.
+- **One in-domain through-line, derived backward — with a mandatory fallback.**
+  Prefer a single running example/artifact that *accretes sophistication* across the
+  arc, derived backward from the *terminal* artifact, aligned to the concept track by
+  closure (the artifact at stage N uses only concepts available by N). **This assumes
+  a nameable terminal artifact** — often unclear up front, so in practice iterative;
+  where no single object honestly spans a stretch, fall back to a *small consistent
+  cast* (reference cast: `PA`, `ℕ`, `2+2=4`, `2+2=5`, a malformed foil, `G_PA`) rather
+  than faking a through-line.
 - **Analogies are local, plural, bounded — fitted forward, not derived backward.**
-  Choose the best analogy *per concept*, mark its **breakdown point**, retire it
-  there; never stretch one across the arc (chess illuminates "formal system" and
-  is structurally silent on truth and self-reference). The breakdown point is
-  information — usually a "Therefore & But" handoff to the next concept.
-- **Typed visualizations that keep distinctions apart.** A diagram's node/edge
-  *types* carry the conceptual distinction (one relation can never be mistaken for
-  another), with a legend and text fallback — the anti-"category-error" mechanism.
-- **Ladder-of-abstraction recipe for *dynamical* concepts (ADR-0006 §6, after
-  B. Victor).** Where a concept *has a parameter*, build its artifact by **control →
-  abstract-over → step-down**: show a concrete case, show it generalized over the
-  parameter (all values at once), then tie a point on the abstraction back to a
-  concrete case. The insight is in the *transitions*. This is valuable even as a
-  **static** figure; full interactivity is a *scoped enhancement* reserved for the
-  few concepts that are parameterized systems with emergent behaviour (not the
-  definitional majority), and is deliberately **not** a v1 requirement — it is
-  expensive bespoke craft (soft-optimization layer, §8), built selectively and
-  gated, never a per-concept floor. (Note: this "ladder of abstraction" — levels of
-  *one* system — is orthogonal to the prerequisite DAG — relations *between*
-  concepts; do not conflate.)
-- **Confusions as predicted misconceptions.** The dependency structure predicts
-  where learners conflate concepts (the contrast pairs, the category errors); each
-  unit states those misconceptions and their corrections explicitly.
+  Choose the best analogy *per concept*, mark its **breakdown point**, retire it there
+  (chess illuminates "formal system" and is structurally silent on truth and
+  self-reference). The breakdown point is information — usually a "Therefore & But"
+  handoff to the next concept.
+- **Typed visualizations.** A diagram's node/edge *types* carry the conceptual
+  distinction (one relation can never be mistaken for another), with a legend and text
+  fallback — the anti-"category-error" mechanism.
+- **Ladder-of-abstraction recipe for *dynamical* concepts (ADR-0006 §6, after B.
+  Victor).** Where a concept *has a parameter*: **control** it → **abstract over** it
+  (show all values at once) → **step down** (tie a point on the abstraction back to a
+  concrete case). The insight lives in the *transitions*. Valuable even as a **static**
+  figure; full interactivity is a *scoped enhancement* for the few concepts that are
+  parameterized systems with emergent behaviour, deliberately **not** a v1 requirement
+  (it is expensive bespoke craft). This "ladder of abstraction" — levels of *one*
+  system — is orthogonal to the prerequisite DAG — relations *between* concepts.
+- **Spiral gloss.** A concept that must be named before its full treatment gets a
+  one-line working definition up front, deepened at its own node. (This paper glosses
+  `optimal-output` that way.)
+- **Confusions as predicted misconceptions.** The dependency structure predicts where
+  learners conflate concepts (contrast pairs, category errors); each unit states those
+  misconceptions and their corrections explicitly.
 
-Unavoidable early mentions (a concept that must be named before its full
-treatment) use a **spiral gloss** — a one-line working definition up front,
-deepened at the concept's own node — and the orientation/overview unit is exempt
-from closure by design.
+## §12. Assessment
 
-## 7. Assessment theory
+- **Front-half readiness, back-half capability.** Two assessments bracket a unit. A
+  **prerequisite pretest** on entry (ADR-0007) checks the learner understands the
+  unit's prerequisites; it is **derived** — assembled from the per-concept micro-checks
+  of the page's *direct out-of-page prerequisite* concepts (a deliberate scoping
+  choice, *not* the full transitive closure, so it may miss a deep dependency — a
+  judgment call). A page with no out-of-page prerequisites (the first page) gets none.
+  It is **soft-diagnostic**: a miss links to "review [concept]" — the graph is the
+  remediation map — and never blocks navigation. The end-of-unit check tests the
+  unit's *own* content. *(A one-item check is a weak probe — a diagnostic nudge, not
+  proof of mastery.)*
+- **Demonstrated capability, not exposure.** A unit is earned by performing a task.
+  Use **deterministic checks** wherever the answer is exact; reserve an **LLM judge**
+  for genuinely open-ended explanation.
+- **The judge is an instrument that must be validated before it gates anything.**
+  Measure its false-pass/false-fail against a frozen, hand-graded set; keep a
+  deterministic component it cannot override; treat learner input as untrusted.
+- **Items map to concepts.** Each item declares the concept(s) it tests and the
+  misconception(s) it detects — what makes a result *diagnostic* rather than a scalar,
+  and what lets remediation route precisely. (Full psychometrics — difficulty
+  calibration, formal error-rate estimation — is a deliberate non-goal unless
+  assessments are used for stakes; §13.)
+- **Fatal misconceptions override — above a confidence threshold.** Certain category
+  errors fail a task regardless of other credit, but only when detected above a set
+  confidence bar, so a lucky phrasing or noisy judge call does not hard-fail a
+  competent learner.
+- **Remediation routing.** A failed attempt maps detected misconceptions back to the
+  responsible prerequisite concepts. The dependency graph *is* the remediation map.
 
-- **Front-half readiness, back-half capability.** Two assessments bracket a unit.
-  A **prerequisite pretest** on *entry* (ADR-0007) checks the learner understands
-  the unit's prerequisites before engaging — and it is **derived**: a page's
-  pretest is the assembled per-concept checks (`microQuiz`) of its *out-of-page
-  prerequisite* concepts, so a concept's check is authored once and reused in every
-  dependent page. A page with no out-of-page prerequisites (the first page) gets
-  none. It is **soft-diagnostic** (a miss links to "review [concept]" — the graph
-  is the remediation map — and never blocks navigation). The end-of-unit check
-  tests the unit's *own* content. (Caveat: a one-item check is a weak probe; it is
-  a diagnostic nudge, not proof of mastery.)
-- **Demonstrated capability, not exposure.** A unit is earned by performing a
-  task. Use **deterministic checks** wherever the answer is exact (classification,
-  fill-in, matching), and reserve an **LLM judge** for genuinely open-ended
-  explanation.
-- **The judge is necessary but not sufficient, and must be validated before it
-  gates anything.** Treat it as an instrument: measure its false-pass and
-  false-fail rates against a frozen, hand-graded case set before allowing it to
-  award anything; keep a deterministic component the judge cannot override; treat
-  learner input as untrusted.
-- **Items map to concepts.** Each assessment item declares the concept(s) it
-  tests and the misconception(s) it can detect (a lightweight item→concept matrix).
-  This is what makes a result *diagnostic* rather than a single pass/fail scalar,
-  and what lets remediation route precisely. (A full psychometric treatment —
-  per-item difficulty calibration, false-positive/negative estimation — is a
-  deliberate non-goal here; it is owed if assessments are used for stakes, §9.)
-- **Fatal misconceptions override — above a confidence threshold.** Certain
-  category errors (in the reference topic: "true just means provable," "malformed ⇒
-  false," "the Gödel sentence is the liar paradox") fail a task regardless of other
-  credit — but only when detected with confidence above a set bar, so a lucky
-  phrasing or a noisy judge call does not hard-fail a competent learner. Below the
-  bar, surface a follow-up rather than auto-failing.
-- **Remediation routing.** A failed attempt maps detected misconceptions back to
-  the responsible prerequisite concepts ("you are treating two relations as one →
-  revisit these nodes"). The dependency graph *is* the remediation map.
+## §13. Validation in two tiers — and the deliberate deferral
 
-## 8. Generation contract and inspectability
+The gates verify a treatment is **well-formed** on every change. They do **not**
+verify the edges are **correct**, nor that learners learn better. Both are owed, at
+different tiers.
 
-Every rendered artifact must be **traceable to the concept graph**: a term renders
-as a reference to its concept; an ordering is justified by the topological order; a
-skill-map edge is either derived or an explicitly labeled overlay edge. Nothing is
-asserted that cannot be pointed back to a concept record. This makes the treatment
-auditable by a third party and debuggable by its authors: a wrong claim is a wrong
-concept, locatable, not a diffuse prose problem.
+**Tier 1 — structural validity (validate the graph, not just its form).** The edge
+set is author opinion in typed form until reviewed. Cheap, high-value checks:
+*independent expert edge review* (each prerequisite rated correct/wrong/arguable);
+*independent re-authoring* (a second author builds the graph blind — convergence is
+evidence, divergence localizes contested structure); *granularity review*;
+*learner-error comparison* (do predicted misconceptions match real errors?); *edge
+ablation*. The reference "79% explained" figure is an **existence proof that the
+graph recovers most of one expert's structure — nothing more** (same author wrote
+both; consistent with shared bias or retrofitting). Tier 1 is what would make it
+independent.
 
-## 9. Validation (in two tiers, and what is owed)
+**Tier 2 — learning efficacy (empirical) — deliberately deferred until the system is
+complete (see reading contract).** Only after Tier 1. *Endpoints:* pre/post learning
+gain, misconception elimination, transfer, retention — not one scalar. *Baselines:*
+the same content authored conventionally; a topic-matched resource; an ablation
+removing the *derived ordering* (random/expert-guessed) to isolate the structure's
+contribution. *Controls:* hold prose constant so the variable under test is the
+*structure*, not the writing.
 
-The gates verify that a treatment is **well-formed** — closed, acyclic, coherent,
-traceable — on every change. They do **not** verify that the prerequisite edges are
-**correct**, nor that learners learn better. Both are owed, and at different tiers.
+> The claim this paper supports is: *the construction is principled, well-formed, and
+> auditable.* The claims it does **not** make are *that the edges are correct* (Tier
+> 1) and *that it improves learning* (Tier 2). The architecture is built to make both
+> measurable — and, per the reading contract, every pre-Tier-2 design choice is
+> provisional against efficacy data the proxies may misrepresent.
 
-**Tier 1 — structural validity (validate the graph, not just its form).** Before
-any learning study, the central artifact — the edge set — is author opinion in
-typed form until reviewed. The cheap, high-value checks:
+## §14. "Structurally optimal," fully defined
 
-- **Independent expert edge review** — a domain expert rates each prerequisite as
-  correct / wrong / arguable; report disagreement.
-- **Independent re-authoring** — a second author builds the graph blind; compare
-  edges and grouping. Convergence is evidence; divergence localizes contested
-  structure.
-- **Granularity review** — experts flag over-/under-decomposition.
-- **Learner-error comparison** — do the misconceptions the structure *predicts*
-  match the errors learners actually make?
-- **Edge ablation** — does removing/adding a contested edge change anything a
-  learner sees?
+Now that every invariant is in hand, the gloss from the reading contract can be
+discharged. A treatment is **structurally optimal** — the only sense this paper
+claims — when:
 
-*On the reference architecture:* the "~79% of a hand-authored map explained" figure
-is an **existence proof that the graph recovers most of one expert's structure —
-nothing more.** It is consistent with shared author bias, retrofitting, or the
-remaining 23% being pedagogically essential; the same author wrote both. It is not
-independent validation, and Tier 1 is exactly what would make it one.
+- **Dependency-faithful** — each concept's prerequisites are the concepts one
+  genuinely must understand first, and nothing more. *(This is an authoring
+  aspiration the gates **support but cannot certify** — "genuinely must" is the one
+  term not operationalized; it is what Tier-1 review, §13, exists to check.)*
+- **Gap-free** — every typed requirement a unit uses is introduced at that unit or a
+  transitive prerequisite (§6). Enforced.
+- **Derived** — the navigable map and a valid order are computed from the structure
+  (§7, §9); *order selection* is the owed, soft-optimized half (§9, §10).
+- **Decomposed** — the dependency relation is acyclic; apparent cycles resolved by
+  the four moves (§4–§5).
+- **Inspectable** — every term, claim, and ordering traces to a concept record (§3).
+- **Verifiable** — the above are machine-checked on every change.
+- **Misconception-targeted** — assessment is by demonstrated capability aimed at the
+  confusions the structure predicts (§12).
 
-**Tier 2 — learning efficacy (empirical).** Only after Tier 1:
+These are **necessary, not sufficient**, conditions, and at the level of **form**
+only (reading contract). They remove the structural defects of §1; they do not
+guarantee learning, and — per the proxy caveat — may not even correlate with it. A
+reader who substitutes *well-structured* for *optimal* throughout loses nothing.
 
-- **Endpoints.** Pre/post **learning gain**, **misconception elimination**,
-  **transfer** (unseen items), **retention** (delayed re-test) — not one scalar.
-- **Baselines.** The same content authored conventionally; a topic-matched
-  resource; an ablation that removes the *derived ordering* (random / expert-guessed)
-  to isolate the structure's contribution.
-- **Controls.** Hold prose constant across conditions where possible, so the
-  variable under test is the *structure*, not the writing.
+## §15. What transfers — and where the method returns empty
 
-The claim this paper supports is: *the construction is principled, well-formed,
-and auditable*. The claims it does **not** make are *that the edges are correct*
-(Tier 1) and *that it maximizes learning* (Tier 2) — both owed, and the
-architecture is built to make both measurable.
+**Transfers:** everything except the concept records — the `Concept` shape, the gates
+(closure, acyclicity, coherence), the SCC linter, the derivation (group-lift +
+transitive reduction), the audit, the renderers, and this process. *Standing up a new
+subject = author its concepts and their prerequisites; the order, the map, and the
+checks come for free.*
 
-## 10. Threats to validity and failure modes
+**Not literally "any topic."** The method requires a topic representable as a finite
+set of **teachable knowledge components plus typed prerequisite relations**. Where
+that representation does not exist, the method does **not degrade gracefully — it
+returns empty at a specific step**:
+
+| Topic class | Where it breaks | What is left of the method |
+|---|---|---|
+| Tacit / embodied skill (tennis serve, comedic timing) | **§2 Step 1** — no nameable component with a definition+example; nothing to record | Nothing; the substrate has no input |
+| Aesthetic / taste domains | **§2 Step 1** — units of learning aren't propositional | Nothing (perhaps a vocabulary glossary) |
+| Genuinely co-constitutive / holistic ideas (meaning↔use; niche↔ecosystem) | **§4 acyclicity** — irreducible cycle; move-4 versioning is an *unproven* escape | Build cannot ship unless real dependencies are demoted to non-gating `relates` — which discards the structure the method exists to capture |
+| Empirical / revisable science (as evidence, not definition) | **§2 relation vocabulary** — no edge type for "is evidence for," "superseded by," "competes with"; flattened to a false `prerequisite` or lossy `contrasts` | The settled, axiomatizable *sub-areas* only (thermodynamics-as-taught, not "much of science") |
+| Contested / normative (ethics, interpretive history) | **single-source-of-truth** — the *point* is plural incompatible structures; the architecture holds one graph | Inapplicable where competing decompositions *are* the subject |
+| Survey / open-ended (no terminal goal) | **§8 goal-closure, §11 backward derivation** — no endpoint to derive back from | Concepts + closure still work; the goal lens and running-artifact do not |
+
+Honesty about the evidence base: **the reference topic is the easiest possible
+instance** — formal, definitional, compositional, single-terminal-theorem,
+uncontested — so it provides essentially *zero* evidence about the hard rows above.
+"Read 'any topic' as 'any topic with a representable prerequisite structure'" is not a
+hedge; it is the actual scope.
+
+**Open questions (the newest, least-tested parts):**
+- **The generation loop is unbuilt** — the agentic propose→gate→revise loop and the
+  LLM-designed ordering are specified, not implemented. *The honest test is authoring
+  a second topic from scratch — not yet done.*
+- **Maturity-versioning (move 4) is unimplemented and untested** — the sole answer to
+  co-constitutive concepts, exercised by zero reference concepts; whether arbitrary
+  co-defined pairs cleanly stratify is unproven.
+- **No independent gate yet** — the propose/dispose split assumes a non-agent run
+  certifies the agent's work; today that is discipline, not CI.
+- **The artifact "structure-matches-claims" gate is aspirational** — ad-hoc sweeps,
+  not general structural assertions.
+- **Analogies are unmodeled**; their scope/breakpoints are empirical (Tier-2).
+- **The kind vocabulary and the four resolution moves are earned from one topic** and
+  may not transfer.
+
+## §16. Threats to validity and failure modes
 
 | Threat | Symptom | Mitigation |
 |---|---|---|
-| **Form mistaken for truth** | A well-formed graph that encodes the *wrong* dependencies | Tier-1 structural validation (§9): independent expert edge review + re-authoring; the gates can't catch this |
-| Wrong prerequisite edge | A unit unlocks before its real dependency | The §5 Step-4 audit; Tier-1 review; small high-confidence edits |
-| Over-decomposition (atomization) | Dozens of trivial nodes; learner fatigue | Group coherence; "is this a distinct idea or a sentence?" review |
-| Co-constitutive concepts forced into order | An honest cycle papered over, or a false "A before B" | Maturity versioning (§5 Step 3.4), not a fake prerequisite |
+| **Form mistaken for truth** | A well-formed graph encoding the *wrong* dependencies | Tier-1 validation (§13); the gates can't catch this |
+| **Proxy mistaken for outcome** | Optimizing closure/coverage/acyclicity that don't track learning (or anti-track it) | Treat all pre-Tier-2 choices as provisional; run §13 Tier 2 before believing the structure helps |
+| Wrong prerequisite edge | A unit unlocks before its real dependency | §7 audit; Tier-1 review; small high-confidence edits |
+| Over-decomposition (atomization) | Dozens of trivial nodes; learner fatigue | Group coherence; "distinct idea or a sentence?" review |
+| Co-constitutive concepts forced into order | An honest cycle papered over | Maturity versioning (§5 move 4) — itself unproven |
 | Grouping that fights dependencies | Cross-group cycle | Group-coherence gate fails the build |
-| Closure gives false security | "No forward refs" only checks *typed* references, not bare prose | Require requirement-bearing terms to be typed; lint prose for known terms |
-| Mention treated as requirement | Authors over-constrained; spurious cycles | Type motivational mentions as `gloss`/`foreshadow`, which never gate (§4) |
-| One-size order ignores the learner | Valid order that is inefficient for a given learner | Treat the graph as a substrate for adaptive sequencing (§11); secondary ordering criteria (§5 Step 6) |
-| Judge false pass/fail | Confident nonsense earns a badge / correct-but-terse rejected | Validate judge on a frozen set first; deterministic component; confidence-thresholded fatal override; retry + "show why" |
+| Closure gives false security | "No forward refs" checks only *typed* refs, not bare prose | Require requirement-bearing terms typed; lint prose for known terms (§6) |
+| Mention treated as requirement | Authors over-constrained; spurious cycles | Type motivational mentions as `gloss`/`foreshadow` (§2) |
+| One-size order ignores the learner | Valid order inefficient for a given learner | Treat the graph as substrate for adaptive sequencing; §9 secondary criteria |
+| Judge false pass/fail | Confident nonsense earns a badge / terse-but-correct rejected | Validate judge on a frozen set first; deterministic component; confidence-thresholded override |
 | Recency over-indexing in authoring | The model fixates on whatever was salient when authored | Pressure-test framings against standard sources, not the last conversation |
-| Structural ≠ pedagogical optimality | A well-formed graph that is still dull or unmotivated | Treat §6 content disciplines and §9 efficacy study as first-class, not optional |
 
-## 11. What transfers to a new topic (and limits)
+## §17. Positioning
 
-**Transfers:** everything except the concept records — the `Concept` shape, the
-gates (closure, acyclicity, coherence), the SCC linter, the derivation
-(group-lift + transitive reduction), the audit, the renderers, and this process.
-**Standing up a new subject = author its concepts and their prerequisites; the
-ordering, the navigable map, and the checks come for free.** The reference
-instance (Gödel: 60 concepts, 17 derived stages) is one fill-in of this template.
+This is not a new claim about the structure of learning, and it overlaps deliberately
+with concept maps, knowledge-component decompositions, and graph-based adaptive
+sequencing. The differentiator is narrow and engineering: **the concept graph is a
+typed, build-checked *source of truth* from which the ordering, navigation, glossary,
+and assessment hooks are generated** — a curriculum *compiler* with enforced
+invariants, rather than a hand-drawn map kept in sync by discipline. What it compiles
+is *form*; whether the form teaches is the deferred empirical question (§13) this
+paper is built to make answerable.
 
-**Scope — not literally "any topic."** The method fits topics representable as a
-finite set of **teachable knowledge components plus typed relations among them** —
-mathematics, formal logic, programming, grammar, much of science, technical
-certification. It fits *less* naturally where productive confusion precedes formal
-clarity or where there is no stable prerequisite structure: interpretive
-humanities, clinical/ethical judgment, creative writing, psychomotor skill,
-language immersion. It can still help there, but only after leaning on the
-non-`prerequisite` relation types (§4) more than the dependency backbone. Read the
-title's "any topic" as "any topic with a representable knowledge-component
-structure."
+---
 
-**Limits (honesty):**
-- **Form is not truth.** The gates certify the graph is well-formed; they cannot
-  certify an edge is *correct*. Wrong edges teach a false structure — Tier-1
-  validation (§9), not the gates, is the safeguard.
-- **One graph is not one learner.** The graph encodes what the *curriculum* takes
-  to depend on what; real learners differ in prior knowledge, misconceptions, and
-  goals, so there is no single optimal order for everyone. The concept graph is
-  best understood as the **substrate for adaptive sequencing** (graph + a learner
-  model + a policy), not as a fixed path. Per-learner modeling is out of scope here.
-- A detected cycle is a signal to **decompose, version, or reclassify**, never to
-  embrace; deciding *how* is human judgment the tool only prompts.
-- Some structure is genuinely pedagogical (motivation, examples, narrative) and
-  not a dependency; it lives in the overlay and the non-gating relations by design.
-- "Optimal" is **stipulative and structural**, not a maximization claim: it removes
-  a definite class of defects (§1) and makes correctness and efficacy *measurable*
-  (§9); it does not certify the result is the best possible way to learn the topic.
+## Appendix A — the data model, and this paper's own concept map
 
-**Open questions / what is unsettled (the newest, least-tested parts):**
-- **The generation loop is unbuilt.** The agentic-coder propose→gate→revise loop
-  (ADR-0005) and the LLM-designed "Therefore & But" / spiral ordering are
-  *specified, not implemented*. The honest test is authoring a *second* topic from
-  scratch — not yet done; the reference instance was authored middle-out.
-- **No single object is guaranteed to span a topic.** The "one evolving artifact
-  derived backward" (ADR-0006) is a target with a mandatory fallback to a small
-  cast; when one object stops working is a judgment call.
-- **Analogies are unmodeled and unvalidated.** Their scope and breakpoints are
-  empirical (need transfer testing — Tier-2, which we don't do); the reference
-  instance models none.
-- **No independent gate yet.** The propose/dispose split assumes a *non-agent* run
-  certifies the agent's work; today that separation is discipline, not CI.
-- **The artifact "structure-matches-claims" gate is aspirational** — we have
-  ad-hoc sweeps, not general structural assertions.
-- **The kind vocabulary and the resolution moves are earned from one topic** and
-  may not transfer.
+**The `Concept` record (data model).** `id`, display term; one-line definition +
+optional expansion; concrete example; optional micro-check; `prerequisites` (acyclic
+concept ids); `contrasts`/`relates` (undirected, never gate); `group`; `primitive`
+flag; optional **maturity `level`** (`informal`/`operational`/`formal`) with a version
+chain for co-constitutive domains (§5 move 4; *unused in the reference instance*).
+The **concept graph** is all concepts + `prerequisites`; the **skill map** is the
+derived group graph plus a hand-authored overlay (assessments, layout, goals, and any
+explicitly-labeled pedagogical sequencing edges). *(Full types: ADR-0002; relation
+axes: ADR-0005.)*
 
-**Positioning.** This is not a new claim about the structure of learning, and it
-overlaps deliberately with concept maps, learning-component decompositions, and
-graph-based adaptive sequencing. The differentiator is narrow and engineering:
-**the concept graph is a typed, build-checked *source of truth* from which the
-ordering, navigation, glossary, and assessment hooks are generated** — a
-curriculum *compiler* with enforced invariants, rather than a hand-drawn map kept
-in sync by discipline.
+**This paper's concept map (the dogfood data).** Node → local prerequisites:
+
+```
+the-problem            → (root)
+concept                → (root)
+prerequisite           → concept
+relation-typing        → prerequisite
+concept-graph          → concept, prerequisite
+acyclicity             → concept-graph
+cycle-resolution       → acyclicity, relation-typing
+definition-closure     → concept-graph, relation-typing
+grouping               → concept-graph, acyclicity
+skill-map-derivation   → grouping, acyclicity
+goal                   → concept
+goal-closure           → concept-graph, goal
+ordering               → skill-map-derivation, goal-closure
+propose-then-dispose   → ordering, definition-closure, cycle-resolution
+content-attachment     → ordering, concept
+PEA                    → content-attachment
+running-artifact       → PEA, goal
+ladder-of-abstraction  → running-artifact
+spiral-gloss           → definition-closure, content-attachment
+assessment             → concept, ordering, goal-closure
+validation-tiers       → assessment, skill-map-derivation
+optimal-output  [goal] → definition-closure, acyclicity, ordering, goal-closure
+transfer-limits [goal] → optimal-output, validation-tiers
+```
+
+Acyclic (verify: no node lists a later node). The §1–§17 order is one topological
+order of this graph; `optimal-output`, a goal, depends on every invariant, so it can
+only be defined at §14 — hence the reading-contract spiral gloss. The method, applied
+to itself, produced this paper's spine.

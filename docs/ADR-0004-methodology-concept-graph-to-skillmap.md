@@ -70,7 +70,7 @@ And a prerequisite cycle would mean "you cannot understand A at all without
 already fully understanding B, and vice versa" — yet learners *do* acquire such
 pairs, which proves a non-circular grounding exists. So a cycle in
 `prerequisites` is almost always a **modeling error**, and it resolves into one
-of three forms. The acyclicity gate fires; you fix the model:
+of **four** forms. The acyclicity gate fires; you fix the model:
 
 1. **Sloppy/mutual definitions** → name a **primitive**. (`symbol` "an atomic
    mark" vs `alphabet` "a set of symbols" — not "a symbol is a mark *from the
@@ -86,10 +86,20 @@ of three forms. The acyclicity gate fires; you fix the model:
    are understood *against* each other — that is **association, not
    prerequisite**. Put it in `contrasts`. Treating it as a dependency was the
    category error that manufactured the cycle.
+4. **Co-constitutive concepts → split by maturity (versioning).** When concepts
+   genuinely develop together (supply/demand; force/mass/acceleration), the cycle
+   dissolves into an acyclic chain of *versions*: an informal form of each, a
+   coordinating concept depending on the informal forms, then refined formal forms
+   depending on the coordinator (`force-informal` → `newtons-second-law` →
+   `force-formal`). **Status: a recommended extension carrying disproportionate
+   load — unimplemented and untested; the reference instance ships zero versioned
+   concepts, and whether arbitrary co-defined pairs cleanly stratify is a
+   conjecture, not a result** (METHODOLOGY §5, §15). Moves 1–3 are exercised.
 
 Tooling: an **SCC linter** (Tarjan over `prerequisites`) reports any cycle so you
-can apply (1)–(3). Because `prerequisites` is acyclic, every SCC is a singleton
-and the condensation is trivial — SCC is a *guard*, not a derivation step. The
+can apply (1)–(4). Once the gate is green every SCC is a singleton and the
+condensation is trivial — the linter is a *guard* on the shipped graph, and earns
+its keep at authoring time as the cycle detector that forces moves (1)–(4). The
 closure gate is then exactly "a definition may reference a prerequisite-or-equal,
 never a downstream concept."
 

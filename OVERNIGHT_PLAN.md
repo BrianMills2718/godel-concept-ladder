@@ -83,7 +83,7 @@ continuously through the ordered phases; commit (and push) after each.
 - Add a non-failing **goal-closure report** (`scripts/derive-report.mjs` or a new
   one); fail only on true orphans. Surface a core/enrichment badge + filter in
   `#/concepts`.
-- **Gate:** report runs; current 44/60 core split reproduced and explained; no
+- **Gate:** report runs; current 45/60 core split reproduced and explained; no
   unexplained orphans.
 
 ### Phase 3 — Correctness audit (Tier-1 structural validation)

@@ -52,18 +52,30 @@ Two problems surfaced in use:
 *what depends on what*. It **may contain cycles**. The **stage-level skill-map
 DAG is derived from it**, never hand-authored.
 
-### 1. The concept graph may be cyclic
+### 1. ~~The concept graph may be cyclic~~ — SUPERSEDED (see Amendment)
 
-Concept dependency edges may form cycles. A cycle means a set of concepts that
+> **Superseded by the 2026-06-20 Amendment above.** The original text below is
+> retained for history only and **no longer reflects the decision**: the concept
+> graph is **acyclic and gated as such**; cycles are decomposition errors resolved
+> by the four moves (ADR-0004 §Cycles / METHODOLOGY §5), and `term ↔ formula ↔
+> quantifier` was specifically decomposed away (an inductive definition, not a
+> cycle). Read §1–§2 of this section as the abandoned approach.
+
+~~Concept dependency edges may form cycles. A cycle means a set of concepts that
 are *mutually defining* — you learn them together, not in sequence (e.g.
-`term ↔ formula ↔ quantifier`). We stop pretending otherwise.
+`term ↔ formula ↔ quantifier`). We stop pretending otherwise.~~
 
 A second, explicitly **non-directional** relation `relates`/`contrasts_with`
 (reserved already in ADR-0001's `EdgeKind`) captures associations that aren't
 dependencies (e.g. `⊢` *contrasts* `⊨`). It never participates in derivation or
 gating — it's for cross-links and the "see also" UI.
 
-### 2. Deriving the DAG: SCC condensation + group-lift
+### 2. ~~Deriving the DAG: SCC condensation~~ + group-lift  — SCC step SUPERSEDED
+
+> **Superseded in part.** With acyclic `prerequisites` (post-Amendment), SCC
+> condensation is **not a derivation step** — every SCC is a singleton, so the SCC
+> pass is a *guard/linter*, not a collapse. The **group-lift** half below is still
+> the live mechanism. The condensation prose is retained for history.
 
 The canonical way to turn a cyclic directed graph into a DAG is **strongly-
 connected-component (SCC) condensation**: collapse each maximal cycle into one
