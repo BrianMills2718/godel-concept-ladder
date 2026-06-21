@@ -189,15 +189,35 @@ pinned in one place:
 | Relation | Direction | Gates? | Meaning |
 |---|---|---|---|
 | `prerequisite` | directed | **yes** (acyclic) | must understand source before target; the one relation that orders + closes |
-| `soft-prerequisite` | directed | yes (helpful) | helps but isn't strictly required; per-domain, gating-family |
-| `corequisite` | undirected | yes (concurrent) | learned together; per-domain |
+| `recommended-before` | directed | **no** (advisory) | helps but isn't strictly required; orders softly, never blocks (formerly "soft-prerequisite" — a non-required relation must not hard-gate) |
+| `corequisite` | undirected | **cluster** | learned together; **contracted into one composite node before topological sort**, so it never breaks ordering — closure and assessment then apply to the cluster as a unit |
 | `contrasts` / `relates` | undirected | **no** | understood *against* / "see also"; association, never orders |
 | `gloss` / `foreshadow` | directed, **forward** | **no** | named early only to motivate; must resolve to a later concept |
 
 Plus the **semantic-kind** annotation on a `prerequisite` edge: `{ is-a, part-of,
 defined-via, operates-on, refines, assumes }`. *(Reference impl ships `prerequisite`
-+ `contrasts` + the kind vocabulary; the other gating types are added per domain
-need, ADR-0005.)*
++ `contrasts` + the kind vocabulary; the others are added per domain need, ADR-0005.)*
+
+**A note on the gating column (an external-review fix).** Only `prerequisite`
+hard-gates. `recommended-before` is advisory — it influences ordering heuristics
+(§9) but never blocks, because a *non-required* relation must not behave as a
+requirement. `corequisite` does not gate *pairwise*; the corequisite-connected set is
+**contracted to a single node** before the topological sort (and closure is checked at
+the cluster boundary), which is how "learned together" is represented without
+introducing a 2-cycle.
+
+**Model expressiveness — a known limitation (extension flagged).** Prerequisites are
+modeled as **pairwise directed edges**, which expresses **conjunction** natively
+(several incoming edges = "all of these first") but **not** disjunctive or
+route-dependent dependencies: *A **or** B suffices*, *any 3 of 5 worked examples*, *X
+is prerequisite only on route R / for learner profile P*. The honest consequence is
+that the current model **overstates linear dependency in domains with multiple
+legitimate routes** — it can only force one path or drop the constraint. The planned
+fix is **prerequisite predicates** (Boolean formulas over concepts: `A ∧ B`, `A ∨ B`,
+threshold-k) or **hyperedges** (one dependency from a *set* of sources to a target);
+both are specified-not-built, and until then disjunctive routes must be modeled
+out-of-band (e.g. as separate goal closures). This is a real formalism gap, not a
+cosmetic one (see also §15).
 
 ## §3. The concept graph as the single source of truth
 
@@ -367,10 +387,11 @@ envelope" is a direction, not an executable algorithm.
 
 ## §10. Propose, then dispose — where the LLM belongs
 
-A mechanical derivation guarantees *correctness* (a valid order), not *optimality*.
-Choosing among valid orders, grouping, pacing, the spiral revisits, decompositions,
-and prose is judgment an algorithm does poorly and an LLM does well. The division of
-labor (ADR-0005):
+A mechanical derivation guarantees *structural validity* (a topologically valid order
+— one that respects the declared edges), **not** that the edges are *correct* and not
+*optimality*. Choosing among valid orders, grouping, pacing, the spiral revisits,
+decompositions, and prose is judgment an algorithm does poorly and an LLM does well.
+The division of labor (ADR-0005):
 
 - The **deterministic layer defines the feasible set and enforces the hard
   invariants** — closure, acyclicity, group coherence, traceability. These are
@@ -379,9 +400,11 @@ labor (ADR-0005):
   motivation, spiral, the edge *kind*, the prose. Every LLM output round-trips
   through the gates.
 
-You get LLM-quality pedagogy with mechanically-guaranteed correctness. *Status: the
-agentic-coder propose→gate→revise loop is **specified, not built** (§15); today the
-separation is authoring discipline, not CI.*
+You get LLM-quality pedagogy with **mechanically-guaranteed structural validity,
+conditional on the authored graph** (not guaranteed *correctness* — a wrong edge
+yields a perfectly valid but mis-taught curriculum; that is the edge-epistemology
+problem §13 addresses). *Status: the agentic-coder propose→gate→revise loop is
+**specified, not built** (§15); today the separation is authoring discipline, not CI.*
 
 ## §11. Attaching content to the structure
 
@@ -439,8 +462,15 @@ Structure is necessary but inert. Disciplines for the prose and artifacts hung o
   prerequisites (the first page) gets none.
   It is **soft-diagnostic**: a miss links to "review [concept]" — the graph is the
   remediation map — and never blocks navigation. The end-of-unit check tests the
-  unit's *own* content. *(A one-item check is a weak probe — a diagnostic nudge, not
-  proof of mastery.)*
+  unit's *own* content.
+- **Three assessment strengths, kept distinct (a one-item check is not mastery).** A
+  single item has low reliability and can reward recognition over mastery, so the
+  protocol names three levels and never conflates them: **(1) diagnostic nudge** —
+  low-stakes, one item, the pretest's role (a hint to review, never a gate); **(2)
+  mastery evidence** — multiple items, varied format, explicit misconception probes,
+  the end-of-unit bar; **(3) certification** — a calibrated assessment with known
+  error rates (owed only if results carry stakes; §13). The reference instance ships
+  (1) and (2); (3) is out of scope until Tier 2.
 - **Demonstrated capability, not exposure.** A unit is earned by performing a task.
   Use **deterministic checks** wherever the answer is exact; reserve an **LLM judge**
   for genuinely open-ended explanation.
@@ -475,6 +505,28 @@ ablation*. The reference "79% explained" figure is an **existence proof that the
 graph recovers most of one expert's structure — nothing more** (same author wrote
 both; consistent with shared bias or retrofitting). Tier 1 is what would make it
 independent.
+
+*The central unresolved issue is **edge epistemology** — how we know a prerequisite
+edge is true. Edges are author opinion until reviewed, yet the whole compiler trusts
+them: a wrong edge yields a perfectly valid, educationally distorted curriculum.* To
+make Tier 1 **executable** (not just a good idea), every edge `X → Y` gets a standard
+review form:
+
+| Question | Response |
+|---|---|
+| Is X **necessary** to understand Y? | yes / no / arguable |
+| Is X merely **helpful** rather than necessary? | yes / no |
+| Is the edge **too coarse** (X bundles several ideas)? | yes / no |
+| Is there an **alternate path** to Y avoiding X? | yes / no |
+| Is this really a prerequisite, or a mislabeled relation? | prerequisite / contrast / gloss / other |
+| What **learner error** would appear if X were missing? | free response |
+| What **source / expert convention** supports this edge? | citation / rationale |
+
+A "no" to *necessary* + "yes" to *helpful* should **downgrade** the edge to
+`recommended-before` (§2); "yes" to *alternate path* signals a disjunctive
+prerequisite the pairwise model can't yet hold (§2 model-expressiveness); a non-
+`prerequisite` answer reclassifies the edge. The reviewer-facing artifact is this
+form filled per edge — the Tier-1 deliverable.
 
 **Tier 2 — learning efficacy (empirical) — deliberately deferred until the system is
 complete (see reading contract).** Only after Tier 1. *Endpoints:* pre/post learning
@@ -550,15 +602,24 @@ hedge; it is the actual scope.
 **Open questions (the newest, least-tested parts):**
 - **The generation loop is unbuilt** — the agentic propose→gate→revise loop and the
   LLM-designed ordering are specified, not implemented. *The honest test is authoring
-  a second topic from scratch — not yet done.*
-- **Maturity-versioning (move 4) is unimplemented and untested** — the sole answer to
-  co-constitutive concepts, exercised by zero reference concepts; whether arbitrary
-  co-defined pairs cleanly stratify is unproven. **The combined consequence, stated
-  plainly:** §4 admits no degraded mode and move 4 is the *only* escape for genuine
-  mutuality, so **if move 4 fails to generalize, the method is restricted to
-  natively-near-acyclic domains** — a substantially smaller claim than "any topic with
-  a prerequisite structure." A hand-worked move-4 example is sketched in Appendix B to
-  show it is more than a placeholder, but a sketch is not a result.
+  a second topic — and it must be a **hostile** one, not another formal/definitional
+  subject* (which would only re-confirm the best case). The strongest stress tests, by
+  what they break: **introductory mechanics** (force/mass/acceleration co-constitution
+  → move 4), **statistics** (procedural + conceptual dependencies intertwined),
+  **constitutional law / ethics** (plural, contested structures → single-source-of-
+  truth fails), **biology/ecology** (evidence, mechanism, and taxonomy interact →
+  relation-vocabulary gap). This is the next milestone, not yet done.
+- **Maturity-versioning (move 4) is EXPERIMENTAL, not part of the guaranteed core** —
+  unimplemented, untested, exercised by zero reference concepts; whether arbitrary
+  co-defined pairs cleanly stratify is unproven. **Combined consequence, stated
+  plainly:** move 4 is the *only* in-spec escape for genuine mutuality, so **if it
+  fails to generalize, the method is restricted to natively-near-acyclic domains** — a
+  substantially smaller claim than "any topic with a prerequisite structure." Appendix
+  B sketches a worked example to show it is more than a placeholder, but a sketch is not
+  a result. **Recommended near-term handling is therefore the degraded mode (§4):**
+  ship the acyclic core, mark the mutually-defined cluster as a typed exception taught
+  holistically, and make *no* structural-optimality claim for that region — rather than
+  hard-failing the whole build or relying on unvalidated versioning.
 - **No independent gate yet** — the propose/dispose split assumes a non-agent run
   certifies the agent's work; today that is discipline, not CI.
 - **The artifact "structure-matches-claims" gate is aspirational** — ad-hoc sweeps,
@@ -617,14 +678,40 @@ engineering discipline on top of it.** The relevant neighbors:
   explicit-graph idea; we add the *derivation* (the curriculum is output, not a
   parallel artifact) and the build gate.
 
+In one table — what each tradition already solves, and the delta this proposal adds:
+
+| Tradition | What it already solves | What this proposal adds |
+|---|---|---|
+| Gagné, learning hierarchies | prerequisite hierarchies for skills | a machine-checked *source of truth* |
+| Knowledge Space Theory | formal prerequisite/state modeling, learning paths | *authored*, *compiled* exposition + closure gates (vs response-inferred) |
+| Q-matrix / KC models | item↔skill mapping for assessment/tutoring | prose/order/glossary *derivation* from the same graph |
+| Concept maps | visual relation graphs | typed, build-checked, *derivational* graph |
+| Curriculum/competency ontologies | machine-readable competencies | CI gates + content compilation |
+
 **Positioning.** The differentiator is narrow and engineering: **the typed concept
 graph is a build-checked *source of truth* from which ordering, navigation, glossary,
 and assessment hooks are *derived*** — a curriculum *compiler* with enforced
 invariants (closure, acyclicity, coherence, traceability), rather than a hand-drawn map
 kept in sync by discipline or a structure inferred from response data. What it compiles
 is *form*; whether the form teaches is the deferred empirical question (§13) this paper
-is built to make answerable. (Citations here are deliberately light and by name; a
-camera-ready version owes full references and a closer KST comparison.)
+is built to make answerable.
+
+### References
+
+- Doignon, J.-P., & Falmagne, J.-C. (1985). Spaces for the assessment of knowledge.
+  *International Journal of Man-Machine Studies*, 23(2), 175–196.
+- Doignon, J.-P., & Falmagne, J.-C. (1999). *Knowledge Spaces.* Springer.
+- Falmagne, J.-C., & Doignon, J.-P. (2011). *Learning Spaces.* Springer.
+- Gagné, R. M. (1968). Learning hierarchies. *Educational Psychologist*, 6(1), 1–9.
+- Koedinger, K. R., Corbett, A. T., & Perfetti, C. (2012). The Knowledge-Learning-
+  Instruction framework: Bridging the science-practice chasm to enhance robust
+  learning. *Cognitive Science*, 36(5), 757–798.
+- Novak, J. D., & Gowin, D. B. (1984). *Learning How to Learn.* Cambridge Univ. Press.
+- Tatsuoka, K. K. (1983). Rule space: An approach for dealing with misconceptions based
+  on item response theory. *Journal of Educational Measurement*, 20(4), 345–354.
+
+*(Citations are to the canonical sources; a camera-ready version owes a fuller
+comparison, especially a side-by-side with KST's surmise relations.)*
 
 ---
 
