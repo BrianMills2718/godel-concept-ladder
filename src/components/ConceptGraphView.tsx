@@ -17,8 +17,18 @@
 import { useMemo, useState } from "react";
 import ReactFlow, { Background, Controls, MarkerType, type Edge, type Node } from "reactflow";
 import "reactflow/dist/style.css";
-import { CONCEPT_GRAPH, CONCEPT_BY_ID, conceptTopoOrder, prereqWhy } from "../content/concepts";
+import { CONCEPT_GRAPH, CONCEPT_BY_ID, conceptTopoOrder, prereqWhy, prereqKindOf, PREREQ_KINDS, type PrereqKind } from "../content/concepts";
 import { conceptSCCs, goalClosure } from "../content/derive";
+
+/** Color per prerequisite kind (ADR-0005), used for the edge + the legend. */
+const KIND_COLOR: Record<PrereqKind, string> = {
+  "is-a": "#2563eb",
+  "part-of": "#7c3aed",
+  "defined-via": "#0891b2",
+  "operates-on": "#059669",
+  "refines": "#d97706",
+  "assumes": "#db2777",
+};
 import { LAYER_META } from "./viz/legend";
 import { flowNodeTypes, flowEdgeTypes, pickHandles } from "./viz/flow";
 import { RichLine } from "./Math";
@@ -101,13 +111,12 @@ export function ConceptGraphView() {
   const edges: Edge[] = useMemo(() => {
     const es: Edge[] = [];
     for (const c of CONCEPT_GRAPH.concepts) {
-      const meta = LAYER_META[c.layer];
       for (const p of c.prerequisites) {
         if (!positions[p]) continue;
         const incident = sel === c.id || sel === p;
         const dimmed = sel !== null && !incident;
-        // Label only the edges of the selected concept, from its point of view.
-        const short = sel === c.id ? "requires" : sel === p ? "needed by" : "";
+        const kind = prereqKindOf(c.id, p) ?? "is-a";
+        const kcolor = KIND_COLOR[kind];
         es.push({
           id: `pq-${p}-${c.id}`,
           type: "annot",
@@ -115,12 +124,12 @@ export function ConceptGraphView() {
           target: c.id,
           ...pickHandles(positions[p], positions[c.id]),
           data: {
-            short,
-            verbose: `${c.term} requires ${CONCEPT_BY_ID[p]?.term ?? p} — ${prereqWhy(c.id, p) ?? "(unannotated)"}`,
-            color: meta.color,
+            short: kind, // semantic kind is the always-on label (ADR-0005)
+            verbose: `${c.term} ${kind} ${CONCEPT_BY_ID[p]?.term ?? p} — ${prereqWhy(c.id, p) ?? "(unannotated)"}`,
+            color: kcolor,
           },
-          style: { stroke: meta.color, strokeWidth: incident ? 2.5 : 1.5, opacity: dimmed ? 0.1 : 0.85 },
-          markerEnd: { type: MarkerType.ArrowClosed, color: meta.color },
+          style: { stroke: kcolor, strokeWidth: incident ? 2.75 : 1.5, opacity: dimmed ? 0.1 : 0.9 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: kcolor },
           zIndex: incident ? 10 : 0,
         });
       }
@@ -162,13 +171,17 @@ export function ConceptGraphView() {
       <header className="cgv-head">
         <h2>Concept graph</h2>
         <p>
-          The source of truth (ADR-0003/0004): every concept and what it depends on; the skill map is
-          <em> derived</em> from this. <strong>Click a concept</strong> to highlight and label its
-          dependencies (what it requires, what needs it); <strong>hover an edge</strong> to read the
-          relationship. Laid out by stage, left → right.
+          The source of truth (ADR-0003/0004/0005): every concept and what it depends on; the skill map
+          is <em> derived</em> from this. Each prerequisite arrow runs prerequisite → dependent and is
+          labelled + coloured by its <strong>kind</strong>; <strong>hover an edge</strong> for the full
+          justification, <strong>click a concept</strong> to isolate its dependencies. Laid out by stage.
         </p>
-        <ul className="cgv-legend">
-          <li><span className="cgv-key solid" /> prerequisite — arrow runs prerequisite → the concept that needs it</li>
+        <ul className="cgv-legend cgv-kinds">
+          {PREREQ_KINDS.map((k) => (
+            <li key={k}>
+              <span className="cgv-kind-swatch" style={{ background: KIND_COLOR[k] }} /> {k}
+            </li>
+          ))}
           <li><span className="cgv-key dashed" /> contrasts (mutual, not a dependency)</li>
           <li><span className="cgv-key cluster" /> in a dependency cycle (a modeling error — should not appear)</li>
           <li>

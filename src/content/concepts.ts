@@ -837,6 +837,135 @@ export function prereqWhy(concept: string, prereq: string): string | undefined {
   return PREREQ_WHY[`${concept}>${prereq}`];
 }
 
+/**
+ * Semantic KIND of each prerequisite edge (ADR-0005), keyed `"concept>prereq"`.
+ * Annotation only — every kind still gates (closure/acyclicity/derivation are
+ * unchanged). It is the always-on edge label in the graph view (the `why` is the
+ * on-hover detail). Vocabulary, kept small and earned from the real edges:
+ *   is-a        — X is a kind/specialization of Y
+ *   part-of     — X is composed of / contains Y
+ *   defined-via — X's definition is stated through Y (machinery, relation, property)
+ *   operates-on — X is a construct/operation acting on Y
+ *   refines     — X is a stronger/sharper/later-maturity version of Y
+ *   assumes     — X takes Y as a hypothesis / ingredient
+ */
+export const PREREQ_KINDS = ["is-a", "part-of", "defined-via", "operates-on", "refines", "assumes"] as const;
+export type PrereqKind = (typeof PREREQ_KINDS)[number];
+
+export const PREREQ_KIND: Record<string, PrereqKind> = {
+  "variable>symbol": "is-a",
+  "variable>object": "defined-via",
+  "alphabet>symbol": "part-of",
+  "string>symbol": "part-of",
+  "formation-rule>symbol": "operates-on",
+  "well-formed>string": "defined-via",
+  "well-formed>formation-rule": "defined-via",
+  "parse-tree>formation-rule": "defined-via",
+  "parse-tree>well-formed": "defined-via",
+  "term>well-formed": "is-a",
+  "term>variable": "part-of",
+  "term>object": "defined-via",
+  "atomic-formula>term": "part-of",
+  "formula>atomic-formula": "part-of",
+  "formula>well-formed": "is-a",
+  "quantifier>formula": "operates-on",
+  "quantifier>variable": "operates-on",
+  "bound-variable>variable": "is-a",
+  "bound-variable>quantifier": "defined-via",
+  "free-variable>variable": "is-a",
+  "free-variable>quantifier": "defined-via",
+  "sentence>formula": "is-a",
+  "sentence>free-variable": "defined-via",
+  "grammar>formation-rule": "part-of",
+  "grammar>well-formed": "defined-via",
+  "parser>grammar": "operates-on",
+  "parser>well-formed": "defined-via",
+  "axiom>sentence": "is-a",
+  "inference-rule>formula": "operates-on",
+  "formal-theory>axiom": "part-of",
+  "formal-theory>inference-rule": "part-of",
+  "proof>axiom": "part-of",
+  "proof>inference-rule": "defined-via",
+  "theorem>proof": "defined-via",
+  "theorem>sentence": "is-a",
+  "theorem>formal-theory": "assumes",
+  "provability>proof": "defined-via",
+  "proof-graph>proof": "is-a",
+  "proof-tree>proof-graph": "is-a",
+  "proof-dag>proof-graph": "is-a",
+  "numeral>term": "is-a",
+  "peano-arithmetic>formal-theory": "is-a",
+  "peano-arithmetic>numeral": "defined-via",
+  "interpretation>symbol": "operates-on",
+  "interpretation>object": "defined-via",
+  "structure>interpretation": "part-of",
+  "structure>object": "part-of",
+  "satisfaction>structure": "defined-via",
+  "satisfaction>formula": "operates-on",
+  "satisfaction>sentence": "defined-via",
+  "truth-in-structure>satisfaction": "is-a",
+  "model>structure": "is-a",
+  "model>satisfaction": "defined-via",
+  "model>axiom": "assumes",
+  "syntactic>proof": "defined-via",
+  "semantic>satisfaction": "defined-via",
+  "contradiction>sentence": "is-a",
+  "consistency>contradiction": "defined-via",
+  "consistency>provability": "defined-via",
+  "consistency>syntactic": "is-a",
+  "soundness>provability": "defined-via",
+  "soundness>truth-in-structure": "defined-via",
+  "soundness>consistency": "refines",
+  "soundness>syntactic": "defined-via",
+  "soundness>semantic": "defined-via",
+  "completeness>provability": "defined-via",
+  "completeness>sentence": "defined-via",
+  "object-theory>formal-theory": "is-a",
+  "metatheory>object-theory": "operates-on",
+  "metatheory>sentence": "operates-on",
+  "metatheory>proof": "operates-on",
+  "recursively-enumerable>decidable": "refines",
+  "undecidable>decidable": "defined-via",
+  "primitive-recursive>decidable": "is-a",
+  "effectively-axiomatized>axiom": "defined-via",
+  "effectively-axiomatized>recursively-enumerable": "defined-via",
+  "effectively-axiomatized>decidable": "defined-via",
+  "godel-coding>formula": "operates-on",
+  "godel-coding>proof": "operates-on",
+  "code-number>godel-coding": "defined-via",
+  "arithmetization>godel-coding": "defined-via",
+  "arithmetization>code-number": "operates-on",
+  "representable>primitive-recursive": "defined-via",
+  "representable>arithmetization": "defined-via",
+  "proof-predicate>representable": "defined-via",
+  "prov-predicate>proof-predicate": "defined-via",
+  "diagonalization>sentence": "operates-on",
+  "diagonalization>code-number": "defined-via",
+  "fixed-point-lemma>diagonalization": "refines",
+  "godel-sentence>fixed-point-lemma": "defined-via",
+  "godel-sentence>prov-predicate": "defined-via",
+  "omega-consistency>consistency": "refines",
+  "rosser-sentence>godel-sentence": "refines",
+  "rosser-sentence>consistency": "assumes",
+  "rosser-sentence>omega-consistency": "defined-via",
+  "first-incompleteness>godel-sentence": "assumes",
+  "first-incompleteness>effectively-axiomatized": "assumes",
+  "first-incompleteness>consistency": "assumes",
+  "first-incompleteness>soundness": "assumes",
+  "first-incompleteness>completeness": "defined-via",
+  "first-incompleteness>metatheory": "defined-via",
+  "con-t>prov-predicate": "defined-via",
+  "con-t>consistency": "defined-via",
+  "second-incompleteness>first-incompleteness": "refines",
+  "second-incompleteness>con-t": "assumes",
+  "second-incompleteness>effectively-axiomatized": "assumes",
+};
+
+/** The semantic kind of a prerequisite edge, or undefined if unannotated. */
+export function prereqKindOf(concept: string, prereq: string): PrereqKind | undefined {
+  return PREREQ_KIND[`${concept}>${prereq}`];
+}
+
 /** Direct prerequisite ids of a concept. */
 export function conceptPrereqs(id: string): string[] {
   return CONCEPT_BY_ID[id]?.prerequisites ?? [];

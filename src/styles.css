@@ -154,6 +154,7 @@ kbd {
 .cgv-key.solid { border-top: 2px solid var(--accent); }
 .cgv-key.dashed { border-top: 2px dashed #94a3b8; }
 .cgv-key.cluster { width: 16px; height: 14px; border: 3px double var(--accent); border-radius: 4px; }
+.cgv-kind-swatch { display: inline-block; width: 22px; height: 3px; border-radius: 2px; vertical-align: middle; }
 .cgv-canvas { flex: 1; min-height: 440px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .cg-node-inner { display: flex; flex-direction: column; gap: 2px; text-align: left; }
 .cg-node-term { font-size: 13px; font-weight: 600; }
