@@ -1,9 +1,10 @@
 # Overnight build — make the reference architecture fully embody the methodology
 
-> **STATUS: PROPOSED (2026-06-20)** — pending Brian's scope confirmation and an
-> execution-mechanism choice. The prior overnight build (17 stages + interactives)
-> and the SPRINT (skill DAG + LLM judge) are **complete**; this plan is the next
-> increment. The previous plans are preserved in git history / `docs/SPRINT.md`.
+> **STATUS (2026-06-20): Phase 3 (correctness audit) COMPLETE** via a multi-agent
+> workflow — 16 confirmed findings fixed, 13 arguable adjudicated; see
+> `docs/EDGE_REVIEW.md`. Phases 1, 2, 4 remain (pending go-ahead). The prior
+> overnight build (17 stages + interactives) and the SPRINT (skill DAG + LLM
+> judge) are complete; preserved in git history / `docs/SPRINT.md`.
 
 **Mission.** The methodology (`METHODOLOGY.md`, ADR-0004) now describes several
 model features the reference implementation does not yet have. Close that gap so

@@ -243,6 +243,10 @@ for (const l of LESSONS) {
   for (const c of CONCEPTS)
     for (const p of c.prerequisites)
       ok(conceptIds.has(p), `concept ${c.id}: prerequisite "${p}" is not a concept`);
+  // a primitive is an atom: it must have no prerequisites (ADR-0004 §5.1)
+  for (const c of CONCEPTS)
+    if (c.primitive)
+      ok(c.prerequisites.length === 0, `concept ${c.id}: marked primitive but has prerequisites [${c.prerequisites.join(", ")}]`);
 
   const prereqAdj = {};
   for (const c of CONCEPTS) prereqAdj[c.id] = c.prerequisites.filter((p) => conceptIds.has(p));

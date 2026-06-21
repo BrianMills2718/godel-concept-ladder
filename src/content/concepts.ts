@@ -29,6 +29,7 @@ const CONCEPTS: Concept[] = [
       "A single atomic character of the formal language — the smallest piece, written on the page but not yet meaning anything on its own.",
     example: "$0$, $S$, $+$, $=$, and the variable $x$ are each one symbol.",
     prerequisites: [],
+    contrasts: ["object"],
     introducedIn: "stage-1",
   },
   {
@@ -39,9 +40,10 @@ const CONCEPTS: Concept[] = [
     short:
       "A thing the theory talks *about* — not a mark on the page. For arithmetic the objects are the numbers $0, 1, 2, \\dots$ themselves.",
     expanded:
-      "Keep the mark and the thing apart: the @c{symbol} string $S(S(0))$ is written with ink; the object it names is the number two. Stages 6–7 make 'the objects' precise as the domain of a structure; here it is enough that arithmetic talks about numbers.",
+      "Keep the mark and the thing apart: the symbol string $S(S(0))$ is written with ink; the object it names is the number two. Stages 6–7 make 'the objects' precise as the domain of a structure; here it is enough that arithmetic talks about numbers.",
     example: "The numeral $S(S(0))$ is a string of symbols; the object it names is the number $2$.",
-    prerequisites: ["symbol"],
+    prerequisites: [],
+    contrasts: ["symbol"],
     introducedIn: "stage-1",
   },
 
@@ -82,7 +84,7 @@ const CONCEPTS: Concept[] = [
     term: "formation rule",
     layer: "syntax",
     short:
-      "A grammar rule that builds a larger legal expression out of smaller legal pieces — e.g. 'if $t$ is a term, then $S(t)$ is a term.'",
+      "A grammar rule that either declares a legal expression directly (e.g. '$0$ is a term') or builds a larger one out of smaller legal pieces (e.g. 'if $t$ is a term, then $S(t)$ is a term').",
     expanded:
       "The whole grammar is just a short list of such rules. An expression is legal exactly when some sequence of rules produces it — that is what 'well-formed' will mean — and the record of which rules were used is its parse tree.",
     example: "Term rules: $0$ is a term; if $t$ is a term so is $S(t)$; if $s,t$ are terms so are $(s+t)$ and $(s\\times t)$.",
@@ -174,6 +176,7 @@ const CONCEPTS: Concept[] = [
     short: "A @c{variable} occurrence governed by a @c{quantifier} ($\\forall x$ or $\\exists x$).",
     example: "$x$ is bound in $\\forall x(x+0=x)$.",
     prerequisites: ["variable", "quantifier"],
+    contrasts: ["free-variable"],
     introducedIn: "stage-1",
   },
   {
@@ -184,6 +187,7 @@ const CONCEPTS: Concept[] = [
       "A @c{variable} occurrence *not* bound by any @c{quantifier}. A free variable leaves the expression's truth value undetermined — it is not yet a definite claim.",
     example: "$x$ is free in $x+0=x$; binding it as $\\forall x(x+0=x)$ removes the freedom.",
     prerequisites: ["variable", "quantifier"],
+    contrasts: ["bound-variable"],
     introducedIn: "stage-1",
     microQuiz: [
       {
@@ -292,9 +296,9 @@ const CONCEPTS: Concept[] = [
     term: "theorem",
     layer: "proof",
     short:
-      "A @c{sentence} that has a @c{proof} from a theory. We write $T \\vdash P$ when $T$ proves $P$.",
+      "A @c{sentence} that has a @c{proof} from a @c{formal-theory}. We write $T \\vdash P$ when $T$ proves $P$.",
     example: "$2+2=4$ is a theorem of PA: $\\mathrm{PA} \\vdash 2+2=4$.",
-    prerequisites: ["proof", "sentence"],
+    prerequisites: ["proof", "sentence", "formal-theory"],
     introducedIn: "stage-3",
   },
   {
@@ -325,6 +329,7 @@ const CONCEPTS: Concept[] = [
     layer: "proof",
     short: "A tree-shaped @c{proof-graph}: each use of a lemma carries its own separate copy.",
     prerequisites: ["proof-graph"],
+    contrasts: ["proof-dag"],
     introducedIn: "stage-4",
   },
   {
@@ -333,6 +338,7 @@ const CONCEPTS: Concept[] = [
     layer: "proof",
     short: "A directed acyclic @c{proof-graph} in which a shared lemma is proved once and reused.",
     prerequisites: ["proof-graph"],
+    contrasts: ["proof-tree"],
     introducedIn: "stage-4",
   },
 
@@ -386,9 +392,9 @@ const CONCEPTS: Concept[] = [
     term: "satisfaction",
     layer: "semantics",
     short:
-      "The relation $M \\models P$: the @c{structure} $M$ makes the @c{formula} $P$ true, defined by recursion on the shape of $P$. A semantic claim, not a syntactic one.",
+      "The relation $M \\models P$, defined by recursion on the shape of the @c{formula} $P$: the @c{structure} $M$ satisfies $P$ under an assignment of its free variables — and for a @c{sentence} (no free variables) the assignment is irrelevant, giving plain truth in $M$. A semantic claim, not a syntactic one.",
     example: "$\\mathbb{N} \\models \\forall x(x+0=x)$, and $\\mathbb{N} \\not\\models 2+2=5$.",
-    prerequisites: ["structure", "formula"],
+    prerequisites: ["structure", "formula", "sentence"],
     introducedIn: "stage-7",
   },
   {
@@ -484,7 +490,7 @@ const CONCEPTS: Concept[] = [
     term: "object theory",
     layer: "proof",
     short:
-      "The @c{formal-theory} currently under study (e.g. PA). Its statements are about numbers, not about itself.",
+      "The @c{formal-theory} currently under study (e.g. PA). Its statements are about numbers — claims *about* the theory itself belong to the metatheory (though, via coding, later stages show arithmetic can encode such claims too).",
     example: "Inside the object theory PA, $2+2=4$ is a statement about numbers.",
     prerequisites: ["formal-theory"],
     contrasts: ["metatheory"],
@@ -496,7 +502,7 @@ const CONCEPTS: Concept[] = [
     layer: "metatheory",
     short:
       "The external vantage from which we reason ABOUT an @c{object-theory} — about its @c{sentence}s and @c{proof}s. 'PA proves no contradiction' is a metatheoretic claim, not a theorem of PA itself.",
-    example: "“There is no PA-proof of $G$” is a claim in the metatheory about PA.",
+    example: "“There is no PA-proof of $G_{\\mathrm{PA}}$” is a claim in the metatheory about PA.",
     prerequisites: ["object-theory", "sentence", "proof"],
     contrasts: ["object-theory"],
     introducedIn: "stage-10",
@@ -517,9 +523,9 @@ const CONCEPTS: Concept[] = [
     term: "recursively enumerable",
     layer: "coding",
     short:
-      "An algorithm can list all the yes-instances, but may never halt on a no-instance (abbreviated r.e.). Strictly weaker than @c{decidable}.",
+      "A set whose members an algorithm can list (equivalently: a procedure that halts on members but may run forever on non-members) — abbreviated r.e. Strictly weaker than @c{decidable}.",
     example: "The theorems of PA are r.e. — listable — yet theoremhood is not decidable.",
-    prerequisites: ["decidable", "provability"],
+    prerequisites: ["decidable"],
     introducedIn: "stage-11",
   },
   {
@@ -537,9 +543,9 @@ const CONCEPTS: Concept[] = [
     term: "primitive recursive",
     layer: "coding",
     short:
-      "A class of always-halting computable functions and relations. @c{proof}-checking is primitive recursive — which is exactly why it can be mirrored inside arithmetic.",
+      "A class of always-halting computable functions and relations. Proof-checking is primitive recursive — which is exactly why it can be mirrored inside arithmetic.",
     example: "Checking that a finite list of formulas is a valid proof is primitive recursive.",
-    prerequisites: ["decidable", "proof"],
+    prerequisites: ["decidable"],
     introducedIn: "stage-11",
   },
   {
@@ -547,9 +553,9 @@ const CONCEPTS: Concept[] = [
     term: "effectively axiomatized",
     layer: "coding",
     short:
-      "A theory whose @c{axiom}s can be mechanically recognized or listed (a @c{decidable} axiom set). A hypothesis of Gödel's theorems; 'computably axiomatized' means the same thing.",
+      "A theory whose @c{axiom}s can be mechanically listed (the set is @c{recursively-enumerable}); for concrete systems like PA the axiom set is in fact @c{decidable}. A hypothesis of Gödel's theorems; 'computably axiomatized' means the same thing.",
     example: "PA is effectively axiomatized: a machine can check whether a formula is an axiom.",
-    prerequisites: ["axiom", "decidable"],
+    prerequisites: ["axiom", "recursively-enumerable", "decidable"],
     introducedIn: "stage-11",
   },
 
@@ -559,7 +565,7 @@ const CONCEPTS: Concept[] = [
     term: "Gödel coding",
     layer: "coding",
     short:
-      "Assigning natural numbers to @c{symbol}s, @c{formula}s, and @c{proof}s, so that syntactic facts become arithmetic facts about those numbers.",
+      "Assigning natural numbers to @c{symbol}s, @c{formula}s, and @c{proof}s — giving every syntactic object a numerical name. (Turning syntactic *relations* into arithmetic ones is the next step, arithmetization.)",
     example: "Code a sequence by $2^{a_1+1}\\,3^{a_2+1}\\,5^{a_3+1}\\cdots$.",
     prerequisites: ["formula", "proof"],
     introducedIn: "stage-12",
@@ -591,7 +597,7 @@ const CONCEPTS: Concept[] = [
     term: "representable",
     layer: "coding",
     short:
-      "A relation is representable in $T$ when some arithmetic @c{formula} holds of exactly the right numbers. @c{decidable} (indeed @c{primitive-recursive}) syntactic relations — like proof-checking — are representable.",
+      "A relation is representable in $T$ when some arithmetic @c{formula} lets $T$ *prove* it of exactly the right tuples and *disprove* it of the rest — a proof-theoretic property (⊢), not mere truth in ℕ. @c{decidable} (indeed @c{primitive-recursive}) syntactic relations like proof-checking are representable.",
     example: "Proof-checking is representable in PA by an arithmetic formula.",
     prerequisites: ["primitive-recursive", "arithmetization"],
     introducedIn: "stage-13",
@@ -603,7 +609,7 @@ const CONCEPTS: Concept[] = [
     short:
       "The arithmetic predicate @n{ProofT}: '$p$ codes a valid $T$-@c{proof} of the @c{formula} coded by $q$'. Proof-checking is @c{primitive-recursive}, hence @c{representable} in arithmetic.",
     example: "$\\mathrm{Proof}_T(p, \\ulcorner 2+2=4\\urcorner)$ holds when $p$ codes an actual proof of $2+2=4$.",
-    prerequisites: ["representable", "arithmetization"],
+    prerequisites: ["representable"],
     introducedIn: "stage-13",
   },
   {
@@ -644,7 +650,7 @@ const CONCEPTS: Concept[] = [
     layer: "coding",
     short:
       "A @c{sentence} $G_T$ with $T \\vdash G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ — built by the @c{fixed-point-lemma} from the @c{prov-predicate}, it 'says' it is unprovable in $T$. Arithmetic, *not* the liar paradox.",
-    example: "$\\mathrm{PA} \\nvdash G_{\\mathrm{PA}}$, yet $\\mathbb{N} \\models G_{\\mathrm{PA}}$.",
+    example: "$\\mathrm{PA} \\nvdash G_{\\mathrm{PA}}$, yet $\\mathbb{N} \\models G_{\\mathrm{PA}}$ (given $\\mathbb{N} \\models \\mathrm{PA}$, i.e. soundness).",
     prerequisites: ["fixed-point-lemma", "prov-predicate"],
     introducedIn: "stage-14",
   },
@@ -676,7 +682,7 @@ const CONCEPTS: Concept[] = [
     layer: "metatheory",
     short:
       "A @c{consistency|consistent}, @c{effectively-axiomatized}, sufficiently strong theory is *incomplete*: a @c{godel-sentence} $G_T$ is unprovable in the theory, yet true in $\\mathbb{N}$ — a @c{metatheory} claim about the object theory (given @c{soundness}). So @c{completeness} fails.",
-    example: "PA, being consistent and effectively axiomatized, cannot prove or refute $G_{\\mathrm{PA}}$.",
+    example: "PA, being consistent and effectively axiomatized, cannot prove $G_{\\mathrm{PA}}$ — and, given soundness, cannot refute it either; so PA is incomplete. (Plain consistency alone gives only unprovability; the irrefutability half needs ω-consistency, or Rosser's sentence to drop back to mere consistency.)",
     prerequisites: ["godel-sentence", "effectively-axiomatized", "consistency", "soundness", "completeness", "metatheory"],
     introducedIn: "stage-15",
   },
@@ -718,7 +724,6 @@ export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(
  * dependency without justifying it) and forbids orphans.
  */
 export const PREREQ_WHY: Record<string, string> = {
-  "object>symbol": "you grasp 'object' by distinguishing the thing named from the symbol that names it",
   "variable>symbol": "a variable is a kind of symbol",
   "variable>object": "a variable stands for an (unspecified) object",
   "alphabet>symbol": "an alphabet is the fixed set of available symbols",
@@ -754,6 +759,7 @@ export const PREREQ_WHY: Record<string, string> = {
   "proof>inference-rule": "each proof step applies an inference rule",
   "theorem>proof": "a theorem is a sentence that has a proof",
   "theorem>sentence": "a theorem is a sentence (a provable one)",
+  "theorem>formal-theory": "a theorem is a sentence provable from a fixed formal theory T",
   "provability>proof": "provability is the existence of a proof",
   "proof-graph>proof": "a proof graph draws a proof as a reachability graph",
   "proof-tree>proof-graph": "a proof tree is a tree-shaped proof graph",
@@ -767,6 +773,7 @@ export const PREREQ_WHY: Record<string, string> = {
   "structure>object": "a structure has a domain of objects",
   "satisfaction>structure": "satisfaction is truth in a structure",
   "satisfaction>formula": "satisfaction evaluates a formula's truth",
+  "satisfaction>sentence": "for a sentence the assignment is irrelevant — satisfaction reduces to plain truth in M",
   "truth-in-structure>satisfaction": "truth-in-a-structure is the satisfaction relation",
   "model>structure": "a model is a structure (one that satisfies the axioms)",
   "model>satisfaction": "'model of T' means it satisfies T's axioms",
@@ -789,12 +796,11 @@ export const PREREQ_WHY: Record<string, string> = {
   "metatheory>sentence": "metatheoretic claims are about the object theory's sentences…",
   "metatheory>proof": "…and about its proofs",
   "recursively-enumerable>decidable": "r.e. is the weaker sibling of decidable",
-  "recursively-enumerable>provability": "the provable sentences are the running r.e. example",
   "undecidable>decidable": "undecidable = not decidable",
   "primitive-recursive>decidable": "primitive-recursive relations are decidable",
-  "primitive-recursive>proof": "proof-checking is the running primitive-recursive example",
   "effectively-axiomatized>axiom": "effectively axiomatized = its axioms are mechanically recognizable…",
-  "effectively-axiomatized>decidable": "…i.e. axiomhood is decidable",
+  "effectively-axiomatized>recursively-enumerable": "effectively axiomatized = the axiom set is mechanically listable (r.e.)",
+  "effectively-axiomatized>decidable": "…and for concrete systems like PA, axiomhood is in fact decidable",
   "godel-coding>formula": "coding assigns numbers to formulas…",
   "godel-coding>proof": "…and to proofs",
   "code-number>godel-coding": "a code number is the number the coding assigns",
@@ -803,7 +809,6 @@ export const PREREQ_WHY: Record<string, string> = {
   "representable>primitive-recursive": "primitive-recursive relations are representable",
   "representable>arithmetization": "representability is the point of arithmetizing syntax",
   "proof-predicate>representable": "Proof_T works because proof-checking is representable",
-  "proof-predicate>arithmetization": "Proof_T is the arithmetized proof relation",
   "prov-predicate>proof-predicate": "Prov_T is ∃p Proof_T(p,·)",
   "diagonalization>sentence": "diagonalization produces a self-referential sentence…",
   "diagonalization>code-number": "…that refers to its own code number",
