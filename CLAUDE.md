@@ -66,6 +66,10 @@ The **concept graph is the source of truth** and everything else is derived
   The headless visual pass (`npm run screenshots`, puppeteer, `--disable-dev-shm-usage`
   for WSL) is mandatory before declaring UI done — it has already caught two
   page-freezing bugs that tsc/validator/review all missed.
+- **Concept graph correctness.** `scripts/derive-report.mjs` is the SCC/cycle
+  linter + derived-vs-authored map audit + goal-closure check. The concept graph
+  passed a multi-agent Tier-1 correctness audit (2026-06-20); findings, fixes, and
+  the full edge inventory are in `docs/EDGE_REVIEW.md` — update it when edges change.
 
 ## LLM judge (live — maintain to this contract)
 Built and validated; keep these invariants when changing it. Uses the ecosystem:

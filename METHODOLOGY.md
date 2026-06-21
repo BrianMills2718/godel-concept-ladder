@@ -284,10 +284,12 @@ singleton — the SCC pass is a *guard*, not a derivation step.
     it) or a genuinely pedagogical edge (keep it, explicitly, in the overlay).
   - *Derived-but-absent edges* → a structural fact the hand map missed (adopt it).
   - A coverage percentage is a health metric for the model.
-  *Reference outcome:* the concept graph explained 77% of a hand-authored map's
+  *Reference outcome:* the concept graph explains ~79% of a hand-authored map's
   edges; the audit surfaced a missing prerequisite (proofs are needed before
   "derive 2+2=4") and a wrong root (the structures unit actually depends on
-  syntactic atoms). Both were adopted.
+  syntactic atoms). Both were adopted. A separate goal-closure pass found 45 of
+  60 concepts on the critical path to the terminal goal (the rest are deliberate
+  enrichment).
 
 ### Step 5 — Attach content to the structure (§6)
 
@@ -408,7 +410,7 @@ typed form until reviewed. The cheap, high-value checks:
 - **Edge ablation** — does removing/adding a contested edge change anything a
   learner sees?
 
-*On the reference architecture:* the "77% of a hand-authored map explained" figure
+*On the reference architecture:* the "~79% of a hand-authored map explained" figure
 is an **existence proof that the graph recovers most of one expert's structure —
 nothing more.** It is consistent with shared author bias, retrofitting, or the
 remaining 23% being pedagogically essential; the same author wrote both. It is not
