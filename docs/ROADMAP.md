@@ -96,4 +96,22 @@ Fill the completeness rubric across the instance — this *is* Tier-1 content wo
 - Math correctness per `CONTENT_NOTES.md` is paramount; a subtle content error is a critical bug.
 
 ## Current status (2026-06-21)
-- M0: **done.** M1: **slice done** (`satisfaction` fully treated; data model + opt-in gates built and negative-tested). Next: the rubric doc + `apt` flags + completeness report (finish M1), then M2.
+- **M0 done.** Validator in CI.
+- **M1 done.** `docs/COMPLETENESS.md` + apt-flag sets + `npm run completeness`.
+- **M2a done.** `npm run e2e` artifact gate (caught 3 real render bugs).
+- **M2b done.** Bare-prose closure linter + `foreshadows` (in `npm run validate`).
+- **M2c done.** `src/content/orderScore.ts` + tests (in `npm run check`).
+- **M2d partial / BLOCKED.** Harness generalized to all tasks; 2/12 case sets authored;
+  measurement needs `OPENROUTER_API_KEY` + backend deps (absent here).
+- **M3 done.** Completeness ALL-GREEN and hard-gated (31 microQuizzes, 6 analogies,
+  5 ladders, examples 60/60, section roles 17/17, real pretests 15/15); Tier-1 verdicts
+  for all 108 edges (102 correct / 6 arguable / 0 wrong) in `EDGE_REVIEW.md`.
+- **M4 partial / BLOCKED.** Independent certifier `npm run certify` built and passing
+  (deterministic gates + e2e against a fresh preview — the proposer≠certifier authority).
+  Loop scaffold `scripts/generate.mjs` (`--dry-run` certifies; `propose`/`revise` are
+  `llm_client` agentic-coder steps, **stubbed — blocked on API access**).
+- **M5 BLOCKED** (needs M4's agentic loop + is a full second instance). **M6 deferred.**
+
+**Net:** everything executable without API access is done (M0–M3 + M4 certifier). The
+remaining work (M2d measurement, M4 agentic propose/revise, M5) is gated on
+`llm_client` + an API key; M6 is the deferred empirical milestone.

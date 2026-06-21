@@ -13,6 +13,7 @@
     "test": "node scripts/test-order-score.mjs",
     "check": "tsc -b --noEmit && node scripts/validate-content.mjs && node scripts/completeness-report.mjs --gate && node scripts/test-order-score.mjs && vite build",
     "e2e": "node scripts/e2e-gate.mjs",
+    "certify": "node scripts/certify.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
