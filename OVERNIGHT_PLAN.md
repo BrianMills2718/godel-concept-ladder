@@ -12,6 +12,15 @@
 >   `formation-rule` → `parse-tree`, which closure currently forbids as a chip) —
 >   is teed up as a focused next task rather than built speculatively.
 >
+> - ✅ **Round-2 audit** (lessons/quizzes/glossary/notation/cross-layer/backend/code)
+>   — 15 fixes; `docs/CONTENT_REVIEW.md`.
+> - 🔜 **ADR-0005 Phase 1 — typed prerequisite edges** (semantic-kind annotation:
+>   `is-a` / `part-of` / `defined-via` / `operates-on` / `refines` / `assumes`,
+>   rendered as the edge label). *Implementing now.*
+> - 📐 **ADR-0005 Phase 2 — LLM-in-the-loop generation** ("propose, then dispose":
+>   deterministic gates as guardrails, LLM optimizes ordering/grouping/spiral/prose).
+>   The larger arc; specced, not built.
+>
 > Prior overnight build (17 stages) and SPRINT (skill DAG + LLM judge) complete.
 
 **Mission.** The methodology (`METHODOLOGY.md`, ADR-0004) now describes several

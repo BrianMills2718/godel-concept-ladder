@@ -195,14 +195,21 @@ the review and validation that would).
   method represents "concepts learned together as successive approximations"
   *without* a cycle. *Status:* a recommended extension; the reference
   implementation uses single-version concepts (its domain decomposes cleanly).
-- **Relation types.** The minimum is two: gating **`prerequisite`** and non-gating
-  **`contrasts`**. Domains beyond clean formal subjects benefit from a small,
-  *typed* set so the prerequisite graph does not absorb every pedagogical link:
-  `soft-prerequisite`/`corequisite` (helpful/concurrent, gate weakly or not at
-  all), `gloss`/`foreshadow` (forward, motivational, never gate), `example-of`,
-  `analogy`. Only `prerequisite` (and `soft`/`corequisite`, weakly) participate in
-  derivation. *Status:* the reference implementation ships `prerequisite` +
-  `contrasts`; the rest are specified here and added per domain need.
+- **Relations have two orthogonal axes** (ADR-0005):
+  - **Gating axis** — does it mean "understand first"? Gating **`prerequisite`**
+    vs non-gating **`contrasts`** / (per domain need) `soft-prerequisite` /
+    `corequisite` / `gloss` / `foreshadow`. Only `prerequisite` participates in
+    closure, acyclicity, and derivation.
+  - **Semantic-kind axis** — *what kind* of prerequisite, a small controlled
+    vocabulary that **annotates** (it does not change gating):
+    `{ is-a, part-of, defined-via, operates-on, refines, assumes }`. The kind is
+    the always-on edge label (the `why` is the on-hover detail), so every edge is
+    legible at a glance and the *shape* of the structure shows. `refines` is where
+    maturity-versioning lives. *Status:* reference impl ships `prerequisite` +
+    `contrasts` + the kind vocabulary; the other gating types are added per need.
+  - **Discipline:** keep the kind vocabulary small and earned from real edges;
+    allow a "primary flavor" (the `why` carries nuance). Only the gating axis is a
+    principled rule — the kind is annotation.
 - **Concept graph** — all concepts and their `prerequisites`. The single source of
   truth for **dependency**; the other relation types annotate it without changing
   the derived order.
@@ -270,6 +277,15 @@ A strongly-connected-component (SCC) linter over `prerequisites` reports cycles 
 the author can apply (1)–(4). Because the relation is acyclic, every component is a
 singleton — the SCC pass is a *guard*, not a derivation step.
 
+**Acyclic substrate, spiral experience (ADR-0005).** Keeping the prerequisite
+relation acyclic is not a claim that understanding is non-holistic — concepts
+co-constitute, and real learning *spirals* (revisit and deepen). The resolution is
+to separate two things: the **dependency substrate stays acyclic** (so it is
+mechanically checkable), and the **mutuality is represented elsewhere** — in
+`refines` / maturity-versioned concepts and in the *traversal* (a deliberate
+revisit-and-deepen order), never as cyclic prerequisite edges. Designing that
+spiral is a pedagogy decision (Step 6), not a graph property.
+
 ### Step 4 — Group, derive the map, and audit it
 
 - **Skill-map nodes** = concept groups (the grouping is the abstraction function
@@ -318,6 +334,18 @@ secondary criteria (heuristics, not laws):
 
 A "lesson" is the content attached to a group, presented in the chosen order. The
 map shows the learner the choices a goal allows.
+
+**This is where the LLM belongs — "propose, then dispose" (ADR-0005).** A
+mechanical derivation guarantees *correctness* (a valid order), not *optimality*;
+choosing among valid orders, grouping, pacing, the spiral revisits, and the prose
+is judgment an algorithm cannot do well. So the division of labor is: the
+**deterministic layer defines the feasible set and enforces the hard invariants**
+(closure, acyclicity, traceability — the things you want *guaranteed*, not
+LLM-judged); the **LLM optimizes within that envelope** (which valid ordering,
+grouping, motivation, spiral, decompositions, the edge *kind*, the prose). Every
+LLM output round-trips through the gates, so you get LLM-quality pedagogy with
+mechanically-guaranteed correctness. The LLM must never adjudicate the hard
+invariants ("looks acyclic" is not a guarantee) — only the soft optimization.
 
 ### Step 7 — Verify and iterate
 
