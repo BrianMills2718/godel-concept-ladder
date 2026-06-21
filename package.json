@@ -11,6 +11,7 @@
     "validate": "node scripts/validate-content.mjs",
     "completeness": "node scripts/completeness-report.mjs",
     "check": "tsc -b --noEmit && node scripts/validate-content.mjs && vite build",
+    "e2e": "node scripts/e2e-gate.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {

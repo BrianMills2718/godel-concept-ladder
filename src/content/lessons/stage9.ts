@@ -109,9 +109,9 @@ No contradiction between them: one is about the logic's deductive power, the oth
         { id: "con", label: "consistent" },
       ],
       right: [
-        { id: "r1", label: "$T\\vdash P \\Rightarrow \\mathbb{N}\\models P$" },
-        { id: "r2", label: "for all $P$: $T\\vdash P$ or $T\\vdash\\neg P$" },
-        { id: "r3", label: "$T\\nvdash 0=1$" },
+        { id: "r1", label: "T ⊢ P  ⟹  ℕ ⊨ P" },
+        { id: "r2", label: "for every P: T ⊢ P or T ⊢ ¬P" },
+        { id: "r3", label: "T ⊬ (0=1)" },
       ],
       pairs: { snd: "r1", cmp: "r2", con: "r3" },
       explanation:

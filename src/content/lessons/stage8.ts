@@ -59,8 +59,8 @@ $$T \\nvdash G_T \\qquad\\text{yet}\\qquad \\mathbb{N}\\models G_T$$
         { id: "N", type: "Structure", layer: "semantics", label: "structure $\\mathbb{N}$", position: { x: 40, y: 300 } },
       ],
       edges: [
-        { id: "e1", source: "T", target: "P", type: "proves", label: "$\\vdash$ (syntactic)", layer: "proof" },
-        { id: "e2", source: "N", target: "P", type: "satisfies", label: "$\\models$ (semantic)", layer: "semantics" },
+        { id: "e1", source: "T", target: "P", type: "proves", label: "⊢ (syntactic)", layer: "proof" },
+        { id: "e2", source: "N", target: "P", type: "satisfies", label: "⊨ (semantic)", layer: "semantics" },
       ],
     },
     {

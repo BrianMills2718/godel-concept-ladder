@@ -4,6 +4,7 @@
  * what the graph says without parsing the visuals.
  */
 import type { VisualizationSpec } from "../../types";
+import { RichLine } from "../Math";
 import { TypedGraph } from "./TypedGraph";
 import { ParseTree } from "./ParseTree";
 import { ParseExplorer } from "./ParseExplorer";
@@ -15,7 +16,7 @@ import { Ladder } from "./Ladder";
 export function VizRenderer({ viz }: { viz: VisualizationSpec }) {
   return (
     <figure className="viz">
-      <figcaption className="viz-title">{viz.title}</figcaption>
+      <figcaption className="viz-title"><RichLine text={viz.title} /></figcaption>
       {viz.kind === "typed-graph" && <TypedGraph viz={viz} />}
       {viz.kind === "parse-tree" && <ParseTree viz={viz} />}
       {viz.kind === "parse-explorer" && <ParseExplorer viz={viz} />}

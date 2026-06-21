@@ -161,6 +161,8 @@ for (const l of LESSONS) {
       for (const e of v.edges) {
         ok(nodeIds.has(e.source), `stage ${l.stage} viz ${v.id}: edge ${e.id} bad source ${e.source}`);
         ok(nodeIds.has(e.target), `stage ${l.stage} viz ${v.id}: edge ${e.id} bad target ${e.target}`);
+        // edge labels render as PLAIN text (React Flow), not KaTeX — use unicode (⊢ ⊨), not $…$.
+        ok(!/\$/.test(e.label ?? ""), `stage ${l.stage} viz ${v.id}: edge ${e.id} label has $…$ but edge labels render plain — use unicode`);
       }
     }
     if (v.kind === "comparison-table") {
@@ -199,6 +201,9 @@ for (const l of LESSONS) {
       const rids = new Set(q.right.map((r) => r.id));
       for (const l2 of q.left)
         ok(rids.has(q.pairs[l2.id]), `stage ${l.stage} ${q.id}: pair for ${l2.id} -> unknown right`);
+      // right labels render inside <option> (no KaTeX possible) — use unicode, not $…$.
+      for (const r of q.right)
+        ok(!/\$/.test(r.label ?? ""), `stage ${l.stage} ${q.id}: matching right "${r.id}" label has $…$ but renders in <option> — use unicode`);
     }
     if (q.type === "fill-in")
       ok(Array.isArray(q.accepted) && q.accepted.length > 0, `stage ${l.stage} ${q.id}: no accepted answers`);
