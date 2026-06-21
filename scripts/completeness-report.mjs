@@ -117,4 +117,10 @@ for (const r of stageRows) {
 }
 console.log(`\n=== owed (EXPECTED-tier gaps): ${missing.length} ===`);
 for (const m of missing) console.log("  - " + m);
-console.log(missing.length === 0 ? "\nALL GREEN — EXPECTED tier may be promoted to hard-gated (ROADMAP M3)." : "");
+console.log(missing.length === 0 ? "\nALL GREEN — completeness rubric satisfied (ROADMAP M3)." : "");
+
+// --gate: hard-fail (ROADMAP M3 promoted EXPECTED → gated once coverage hit 100%).
+if (process.argv.includes("--gate") && missing.length) {
+  console.error(`\n✗ completeness gate: ${missing.length} owed field(s) — see above`);
+  process.exit(1);
+}

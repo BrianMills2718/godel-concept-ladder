@@ -5,6 +5,7 @@
  * sidebar can show the full ladder with "coming soon" markers.
  */
 import type { Lesson } from "../../types";
+import { SECTION_ROLES } from "../sectionRoles";
 import { stage0 } from "./stage0";
 import { stage1 } from "./stage1";
 import { stage2 } from "./stage2";
@@ -27,6 +28,12 @@ export const LESSONS: Lesson[] = [
   stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8,
   stage9, stage10, stage11, stage12, stage13, stage14, stage15, stage16,
 ];
+
+// Apply section roles (ROADMAP M3) where a section doesn't already carry one inline.
+for (const l of LESSONS)
+  l.sections.forEach((s, i) => {
+    if (!s.role) s.role = SECTION_ROLES[`${l.id}:${i}`];
+  });
 
 /** All stages authored — the ladder is complete. */
 export const UPCOMING: { stage: number; title: string }[] = [];
