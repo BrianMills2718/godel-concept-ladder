@@ -17,7 +17,7 @@
  * name-drops. `@n{}` (notation.ts) symbols are always-available primitives.
  */
 import type { Concept, ConceptGraph } from "../types";
-import { EXTRA_MICROQUIZ } from "./microquizzes";
+import { EXTRA_MICROQUIZ, EXTRA_ANALOGY } from "./microquizzes";
 
 const CONCEPTS: Concept[] = [
   // --- primitives (no prior concept) ---
@@ -853,8 +853,10 @@ const CONCEPTS: Concept[] = [
 
 // Merge the separately-authored core micro-checks (ROADMAP M3) onto their concepts
 // (only where a concept doesn't already define one inline).
-for (const c of CONCEPTS)
+for (const c of CONCEPTS) {
   if (!(c.microQuiz && c.microQuiz.length) && EXTRA_MICROQUIZ[c.id]) c.microQuiz = EXTRA_MICROQUIZ[c.id];
+  if (!c.analogy && EXTRA_ANALOGY[c.id]) c.analogy = EXTRA_ANALOGY[c.id];
+}
 
 export const CONCEPT_GRAPH: ConceptGraph = { concepts: CONCEPTS };
 

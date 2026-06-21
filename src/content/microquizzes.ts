@@ -1,11 +1,11 @@
 /**
- * Per-concept micro-checks for core concepts that were authored after the initial
- * lessons (ROADMAP M3). Kept in a separate module and merged onto the matching
- * concept at load (see concepts.ts) so the building-block checks live in one place.
- * Each item is tagged with the concept it tests and, where one fits, the
- * misconception it probes (METHODOLOGY §12).
+ * Supplementary per-concept content authored after the initial lessons (ROADMAP M3):
+ * micro-checks (EXTRA_MICROQUIZ) and out-of-domain analogies (EXTRA_ANALOGY). Kept in
+ * one module and merged onto the matching concept at load (see concepts.ts) so the
+ * building blocks live in one place. Micro-check items are tagged with the concept
+ * they test and, where one fits, the misconception they probe (METHODOLOGY §12).
  */
-import type { QuizQuestion } from "../types";
+import type { Analogy, QuizQuestion } from "../types";
 
 export const EXTRA_MICROQUIZ: Record<string, QuizQuestion[]> = {
   string: [{
@@ -244,4 +244,39 @@ export const EXTRA_MICROQUIZ: Record<string, QuizQuestion[]> = {
     explanation: "That is the Second Incompleteness Theorem: consistency is among the truths a consistent strong theory cannot establish about itself.",
     concepts: ["second-incompleteness"],
   }],
+};
+
+/** Out-of-domain analogies for the analogy-apt concepts (ADR-0006 §3): faithful on
+ *  the mapped features, retired at an explicit breakdown point. */
+export const EXTRA_ANALOGY: Record<string, Analogy> = {
+  "formal-theory": {
+    domain: "chess",
+    mapping: "the axioms are the starting position, the inference rules are the legal moves, and the theorems are the positions reachable by legal play — a proof is a game record.",
+    breakdown: "chess has no notion of a position being *true*, only *reachable*; and chess is finite/decidable, whereas provability in a strong theory is not.",
+    handoff: "so 'reachable by the rules' ($\\vdash$) is not 'true' ($\\models$) — we need *semantics* to say what a sentence means.",
+  },
+  "godel-coding": {
+    domain: "a character encoding (ASCII / an ISBN)",
+    mapping: "just as ASCII numbers every character and an ISBN names every book, Gödel coding gives every symbol, formula, and proof a unique natural-number name — turning syntax into arithmetic.",
+    breakdown: "an ISBN is an arbitrary lookup; Gödel coding is *structure-preserving* and invertible, so arithmetic on code-numbers mirrors operations on syntax (e.g. 'is a proof of').",
+    handoff: "that structure-preservation is exactly what lets arithmetic talk about its own provability.",
+  },
+  provability: {
+    domain: "reachable positions in a board game",
+    mapping: "$T \\vdash P$ means $P$ is reachable from the axioms by legal inference steps — like a board position reachable from the start by legal moves.",
+    breakdown: "reachability in a finite game is decidable; provability is only *recursively enumerable* — you can confirm a proof exists by exhibiting it, but cannot always confirm none does.",
+    handoff: "that confirm-yes-but-not-always-confirm-no asymmetry is why $\\neg\\mathrm{Prov}$ can be true yet unprovable.",
+  },
+  decidable: {
+    domain: "a vending machine that always returns a verdict",
+    mapping: "a decidable set has an algorithm that always halts with yes/no — like a machine that, for any input, always answers.",
+    breakdown: "many important sets (e.g. the theorems of PA) are only *semi*-decidable: the machine answers 'yes' eventually for members but may run forever otherwise.",
+    handoff: "so an effectively-axiomatized theory need not have *decidable theorems* — the gap incompleteness exploits.",
+  },
+  consistency: {
+    domain: "a rulebook of laws",
+    mapping: "a consistent theory is like a legal code that never both requires and forbids the same act — it never proves $P$ and $\\neg P$.",
+    breakdown: "a legal code can be consistent yet *unjust* (consistent ≠ sound/true); and unlike laws, a strong theory cannot certify its own consistency (Gödel II).",
+    handoff: "consistency is weaker than soundness — and is itself something the theory cannot prove about itself.",
+  },
 };

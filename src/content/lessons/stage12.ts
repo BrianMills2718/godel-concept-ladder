@@ -48,6 +48,19 @@ Why the $+1$? It makes *every* position contribute at least one factor of its pr
   ],
   visualizations: [
     {
+      id: "stage12-ladder",
+      kind: "ladder",
+      title: "Gödel coding, up and down the ladder of abstraction",
+      parameter: "the symbol sequence (its exponents)",
+      textualSummary:
+        "Control: encode one symbol sequence by choosing exponents and forming 2^a · 3^b · 5^c · …, giving a single concrete code-number. Abstract over all syntax: prime-power coding is an injection from EVERY finite sequence to a unique number — syntax in general becomes arithmetic. Step down: factor a given number back into prime exponents to recover the exact symbol sequence — the map is invertible.",
+      rungs: [
+        { rung: "control", caption: "Encode one sequence", body: "Pick exponents and form $2^{a}\\cdot 3^{b}\\cdot 5^{c}\\cdots$ — one concrete code-number $\\ulcorner P\\urcorner$ for a specific symbol sequence." },
+        { rung: "abstract-over", caption: "Over all syntax", body: "Prime-power coding is an *injection* from every finite sequence of codes to a unique number — so syntax-in-general is mirrored by arithmetic." },
+        { rung: "step-down", caption: "Decode at a point", body: "Factor a given number into its prime exponents to recover the exact symbol sequence — the coding is invertible, so arithmetic facts *are* syntactic facts." },
+      ],
+    },
+    {
       id: "stage12-encoder",
       kind: "coding-encoder",
       title: "Encode a sequence, then decode it back",

@@ -50,6 +50,19 @@ So: legal does not mean true, legal does not mean provable, and — going the ot
   ],
   visualizations: [
     {
+      id: "stage2-ladder",
+      kind: "ladder",
+      title: "Parsing, up and down the ladder of abstraction",
+      parameter: "the input string",
+      textualSummary:
+        "Control: feed one string ∀x(x=x) and apply the formation rules to parse it into a tree — a concrete successful parse. Abstract over all strings: the grammar is the finite set of formation rules that determines, for every string, whether a parse exists. Step down: point at a failing string ∀+=))0 — no rule applies, so it is not well-formed and has no truth value.",
+      rungs: [
+        { rung: "control", caption: "Parse one string", body: "Feed $\\forall x(x=x)$: apply the formation rules and watch it build a parse tree — one concrete, successful parse." },
+        { rung: "abstract-over", caption: "The grammar, over all strings", body: "The grammar abstracts over inputs: a finite set of formation rules that decides, for *every* string, whether a parse exists." },
+        { rung: "step-down", caption: "Read it at a failing string", body: "Point at $\\forall+=))0$: no formation-rule step applies, so it is **not** well-formed — and thus has no truth value (not false)." },
+      ],
+    },
+    {
       id: "stage2-grammar",
       kind: "typed-graph",
       title: "Generation builds legal strings; recognition checks them",

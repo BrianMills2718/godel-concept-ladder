@@ -56,6 +56,19 @@ A false-saying liar yields contradiction; an unprovable-saying $G_T$ yields *inc
   ],
   visualizations: [
     {
+      id: "stage14-ladder",
+      kind: "ladder",
+      title: "Diagonalization, up and down the ladder of abstraction",
+      parameter: "the formula ψ(x)",
+      textualSummary:
+        "Control: take one ψ(x) = ¬Prov_T(x); the Fixed-Point Lemma builds a specific G_T with T ⊢ G_T ↔ ¬Prov_T(⌜G_T⌝). Abstract over ψ: for ANY one-variable arithmetic formula there is a fixed point G with T ⊢ G ↔ ψ(⌜G⌝). Step down: read it back at our ψ — G_T says of its own code that no number codes a proof of it; self-reference recovered mechanically.",
+      rungs: [
+        { rung: "control", caption: "One choice of ψ", body: "Take $\\psi(x) := \\neg\\mathrm{Prov}_T(x)$: the Fixed-Point Lemma yields a specific $G_T$ with $T\\vdash G_T \\leftrightarrow \\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$." },
+        { rung: "abstract-over", caption: "Over all ψ", body: "The lemma abstracts over the formula: for *any* one-variable arithmetic $\\psi$ there is a fixed point $G$ with $T\\vdash G \\leftrightarrow \\psi(\\ulcorner G\\urcorner)$." },
+        { rung: "step-down", caption: "Read it back at our ψ", body: "$G_T$ 'says' of its own code that no number codes a proof of it — self-reference recovered by a *theorem*, via coding, not by a sentence containing itself." },
+      ],
+    },
+    {
       id: "stage14-loop",
       kind: "godel-loop",
       title: "How $G_T$ refers to itself — through coding",

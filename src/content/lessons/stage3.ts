@@ -51,6 +51,19 @@ The bridge from "provable" to "true" is a *separate* property called **soundness
   ],
   visualizations: [
     {
+      id: "stage3-ladder",
+      kind: "ladder",
+      title: "Provability, up and down the ladder of abstraction",
+      parameter: "the proof object",
+      textualSummary:
+        "Control: exhibit one finite derivation of 2+2=4 from PA's axioms — a single concrete proof witnessing PA ⊢ 2+2=4. Abstract over all proofs: T ⊢ P asserts that SOME finite derivation exists, quantifying over every proof object — an existential claim, not a particular proof. Step down: read it at a sentence — for the Gödel sentence no proof object exists, so T ⊬ G_T.",
+      rungs: [
+        { rung: "control", caption: "Exhibit one proof", body: "Write a specific finite derivation from PA's axioms ending in $2+2=4$ — one concrete proof witnesses $\\mathrm{PA}\\vdash 2+2=4$." },
+        { rung: "abstract-over", caption: "Over all proofs", body: "$T\\vdash P$ abstracts over *which* derivation: it asserts *some* finite proof exists — an existential claim over all proof objects, not any particular one." },
+        { rung: "step-down", caption: "Read it at a sentence", body: "At a sentence with no proof object, the existential is false: $T\\nvdash P$. This is what 'unprovable' means — no witness exists." },
+      ],
+    },
+    {
       id: "stage3-mp",
       kind: "typed-graph",
       title: "A proof step: modus ponens",
