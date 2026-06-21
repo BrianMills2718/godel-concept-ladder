@@ -1,5 +1,13 @@
-# Constructing Optimal Educational Output: A Concept-Graph-First Methodology
+# Constructing Optimal† Educational Output: A Concept-Graph-First Methodology
 ### (for topics with a representable prerequisite structure)
+
+> **† "Optimal" here means *structurally* optimal — a defined term, not a
+> superlative claim.** It names satisfaction of a set of structural form-checks
+> (fully defined in §14), is **necessary, not sufficient** for good learning, and is
+> *not* an efficacy claim. A reader who prefers **well-structured** may substitute it
+> throughout without loss. The word is kept because the project's aim is the
+> *structurally optimal substrate*; the body (reading contract, §14) is scrupulous
+> that this is all it means.
 
 *A construction theory, not an efficacy study. It specifies how to build a
 learnable treatment of a topic — ordered lessons, a navigable skill map,
@@ -7,9 +15,21 @@ assessments, visualizations, a glossary — by making the topic's **conceptual
 dependency structure** an explicit, machine-checked artifact and **deriving** the
 curriculum from it. It is grounded in a deployed reference architecture (the
 "Concept Ladder" for Gödel's incompleteness theorems) but written to apply to any
-topic that can be represented as concepts plus prerequisite relations. It argues
-for **structural** optimality and is explicit (§13–§15) about the empirical claims
-it deliberately does **not** make.*
+topic that can be represented as concepts plus prerequisite relations — though
+**whether a given topic admits that representation is itself the hard, often-negative
+question (§15)**, not a mild precondition. It argues for **structural** optimality and
+is explicit (§13–§15) about the empirical claims it deliberately does **not** make.*
+
+> **For external reviewers.** This is a **construction / methods** paper, not an
+> efficacy study. We claim **structural well-formedness only**; learning efficacy and
+> the *correctness* of individual prerequisite edges are explicitly **deferred**
+> (§13), by design (reading contract). The most useful review evaluates the
+> **construction discipline and its honesty about scope** — where the method
+> over-reaches, where a step is too vague to execute, where it ignores a relevant
+> prior result (§17) — *not* "where is the user study?" (we agree there isn't one
+> yet, and §13 says why). The self-application in §0 is meant to be checked: the
+> claims there (acyclic map, derived section order, closure) are falsifiable against
+> Appendix A.
 
 ---
 
@@ -17,9 +37,13 @@ it deliberately does **not** make.*
 
 > **"Optimal" is stipulative and structural — a spiral gloss here, fully defined in
 > §14.** Until §14, read *optimal educational output* as a one-line working
-> definition: a treatment that is dependency-faithful, gap-free, acyclic,
-> derived-order, inspectable, verifiable, and misconception-targeted. This names
-> *satisfaction of structural constraints*, not maximization against a measured
+> definition: a treatment with **six gate-enforced** properties — *gap-free,
+> decomposed* (acyclic), *derived, inspectable, verifiable, misconception-targeted* —
+> **plus one aspirational, review-owed** property, *dependency-faithful* (the edges
+> are the concepts one genuinely must understand first, not merely *some* acyclic set).
+> That seventh is the substantive one and the gates **cannot** certify it — it is what
+> Tier-1 expert review (§13) exists to check. So "optimal" names *satisfaction of
+> structural constraints* (six enforced, one owed), not maximization against a measured
 > objective. A reader who prefers **well-structured** or **sound** may substitute it
 > throughout without loss. (Introducing a term by a one-line gloss and deepening it
 > at its own node is itself a method device — §11; this paper uses it on its own
@@ -80,23 +104,32 @@ node→prerequisite listing is Appendix A; the shape is:
  definition-closure       ← concept-graph, relation-typing
  grouping                 ← concept-graph, acyclicity
  skill-map-derivation     ← grouping, acyclicity
- goal / goal-closure      ← concept-graph, goal
+ goal                     ← concept
+ goal-closure             ← concept-graph, goal
  ordering                 ← skill-map-derivation, goal-closure
  propose-then-dispose     ← ordering, definition-closure, cycle-resolution
  content-attachment       ← ordering, concept
-   PEA, running-artifact, ladder, spiral-gloss   ← content-attachment (+goal)
+   PEA                    ← content-attachment
+   running-artifact       ← PEA, goal
+   ladder-of-abstraction  ← running-artifact
+   spiral-gloss           ← definition-closure, content-attachment
  assessment               ← concept, ordering, goal-closure
  validation-tiers         ← assessment, skill-map-derivation
  optimal-output           ← definition-closure, acyclicity, ordering, goal-closure   [goal]
  transfer-limits          ← optimal-output, validation-tiers                          [goal]
 ```
 
-Two self-applications are visible here. **Closure:** each section below uses only
-concepts introduced in earlier sections — the same gate the method imposes on
-content. **Spiral gloss:** `optimal-output` is a goal node (it depends on every
+Two self-applications are visible here. **Closure:** each section below introduces
+its concepts only after their prerequisites — the same gate the method imposes on
+content. (The prose does carry forward `(§N)` pointers — e.g. §2 referencing §5;
+those are `gloss`/`foreshadow`-typed pointers in the sense of §6, which point ahead
+*to motivate* and never gate, exactly the mechanism the method permits — not closure
+violations.) **Spiral gloss:** `optimal-output` is a goal node (it depends on every
 invariant), so its full definition can only land in §14; the reading contract gives
 it the mandatory one-line gloss up front. This section is the *orientation node* and
-is, by design, exempt from closure (it previews everything).
+is, by design, exempt from closure (it previews everything); §16 (Threats) and §17
+(Related work) are back-matter, outside the concept map. So the derived span is the
+**§1–§15** spine.
 
 ---
 
@@ -150,9 +183,21 @@ discipline is to keep it distinct from two things it is easily confused with:
   structure is legible at a glance. `refines` is where maturity-versioning (§5) lives.
 
 These axes are orthogonal: gating is a principled rule; kind is annotation. Keep the
-kind vocabulary small and earned from real edges. *(Reference impl ships
-`prerequisite` + `contrasts` + the kind vocabulary; other gating types —
-`soft-prerequisite`, `corequisite` — are added per domain need, ADR-0005.)*
+kind vocabulary small and earned from real edges. The **full relation vocabulary**,
+pinned in one place:
+
+| Relation | Direction | Gates? | Meaning |
+|---|---|---|---|
+| `prerequisite` | directed | **yes** (acyclic) | must understand source before target; the one relation that orders + closes |
+| `soft-prerequisite` | directed | yes (helpful) | helps but isn't strictly required; per-domain, gating-family |
+| `corequisite` | undirected | yes (concurrent) | learned together; per-domain |
+| `contrasts` / `relates` | undirected | **no** | understood *against* / "see also"; association, never orders |
+| `gloss` / `foreshadow` | directed, **forward** | **no** | named early only to motivate; must resolve to a later concept |
+
+Plus the **semantic-kind** annotation on a `prerequisite` edge: `{ is-a, part-of,
+defined-via, operates-on, refines, assumes }`. *(Reference impl ships `prerequisite`
++ `contrasts` + the kind vocabulary; the other gating types are added per domain
+need, ADR-0005.)*
 
 ## §3. The concept graph as the single source of truth
 
@@ -178,10 +223,21 @@ is not a cycle but **versioned concepts at increasing maturity** (§5, move 4), 
 *are* acyclic.
 
 So an apparent cycle is treated as a **decomposition signal** (§5), and acyclicity
-is enforced as a hard build gate. **Caveat (§15):** this makes the method
-all-or-nothing per topic — there is no degraded mode; a domain with a genuinely
-irreducible cycle cannot ship. Whether "a cycle always means better decomposition is
-possible" holds *universally* is unproven and, for genuinely co-defined concepts,
+is enforced as a hard build gate.
+
+**Two honest concessions.** (1) *Acyclicity is achieved partly by how strongly we
+define `prerequisite`* — "understand X *fully* before *at all* understanding Y." Under
+the weaker, realistic reading ("partial X helps partial Y and vice versa") many
+relations are genuinely mutual; we keep the substrate acyclic by routing that
+mutuality into non-gating `refines`/versioning and the traversal. So this is closer
+to *defining cycles out of the gating relation* than to *discovering* the world is
+acyclic — a defensible modeling choice, not a empirical finding. (2) *The hard-fail is
+a design stance, not a law.* As currently built the method is **all-or-nothing per
+topic**: a genuinely irreducible cycle cannot ship. An alternative we have not
+built — ship the acyclic core and mark the cycle as an explicitly-typed
+"mutually-defined cluster" to be taught holistically — would give a degraded mode; we
+chose hard-fail to keep the guarantee crisp. Whether "a cycle always admits better
+decomposition" holds *universally* is unproven and, for genuinely co-defined concepts,
 arguably circular — §15 states this plainly.
 
 **Acyclic substrate, spiral experience.** Keeping the *substrate* acyclic is not a
@@ -264,7 +320,9 @@ group-level edges, the concept graph explains **79% (15)**; the **21% (4)**
 unexplained surfaced a real missing prerequisite (proofs are needed before "derive
 2+2=4") and a wrong root (the structures unit depends on syntactic atoms) — both
 adopted. The derivation produced **33** group-level edges and added **no** edges
-outside the curated map's closure.
+outside the curated map's closure — though for a *same-author* audit even that
+"clean" result is as consistent with retrofitting as with genuine convergence; it
+cuts both ways (§13).
 
 ## §8. Goals and goal-closure — core vs enrichment
 
@@ -374,8 +432,11 @@ Structure is necessary but inert. Disciplines for the prose and artifacts hung o
   **prerequisite pretest** on entry (ADR-0007) checks the learner understands the
   unit's prerequisites; it is **derived** — assembled from the per-concept micro-checks
   of the page's *direct out-of-page prerequisite* concepts (a deliberate scoping
-  choice, *not* the full transitive closure, so it may miss a deep dependency — a
-  judgment call). A page with no out-of-page prerequisites (the first page) gets none.
+  choice, *not* the full transitive closure: deep prerequisites were already gated by
+  the exit checks of the earlier pages that introduced them, so re-testing them here is
+  redundant — the cost is that a deep dependency skipped by a learner who jumped pages
+  could be missed; an acknowledged open design point). A page with no out-of-page
+  prerequisites (the first page) gets none.
   It is **soft-diagnostic**: a miss links to "review [concept]" — the graph is the
   remediation map — and never blocks navigation. The end-of-unit check tests the
   unit's *own* content. *(A one-item check is a weak probe — a diagnostic nudge, not
@@ -433,12 +494,15 @@ contribution. *Controls:* hold prose constant so the variable under test is the
 
 Now that every invariant is in hand, the gloss from the reading contract can be
 discharged. A treatment is **structurally optimal** — the only sense this paper
-claims — when:
+claims — when it has the following seven properties. **Six are gate-enforced; the
+first is aspirational** (review-owed, §13) — and it is the substantive one, so do not
+read "optimal" as "all seven verified":
 
-- **Dependency-faithful** — each concept's prerequisites are the concepts one
-  genuinely must understand first, and nothing more. *(This is an authoring
-  aspiration the gates **support but cannot certify** — "genuinely must" is the one
-  term not operationalized; it is what Tier-1 review, §13, exists to check.)*
+- **Dependency-faithful** *(aspirational — not gate-enforced)* — each concept's
+  prerequisites are the concepts one genuinely must understand first, and nothing more.
+  *(The gates **support but cannot certify** this — "genuinely must" is the one term
+  not operationalized; it is what Tier-1 review, §13, exists to check. The six below
+  are checkable form; this is whether the form is the **right** form.)*
 - **Gap-free** — every typed requirement a unit uses is introduced at that unit or a
   transitive prerequisite (§6). Enforced.
 - **Derived** — the navigable map and a valid order are computed from the structure
@@ -489,7 +553,12 @@ hedge; it is the actual scope.
   a second topic from scratch — not yet done.*
 - **Maturity-versioning (move 4) is unimplemented and untested** — the sole answer to
   co-constitutive concepts, exercised by zero reference concepts; whether arbitrary
-  co-defined pairs cleanly stratify is unproven.
+  co-defined pairs cleanly stratify is unproven. **The combined consequence, stated
+  plainly:** §4 admits no degraded mode and move 4 is the *only* escape for genuine
+  mutuality, so **if move 4 fails to generalize, the method is restricted to
+  natively-near-acyclic domains** — a substantially smaller claim than "any topic with
+  a prerequisite structure." A hand-worked move-4 example is sketched in Appendix B to
+  show it is more than a placeholder, but a sketch is not a result.
 - **No independent gate yet** — the propose/dispose split assumes a non-agent run
   certifies the agent's work; today that is discipline, not CI.
 - **The artifact "structure-matches-claims" gate is aspirational** — ad-hoc sweeps,
@@ -514,16 +583,48 @@ hedge; it is the actual scope.
 | Judge false pass/fail | Confident nonsense earns a badge / terse-but-correct rejected | Validate judge on a frozen set first; deterministic component; confidence-thresholded override |
 | Recency over-indexing in authoring | The model fixates on whatever was salient when authored | Pressure-test framings against standard sources, not the last conversation |
 
-## §17. Positioning
+## §17. Related work and positioning
 
-This is not a new claim about the structure of learning, and it overlaps deliberately
-with concept maps, knowledge-component decompositions, and graph-based adaptive
-sequencing. The differentiator is narrow and engineering: **the concept graph is a
-typed, build-checked *source of truth* from which the ordering, navigation, glossary,
-and assessment hooks are generated** — a curriculum *compiler* with enforced
-invariants, rather than a hand-drawn map kept in sync by discipline. What it compiles
-is *form*; whether the form teaches is the deferred empirical question (§13) this
-paper is built to make answerable.
+Prerequisite structure is old; almost nothing here is a new claim about *learning*.
+The honest position is that the method **reinvents none of the theory and adds an
+engineering discipline on top of it.** The relevant neighbors:
+
+- **Gagné's learning hierarchies** (1968) — the original "teach prerequisites first"
+  pedagogy: a skill is decomposed into subordinate skills that must be mastered first.
+  We are a direct descendant; the delta is mechanization (a checked artifact, not a
+  hand-drawn hierarchy).
+- **Knowledge Space Theory** (Doignon & Falmagne, 1985; *Knowledge Spaces* 1999;
+  *Learning Spaces* 2011) — **the closest formal neighbor.** KST already formalizes
+  prerequisite ("surmise") relations, knowledge states, and well-graded *learning
+  paths*, with acyclicity built in. A reviewer who knows KST must not feel we are
+  unaware of it. The delta is *not* mathematical: KST structures are typically
+  **inferred from assessment-response data** and used to *adaptively assess*; ours is
+  **authored as a source of truth** and used to **compile exposition** (ordering,
+  glossary, closure, assessment hooks) under CI-enforced invariants. KST answers
+  "what state is the learner in?"; we answer "is this *content* well-formed against its
+  dependency structure, by construction?"
+- **Knowledge-component / Q-matrix models** (Tatsuoka's rule space, 1983; Koedinger,
+  Corbett & Perfetti's KLI framework, 2012; cognitive tutors) — decompose a domain into
+  KCs mapped to items for tutoring and assessment. We share the item→concept mapping
+  (§12) but do not model learning/transfer of KCs; we use the decomposition to gate
+  *forward-reference closure in exposition*, which KC work does not.
+- **Concept maps** (Novak & Gowin, 1984) — visual concept-relation graphs for learning
+  and elicitation. We differ by *typing and build-checking* the graph; and we inherit
+  the well-known critique (edge **validity** and scoring **subjectivity** are hard) —
+  which is exactly why §13 Tier-1 (independent edge review) is owed and the gates are
+  honest that they check *form, not correctness*.
+- **Prerequisite/competency ontologies** (OWL/RDF curriculum graphs) — share the
+  explicit-graph idea; we add the *derivation* (the curriculum is output, not a
+  parallel artifact) and the build gate.
+
+**Positioning.** The differentiator is narrow and engineering: **the typed concept
+graph is a build-checked *source of truth* from which ordering, navigation, glossary,
+and assessment hooks are *derived*** — a curriculum *compiler* with enforced
+invariants (closure, acyclicity, coherence, traceability), rather than a hand-drawn map
+kept in sync by discipline or a structure inferred from response data. What it compiles
+is *form*; whether the form teaches is the deferred empirical question (§13) this paper
+is built to make answerable. (Citations here are deliberately light and by name; a
+camera-ready version owes full references and a closer KST comparison.)
 
 ---
 
@@ -567,7 +668,37 @@ optimal-output  [goal] → definition-closure, acyclicity, ordering, goal-closur
 transfer-limits [goal] → optimal-output, validation-tiers
 ```
 
-Acyclic (verify: no node lists a later node). The §1–§17 order is one topological
+Acyclic (verify: no node lists a later node). The **§1–§15** order is one topological
 order of this graph; `optimal-output`, a goal, depends on every invariant, so it can
-only be defined at §14 — hence the reading-contract spiral gloss. The method, applied
-to itself, produced this paper's spine.
+only be defined at §14 — hence the reading-contract spiral gloss. (§16 Threats and §17
+Related work are back-matter, outside the concept map — like §0, which is the
+closure-exempt orientation node.) The method, applied to itself, produced this paper's
+spine.
+
+## Appendix B — a hand-worked maturity-versioning example (move 4)
+
+Move 4 (§5) is the method's answer to genuinely co-constitutive concepts and is its
+least-tested part (no reference instance uses it). This sketch shows it is a concrete
+construction, not a placeholder — though a hand sketch is not validation (§15).
+
+*Target mutuality:* in introductory mechanics, **force**, **mass**, and
+**acceleration** are co-defined — `F = ma` relates all three, and each is usually
+"defined" via the others, which naively forms a 3-cycle. Move 4 dissolves it into an
+acyclic version chain:
+
+```
+force-informal          ← (primitive)        "a push or pull"
+mass-informal           ← (primitive)        "how much stuff / how hard to push"
+acceleration-informal   ← velocity            "how fast velocity changes"
+newtons-second-law      ← force-informal, mass-informal, acceleration-informal
+                          [the coordinator: relates the three informal versions]
+force-formal            ← newtons-second-law  "F ≡ m·a, as defined by the law"   (refines force-informal)
+mass-formal             ← newtons-second-law  "inertial mass, the ratio F/a"     (refines mass-informal)
+```
+
+The chain is acyclic (each node's prerequisites precede it), yet it honestly models
+"you hold rough versions of all three, then the law sharpens each into its formal
+version." The `refines` edges (§2 semantic-kind) carry the version relation. **What
+this does *not* show:** that *every* co-constitutive cluster stratifies this cleanly —
+some may resist (the open question, §15). It shows only that the construction is
+well-defined where it applies.
