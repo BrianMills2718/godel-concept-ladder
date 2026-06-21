@@ -31,6 +31,16 @@ const CONCEPTS: Concept[] = [
     prerequisites: [],
     contrasts: ["object"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-symbol-1",
+        type: "true-false",
+        prompt: "True or false: a symbol like $+$ is just an atomic mark; what it *means* is fixed separately, not built into the mark itself.",
+        correct: true,
+        explanation:
+          "True. A symbol is a bare character of the language; meaning is assigned later by an interpretation — the mark $+$ doesn't carry 'addition' inside it.",
+      },
+    ],
   },
   {
     id: "object",
@@ -45,6 +55,16 @@ const CONCEPTS: Concept[] = [
     prerequisites: [],
     contrasts: ["symbol"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-object-1",
+        type: "true-false",
+        prompt: "True or false: the numeral $S(S(0))$ and the number it names are the same thing.",
+        correct: false,
+        explanation:
+          "False. $S(S(0))$ is a string of symbols (a mark on the page); the object it names is the number two. Keep the mark and the thing apart.",
+      },
+    ],
   },
 
   // --- the alphabet and strings ---
@@ -57,6 +77,16 @@ const CONCEPTS: Concept[] = [
     example: "$x$ in $x + 0 = x$.",
     prerequisites: ["symbol", "object"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-variable-1",
+        type: "true-false",
+        prompt: "True or false: in $x + 0 = x$, the variable $x$ names one specific number.",
+        correct: false,
+        explanation:
+          "False. A free variable stands for an unspecified object; $x$ has no fixed value until it is bound by a quantifier or given an assignment.",
+      },
+    ],
   },
   {
     id: "alphabet",
@@ -100,6 +130,16 @@ const CONCEPTS: Concept[] = [
     example: "$\\forall x(x+0=x)$ is well-formed; $\\forall{+}{=}x))0$ is malformed.",
     prerequisites: ["string", "formation-rule"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-well-formed-1",
+        type: "true-false",
+        prompt: "True or false: $2+2=5$ is not well-formed, because it is false.",
+        correct: false,
+        explanation:
+          "False. Well-formedness is purely grammatical: $2+2=5$ is a perfectly legal equation (well-formed) that merely happens to be false. Truth is a separate question.",
+      },
+    ],
   },
   {
     id: "parse-tree",
@@ -158,6 +198,17 @@ const CONCEPTS: Concept[] = [
     // `formula`. Acyclic — see ADR-0004 on why cycles signal under-decomposition.
     prerequisites: ["atomic-formula", "well-formed"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-formula-1",
+        type: "multiple-choice",
+        prompt: "Which of these is a formula (something that can be true or false)?",
+        options: ["$S(S(0))$", "$x + 0$", "$2 + 2 = 4$", "$S(x)$"],
+        correct: 2,
+        explanation:
+          "$2+2=4$ is a formula — it makes a claim with a truth value. The others ($S(S(0))$, $x+0$, $S(x)$) are terms: they name objects, so they are never true or false.",
+      },
+    ],
   },
   {
     id: "quantifier",
@@ -209,6 +260,16 @@ const CONCEPTS: Concept[] = [
     example: "$\\forall x(x+0=x)$ is a sentence; the open formula $x+0=x$ is not.",
     prerequisites: ["formula", "free-variable"],
     introducedIn: "stage-1",
+    microQuiz: [
+      {
+        id: "mq-sentence-1",
+        type: "true-false",
+        prompt: "True or false: $x + 0 = x$ is a sentence.",
+        correct: false,
+        explanation:
+          "False. It has a free variable ($x$), so it is an open formula, not a sentence. Binding it — $\\forall x(x+0=x)$ — makes it a sentence with a definite truth value.",
+      },
+    ],
   },
 
   // --- Stage 2: grammar as one rule set, read two ways ---
@@ -258,6 +319,22 @@ const CONCEPTS: Concept[] = [
     example: "$\\forall x(x+0=x)$ is one of PA's axioms.",
     prerequisites: ["sentence"],
     introducedIn: "stage-3",
+    microQuiz: [
+      {
+        id: "mq-axiom-1",
+        type: "multiple-choice",
+        prompt: "An axiom of a theory is:",
+        options: [
+          "a sentence the theory proves",
+          "a sentence taken as a starting assumption, accepted without proof",
+          "any sentence true in $\\mathbb{N}$",
+          "a rule of inference",
+        ],
+        correct: 1,
+        explanation:
+          "An axiom is a starting assumption, accepted without proof; theorems are what you derive from the axioms using the inference rules.",
+      },
+    ],
   },
   {
     id: "inference-rule",
@@ -290,6 +367,22 @@ const CONCEPTS: Concept[] = [
     example: "A finite derivation ending in $2+2=4$, each step an axiom or a use of modus ponens.",
     prerequisites: ["axiom", "inference-rule"],
     introducedIn: "stage-3",
+    microQuiz: [
+      {
+        id: "mq-proof-1",
+        type: "multiple-choice",
+        prompt: "A proof of $P$ in a theory $T$ is:",
+        options: [
+          "evidence that $P$ is true in $\\mathbb{N}$",
+          "a finite sequence of formulas, each an axiom or following from earlier ones by a rule, ending in $P$",
+          "any convincing argument that $P$ holds",
+          "a search procedure that has found $P$",
+        ],
+        correct: 1,
+        explanation:
+          "A proof is finite symbol-manipulation from $T$'s axioms by its rules — about derivability ($\\vdash$), not truth, and it exists whether or not anyone has found it.",
+      },
+    ],
   },
   {
     id: "theorem",
@@ -462,6 +555,16 @@ const CONCEPTS: Concept[] = [
     example: "PA is consistent: it proves no contradiction. $\\mathrm{Con}(\\mathrm{PA})$ states this.",
     prerequisites: ["contradiction", "provability", "syntactic"],
     introducedIn: "stage-9",
+    microQuiz: [
+      {
+        id: "mq-consistency-1",
+        type: "true-false",
+        prompt: "True or false: '$T$ is consistent' means everything $T$ proves is true in $\\mathbb{N}$.",
+        correct: false,
+        explanation:
+          "False. Consistency means $T$ proves no contradiction ($T \\nvdash 0=1$) — a purely syntactic property. 'Everything provable is true' is *soundness*, which is strictly stronger than consistency.",
+      },
+    ],
   },
   {
     id: "soundness",
@@ -517,6 +620,16 @@ const CONCEPTS: Concept[] = [
     example: "“Is this string a well-formed formula?” is decidable.",
     prerequisites: [],
     introducedIn: "stage-11",
+    microQuiz: [
+      {
+        id: "mq-decidable-1",
+        type: "true-false",
+        prompt: "True or false: a yes/no problem is decidable when some algorithm always halts with the correct answer.",
+        correct: true,
+        explanation:
+          "True. Decidable = an always-halting correct decision procedure. 'Undecidable' means no such algorithm exists — not merely that it is slow or expensive.",
+      },
+    ],
   },
   {
     id: "recursively-enumerable",
@@ -988,6 +1101,22 @@ export function conceptAncestors(id: string): Set<string> {
 /** Concepts a given stage formally introduces (the sub-DAG it encapsulates). */
 export function conceptsForStage(lessonId: string): Concept[] {
   return CONCEPTS.filter((c) => c.introducedIn === lessonId);
+}
+
+/** Out-of-page prerequisite concepts for a stage (ADR-0007): the direct
+ *  prerequisites of this stage's concepts that are introduced on an EARLIER page
+ *  (i.e. not this stage's own concepts), deduped, in dependency order. This is
+ *  the basis of the page's prerequisite pretest; a page whose concepts have no
+ *  out-of-page prerequisites (the first page / root atoms) returns []. */
+export function prerequisiteConceptsForStage(lessonId: string): Concept[] {
+  const own = new Set(conceptsForStage(lessonId).map((c) => c.id));
+  const prereqIds = new Set<string>();
+  for (const c of conceptsForStage(lessonId))
+    for (const p of c.prerequisites) if (!own.has(p)) prereqIds.add(p);
+  return conceptTopoOrder()
+    .filter((id) => prereqIds.has(id))
+    .map((id) => CONCEPT_BY_ID[id])
+    .filter(Boolean);
 }
 
 /** Concept ids in a dependency-respecting (simplest-first) order. DFS post-order

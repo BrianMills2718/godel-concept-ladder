@@ -396,6 +396,17 @@ kbd {
 .def-concept { border-bottom: 1px dashed var(--accent); }
 
 /* per-stage concept panel */
+/* prerequisite pretest (ADR-0007) */
+.prereq-pretest { margin-bottom: 16px; border-left: 3px solid var(--accent); padding-left: 2px; }
+.pp-intro { font-size: 14px; color: var(--ink-soft); margin: 0 0 10px; }
+.pp-link, .pp-review { color: var(--accent); }
+.pp-checks { display: flex; flex-direction: column; gap: 12px; }
+.pp-check { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.pp-check-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.pp-check-term { font-style: italic; font-weight: 700; font-size: 14px; }
+.pp-review { font-size: 12.5px; }
+.pp-nochecks { font-size: 13px; color: var(--ink-soft); margin: 0; }
+
 .concept-panel { margin-bottom: 16px; }
 .cp-list { display: flex; flex-direction: column; }
 .cp-row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 9px 0; border-top: 1px dashed var(--line); align-items: baseline; }

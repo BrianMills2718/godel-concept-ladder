@@ -13,7 +13,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NOTATION } from "../content/notation";
 import { GLOSSARY_INDEX } from "../content/glossary";
-import { CONCEPT_BY_ID, conceptsForStage, conceptTopoOrder } from "../content/concepts";
+import { CONCEPT_BY_ID, conceptsForStage, conceptTopoOrder, prerequisiteConceptsForStage } from "../content/concepts";
 import { MathText, Tex, RichLine } from "./Math";
 import { Quiz } from "./Quiz";
 import { Rollup } from "./Rollup";
@@ -259,6 +259,59 @@ export function ConceptPanel({ lesson }: { lesson: Lesson }) {
           <ConceptRow key={id} id={id} />
         ))}
       </div>
+    </Rollup>
+  );
+}
+
+// --- prerequisite pretest (ADR-0007) -----------------------------------------
+
+/** A soft-diagnostic readiness check shown at the top of a page: the concepts
+ *  from earlier pages this one builds on, assembled from their `microQuiz`es.
+ *  Returns null when the page has no out-of-page prerequisites (the first page /
+ *  root atoms). Never blocks navigation; a "review" link points at the page that
+ *  introduces each prerequisite (the graph is the remediation map). */
+export function PrereqPretest({ lesson }: { lesson: Lesson }) {
+  const prereqs = prerequisiteConceptsForStage(lesson.id);
+  if (prereqs.length === 0) return null;
+  const withChecks = prereqs.filter((c) => c.microQuiz && c.microQuiz.length > 0);
+
+  return (
+    <Rollup
+      className="prereq-pretest"
+      summary={
+        <span>
+          Before this page — check you're ready{" "}
+          <span className="np-count">({prereqs.length} prerequisite{prereqs.length > 1 ? "s" : ""})</span>
+        </span>
+      }
+    >
+      <p className="pp-intro">
+        This page builds on earlier concepts. You should already understand:{" "}
+        {prereqs.map((c, i) => (
+          <span key={c.id}>
+            <a className="pp-link" href={`#/${c.introducedIn}`}>{c.term}</a>
+            {i < prereqs.length - 1 ? ", " : ""}
+          </span>
+        ))}
+        .
+      </p>
+      {withChecks.length > 0 ? (
+        <div className="pp-checks">
+          {withChecks.map((c) => (
+            <div className="pp-check" key={c.id}>
+              <div className="pp-check-head">
+                <span className="pp-check-term">{c.term}</span>
+                <a className="pp-review" href={`#/${c.introducedIn}`}>review →</a>
+              </div>
+              <Quiz lessonId={`pretest-${lesson.id}-${c.id}`} questions={c.microQuiz!} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="pp-nochecks">
+          (No self-check authored for these prerequisites yet — follow a link above to review.)
+        </p>
+      )}
     </Rollup>
   );
 }
