@@ -21,6 +21,42 @@ export function conceptDepEdges(): Array<[string, string]> {
   return out;
 }
 
+// --- goal-closure lens (ADR-0004 §9) -----------------------------------------
+// A concept is "core" if it lies on the backward prerequisite closure of some
+// declared terminal goal; otherwise it is "enrichment" — valuable context that
+// is off the critical path to the goals (not a defect; see EDGE_REVIEW / §9).
+
+/** The topic's declared terminal goals (the headline capabilities). */
+export const GOAL_CONCEPTS = ["first-incompleteness", "second-incompleteness"];
+
+/** All concepts on the backward prerequisite closure of `goals` (incl. goals). */
+export function goalClosure(goals: string[] = GOAL_CONCEPTS): Set<string> {
+  const m: Record<string, { prerequisites: string[] }> = Object.fromEntries(
+    CONCEPT_GRAPH.concepts.map((c) => [c.id, c]),
+  );
+  const core = new Set<string>(goals);
+  const st = [...goals];
+  while (st.length) {
+    const id = st.pop()!;
+    for (const p of m[id]?.prerequisites ?? []) if (!core.has(p)) { core.add(p); st.push(p); }
+  }
+  return core;
+}
+
+/** "core" (on a goal's path) or "enrichment" (off it). */
+export function conceptRole(id: string, core: Set<string> = goalClosure()): "core" | "enrichment" {
+  return core.has(id) ? "core" : "enrichment";
+}
+
+/** Concepts that are no other concept's prerequisite (graph sinks). A sink that
+ *  is not a declared goal is an "undeclared terminal" — an enrichment leaf or a
+ *  goal worth declaring. */
+export function sinks(): string[] {
+  const hasDependent = new Set<string>();
+  for (const c of CONCEPT_GRAPH.concepts) for (const p of c.prerequisites) hasDependent.add(p);
+  return CONCEPT_GRAPH.concepts.map((c) => c.id).filter((id) => !hasDependent.has(id));
+}
+
 /** Concept id → the group (stage/lesson id) it is introduced in. */
 export function conceptGroup(): Record<string, string> {
   const g: Record<string, string> = {};

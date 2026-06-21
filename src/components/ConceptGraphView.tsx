@@ -18,7 +18,7 @@ import { useMemo, useState } from "react";
 import ReactFlow, { Background, Controls, MarkerType, type Edge, type Node } from "reactflow";
 import "reactflow/dist/style.css";
 import { CONCEPT_GRAPH, CONCEPT_BY_ID, conceptTopoOrder, prereqWhy } from "../content/concepts";
-import { conceptSCCs } from "../content/derive";
+import { conceptSCCs, goalClosure } from "../content/derive";
 import { LAYER_META } from "./viz/legend";
 import { flowNodeTypes, flowEdgeTypes, pickHandles } from "./viz/flow";
 import { RichLine } from "./Math";
@@ -52,7 +52,9 @@ const plain = (s: string) => s.replace(/@[cnt]\{([^}|]+)(?:\|[^}]+)?\}/g, "$1").
 
 export function ConceptGraphView() {
   const [sel, setSel] = useState<string | null>(null);
+  const [coreOnly, setCoreOnly] = useState(false);
   const positions = useMemo(layout, []);
+  const core = useMemo(() => goalClosure(), []);
   const clusterOf = useMemo(() => {
     const m: Record<string, number> = {};
     conceptSCCs().forEach((comp, i) => {
@@ -66,6 +68,7 @@ export function ConceptGraphView() {
       CONCEPT_GRAPH.concepts.map((c) => {
         const meta = LAYER_META[c.layer];
         const inCluster = clusterOf[c.id] !== undefined;
+        const enrichment = !core.has(c.id);
         return {
           id: c.id,
           type: "hnode",
@@ -75,22 +78,24 @@ export function ConceptGraphView() {
               <div className="cg-node-inner" title={plain(c.short)}>
                 <span className="cg-node-term">{c.term}</span>
                 {inCluster && <span className="cg-cluster">⟲ cluster</span>}
+                {enrichment && <span className="cg-enrich">enrichment</span>}
               </div>
             ),
           },
           style: {
             borderColor: meta.color,
             borderWidth: inCluster ? 3 : 2,
-            borderStyle: inCluster ? "double" : "solid",
+            borderStyle: enrichment ? "dashed" : inCluster ? "double" : "solid",
             borderRadius: 8,
             background: "#fff",
             padding: 6,
             fontSize: 12,
             width: 152,
+            opacity: coreOnly && enrichment ? 0.18 : 1,
           },
         };
       }),
-    [positions, clusterOf],
+    [positions, clusterOf, core, coreOnly],
   );
 
   const edges: Edge[] = useMemo(() => {
@@ -166,6 +171,17 @@ export function ConceptGraphView() {
           <li><span className="cgv-key solid" /> prerequisite — arrow runs prerequisite → the concept that needs it</li>
           <li><span className="cgv-key dashed" /> contrasts (mutual, not a dependency)</li>
           <li><span className="cgv-key cluster" /> in a dependency cycle (a modeling error — should not appear)</li>
+          <li>
+            <button
+              type="button"
+              className={`cgv-toggle ${coreOnly ? "is-on" : ""}`}
+              onClick={() => setCoreOnly((v) => !v)}
+              aria-pressed={coreOnly}
+            >
+              {coreOnly ? "showing core only" : "core only"}
+            </button>
+            <span className="cgv-enrich-key"> — dashed border = <em>enrichment</em> (off the path to the goals)</span>
+          </li>
         </ul>
       </header>
 
@@ -191,6 +207,9 @@ export function ConceptGraphView() {
         <aside className="cgv-inspect" role="dialog" aria-label={`Concept: ${selected.term}`}>
           <button className="cgv-close" onClick={() => setSel(null)} aria-label="Close">×</button>
           <div className="cgv-inspect-term">{selected.term}</div>
+          <div className="cgv-inspect-role">
+            {core.has(selected.id) ? "● core — on the path to a goal" : "○ enrichment — off the goal path"}
+          </div>
           <div className="cgv-inspect-def"><RichLine text={selected.short} /></div>
           {selected.example && (
             <div className="cgv-inspect-eg">e.g. <RichLine text={selected.example} /></div>

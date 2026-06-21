@@ -20,10 +20,11 @@ const stub = join(tmpdir(), `godel-derive-stub-${process.pid}.ts`);
 writeFileSync(
   stub,
   `export { SKILL_GRAPH } from ${JSON.stringify(process.cwd() + "/src/content/graph.ts")};
-   export { conceptCycles, deriveStageEdges, reachability } from ${JSON.stringify(process.cwd() + "/src/content/derive.ts")};`,
+   export { CONCEPT_GRAPH } from ${JSON.stringify(process.cwd() + "/src/content/concepts.ts")};
+   export { conceptCycles, deriveStageEdges, reachability, goalClosure, sinks, GOAL_CONCEPTS } from ${JSON.stringify(process.cwd() + "/src/content/derive.ts")};`,
 );
 await build({ entryPoints: [stub], bundle: true, format: "esm", outfile: out, logLevel: "error" });
-const { SKILL_GRAPH, conceptCycles, deriveStageEdges, reachability } = await import(pathToFileURL(out).href);
+const { SKILL_GRAPH, CONCEPT_GRAPH, conceptCycles, deriveStageEdges, reachability, goalClosure, sinks, GOAL_CONCEPTS } = await import(pathToFileURL(out).href);
 
 // stage/lesson id -> skill node id; and which nodes are concepts
 const stageToNode = {};
@@ -71,6 +72,18 @@ for (const [a, b] of extra) console.log(`  + ${name(a)}  →  ${name(b)}   (${a}
 
 const coverage = authored.length ? Math.round((100 * (authored.length - unexplained.length)) / authored.length) : 100;
 console.log(`\n→ the concept graph explains ${coverage}% of the curated skill-map edges.`);
+
+// goal-closure lens: core (on a goal's path) vs enrichment (off it)
+const allConcepts = CONCEPT_GRAPH.concepts.map((c) => c.id);
+const core = goalClosure(GOAL_CONCEPTS);
+const enrichment = allConcepts.filter((id) => !core.has(id));
+const undeclaredTerminals = sinks().filter((id) => !GOAL_CONCEPTS.includes(id));
+console.log(`\n=== goal-closure lens (goals: ${GOAL_CONCEPTS.join(", ")}) ===`);
+console.log(`core (on a goal's path): ${core.size} / ${allConcepts.length}`);
+console.log(`enrichment (off the path): ${enrichment.length}`);
+console.log(`  ${enrichment.join(", ")}`);
+console.log(`graph sinks that are not declared goals (enrichment leaves / candidate goals): ${undeclaredTerminals.length}`);
+console.log(`  ${undeclaredTerminals.join(", ")}`);
 
 rmSync(out, { force: true });
 rmSync(stub, { force: true });
