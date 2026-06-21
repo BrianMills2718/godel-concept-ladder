@@ -10,6 +10,7 @@ import { ParseExplorer } from "./ParseExplorer";
 import { ComparisonTable } from "./ComparisonTable";
 import { CodingEncoder } from "./CodingEncoder";
 import { GodelLoop } from "./GodelLoop";
+import { Ladder } from "./Ladder";
 
 export function VizRenderer({ viz }: { viz: VisualizationSpec }) {
   return (
@@ -21,6 +22,7 @@ export function VizRenderer({ viz }: { viz: VisualizationSpec }) {
       {viz.kind === "comparison-table" && <ComparisonTable viz={viz} />}
       {viz.kind === "coding-encoder" && <CodingEncoder viz={viz} />}
       {viz.kind === "godel-loop" && <GodelLoop viz={viz} />}
+      {viz.kind === "ladder" && <Ladder viz={viz} />}
       <details className="viz-summary">
         <summary>Text description of this visualization</summary>
         <p>{viz.textualSummary}</p>

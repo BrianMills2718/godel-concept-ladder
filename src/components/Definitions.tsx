@@ -224,6 +224,21 @@ function ConceptRow({ id }: { id: string }) {
             e.g. <RichLine text={c.example} />
           </div>
         )}
+        {c.analogy && (
+          <div className="cp-analogy">
+            <span className="cp-analogy-tag">analogy</span>{" "}
+            <span className="cp-analogy-domain">{c.analogy.domain}</span>:{" "}
+            <RichLine text={c.analogy.mapping} />
+            <div className="cp-analogy-breakdown">
+              <strong>breaks down:</strong> <RichLine text={c.analogy.breakdown} />
+            </div>
+            {c.analogy.handoff && (
+              <div className="cp-analogy-handoff">
+                <RichLine text={c.analogy.handoff} />
+              </div>
+            )}
+          </div>
+        )}
         {c.microQuiz && c.microQuiz.length > 0 && (
           <div className="cp-quiz">
             <button type="button" className="cp-quiz-toggle" onClick={() => setQuizOpen((o) => !o)}>

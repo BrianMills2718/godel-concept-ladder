@@ -90,7 +90,8 @@ export type VisualizationSpec =
   | ParseExplorerViz
   | ComparisonTableViz
   | CodingEncoderViz
-  | GodelLoopViz;
+  | GodelLoopViz
+  | LadderViz;
 
 export interface VizBase {
   id: string;
@@ -199,6 +200,25 @@ export interface GodelLoopViz extends VizBase {
   arrows: string[];
 }
 
+/** A **ladder-of-abstraction** figure (ADR-0006 §6, after B. Victor) for a
+ *  *dynamical* concept: three fixed rungs — **control** a parameter (a concrete
+ *  case), **abstract over** it (the case generalized over all values), and **step
+ *  down** (point back from the abstraction to a concrete instance). Static by
+ *  design; the insight lives in the transitions between rungs. */
+export interface LadderViz extends VizBase {
+  kind: "ladder";
+  /** The parameter being controlled / abstracted over, e.g. "the assignment to x". */
+  parameter: string;
+  /** Exactly three rungs, in order: control → abstract-over → step-down. */
+  rungs: {
+    rung: "control" | "abstract-over" | "step-down";
+    /** Short caption naming the move. */
+    caption: string;
+    /** The concrete content at this rung. KaTeX-able. */
+    body: string;
+  }[];
+}
+
 // ---------------------------------------------------------------------------
 // Quiz
 // ---------------------------------------------------------------------------
@@ -216,6 +236,12 @@ interface QuizBase {
   prompt: string; // KaTeX-able
   /** Why the correct answer is correct — always shown after answering. */
   explanation: string;
+  /** Optional fine-grained item→concept mapping: the concept id(s) this item
+   *  tests. Enables per-item diagnostic routing (METHODOLOGY §12). */
+  concepts?: string[];
+  /** Optional item→misconception mapping: misconception id(s) this item probes
+   *  (the ids defined in assessments.ts). */
+  misconceptions?: string[];
 }
 
 export interface MultipleChoiceQ extends QuizBase {
@@ -290,7 +316,14 @@ export interface Definition {
 export interface Section {
   heading?: string;
   body: string;
+  /** Optional pedagogical role for "show then tell" / "Therefore & But" ordering
+   *  (ADR-0006, METHODOLOGY §11). Makes the problem→solution / concrete→abstract
+   *  structure explicit and checkable rather than implicit in prose order. */
+  role?: SectionRole;
 }
+
+/** The role a section plays in the problem→solution / show-then-tell arc. */
+export type SectionRole = "problem" | "solution" | "show" | "tell";
 
 export interface Confusion {
   /** The wrong belief, stated plainly. */
@@ -350,9 +383,9 @@ export interface Concept {
   /** Concrete example, KaTeX-able (drawn from the fixed running cast). */
   example?: string;
   /** Concept ids that must be understood first — the definition-dependency
-   *  edges. MAY form cycles (mutually-defining concepts); cycles are condensed
-   *  to clusters when deriving the skill map (ADR-0003/0004). Empty for a genuine
-   *  primitive (also set `primitive: true`). */
+   *  edges. **Acyclic** and gated as such (a cycle is a decomposition error
+   *  resolved by the four moves — ADR-0003 as amended / ADR-0004 §Cycles). Empty
+   *  for a genuine primitive (also set `primitive: true`). */
   prerequisites: string[];
   /** Undirected associations — concepts understood *against* each other (e.g.
    *  ⊢ contrasts ⊨). NOT a dependency: never gates, orders, or derives the skill
@@ -366,6 +399,24 @@ export interface Concept {
   microQuiz?: QuizQuestion[];
   /** A genuine primitive that needs no prior concept (e.g. symbol, object). */
   primitive?: boolean;
+  /** Optional out-of-domain **analogy** (the third leg of PEA, ADR-0006): a
+   *  mapping to a familiar foreign domain, with the point where it breaks down.
+   *  Out-of-domain = lossy and *local*; attach lightly, retire at the breakdown. */
+  analogy?: Analogy;
+}
+
+/** An out-of-domain analogy with an explicit domain of validity (ADR-0006 §3).
+ *  Faithful only on the mapped features; the `breakdown` is information, usually a
+ *  "Therefore & But" handoff to the next concept. */
+export interface Analogy {
+  /** The familiar source domain, e.g. "a database query". */
+  domain: string;
+  /** What maps to what — the faithful correspondence. KaTeX-able. */
+  mapping: string;
+  /** Where the analogy breaks (its domain of validity ends). KaTeX-able. */
+  breakdown: string;
+  /** Optional "Therefore & But" handoff motivated by the breakdown. KaTeX-able. */
+  handoff?: string;
 }
 
 export interface ConceptGraph {

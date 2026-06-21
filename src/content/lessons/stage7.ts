@@ -27,6 +27,7 @@ export const stage7: Lesson = {
   sections: [
     {
       heading: "Satisfaction is recursive, not vibes",
+      role: "tell",
       body: `"$M \\models P$" ("$M$ satisfies $P$", "$P$ is true in $M$") is defined by **recursion on the shape of $P$**. Terms first evaluate to objects in the domain; then:
 
 - $M \\models (a=b)$ iff $a$ and $b$ evaluate to the **same** object.
@@ -41,6 +42,7 @@ No intuition required — satisfaction is **defined by recursion** on the formul
     },
     {
       heading: "Evaluating the running examples",
+      role: "show",
       body: `In $\\mathbb{N}$, the term $2+2$ evaluates: $+$ is interpreted as addition, so $2+2 \\mapsto 4$. The numeral $4$ evaluates to $4$. The atomic formula $2+2=4$ holds iff these are the same object — they are. So
 
 $$\\mathbb{N}\\models 2+2=4.$$
@@ -53,6 +55,7 @@ And $\\mathbb{N}\\models\\forall x(x+0=x)$ because for *every* domain object $d$
     },
     {
       heading: "⊨ is not ⊢",
+      role: "tell",
       body: `Satisfaction is **semantic** — about interpretation in a structure. Provability ($\\vdash$, Stages 3–4) is **syntactic** — about derivations. They are different relations on the same sentence. They happen to agree on $2+2=4$, but agreement on examples is not identity of meaning. The next stage puts them face to face.`,
     },
   ],
@@ -87,6 +90,31 @@ And $\\mathbb{N}\\models\\forall x(x+0=x)$ because for *every* domain object $d$
         reason: "well-formed and fully evaluable, but the two sides denote different objects, so ℕ ⊭ 2+2=5 (false, not malformed)",
       },
     },
+    {
+      id: "stage7-ladder",
+      kind: "ladder",
+      title: "Satisfaction, up and down the ladder of abstraction",
+      parameter: "the assignment to $x$",
+      textualSummary:
+        "Control: fix x=3 and evaluate x+0 in ℕ to get 3+0=3, a satisfied instance. Abstract over the assignment: ℕ ⊨ ∀x(x+0=x) holds iff every domain object d has d+0=d — the truth condition quantifies over the whole infinite domain at once. Step down: read the general ⊨ relation at one concrete point — ℕ ⊭ 2+2=5, since the closed terms evaluate to 4 and 5, which differ.",
+      rungs: [
+        {
+          rung: "control",
+          caption: "Fix one value of the parameter",
+          body: "Take $x=3$: evaluate $x+0$ in $\\mathbb{N}$ → $3+0 = 3$, and $3 = 3$, so the instance $3+0=3$ is **satisfied**.",
+        },
+        {
+          rung: "abstract-over",
+          caption: "Generalize over every value at once",
+          body: "$\\mathbb{N}\\models\\forall x(x+0=x)$ iff **every** domain object $d$ has $d+0=d$ — the truth condition ranges over the whole infinite domain, not any single $x$.",
+        },
+        {
+          rung: "step-down",
+          caption: "Read the abstraction at one concrete point",
+          body: "Point at a *false* case: $\\mathbb{N}\\not\\models 2+2=5$, because the closed terms evaluate to $4$ and $5$, which differ. The general $\\models$ relation, read at a point, returns a concrete verdict.",
+        },
+      ],
+    },
   ],
   confusions: [
     {
@@ -118,6 +146,8 @@ And $\\mathbb{N}\\models\\forall x(x+0=x)$ because for *every* domain object $d$
       },
       explanation:
         "The negation clause: $\\mathbb{N}\\models\\neg P$ iff $\\mathbb{N}\\not\\models P$. Since $2+2=5$ is not satisfied, its negation is.",
+      concepts: ["satisfaction"],
+      misconceptions: ["true-prov", "malformed-false"],
     },
     {
       id: "s7q2",
@@ -127,6 +157,8 @@ And $\\mathbb{N}\\models\\forall x(x+0=x)$ because for *every* domain object $d$
       correct: false,
       explanation:
         "False. You evaluate: for every domain object $d$, $d+0$ computes to $d$. That is semantics — no proof rules involved.",
+      concepts: ["satisfaction"],
+      misconceptions: ["true-prov"],
     },
     {
       id: "s7q3",
@@ -136,6 +168,7 @@ And $\\mathbb{N}\\models\\forall x(x+0=x)$ because for *every* domain object $d$
       placeholder: "and / or",
       explanation:
         "The material conditional is satisfied unless the antecedent holds and the consequent fails: $M\\not\\models P$ OR $M\\models Q$.",
+      concepts: ["satisfaction"],
     },
   ],
   masteryCheckpoint:

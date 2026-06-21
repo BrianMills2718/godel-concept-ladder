@@ -42,6 +42,23 @@ const { LESSONS, GLOSSARY, NOTATION, SKILL_GRAPH, ROOT_GOAL_ID, ASSESSMENT_BY_ID
 const errors = [];
 const ok = (cond, msg) => { if (!cond) errors.push(msg); };
 
+// Cross-cutting id registries for the optional content-attachment fields
+// (ADR-0006 / METHODOLOGY §11-§12). These gates are OPT-IN: they fire only when a
+// field is present, so concepts/items without them are unaffected.
+const ALL_CONCEPT_IDS = new Set((CONCEPT_GRAPH.concepts ?? []).map((c) => c.id));
+const VALID_MISCONCEPTIONS = new Set();
+for (const t of Object.values(ASSESSMENT_BY_ID))
+  for (const m of t.fatalMisconceptions ?? []) VALID_MISCONCEPTIONS.add(m.id);
+const SECTION_ROLES = new Set(["problem", "solution", "show", "tell"]);
+const LADDER_RUNGS = ["control", "abstract-over", "step-down"];
+// A quiz/microQuiz item's optional concept/misconception tags must resolve.
+const checkItemTags = (q, where) => {
+  for (const cid of q.concepts ?? [])
+    ok(ALL_CONCEPT_IDS.has(cid), `${where} ${q.id}: tagged concept "${cid}" is not a concept`);
+  for (const mid of q.misconceptions ?? [])
+    ok(VALID_MISCONCEPTIONS.has(mid), `${where} ${q.id}: tagged misconception "${mid}" is not a known misconception`);
+};
+
 // --- skill DAG invariants (ADR-0001) ---
 {
   const lessonIds = new Set(LESSONS.map((l) => l.id));
@@ -151,7 +168,20 @@ for (const l of LESSONS) {
         for (const c of Object.keys(row.cells))
           ok(v.columns.includes(c), `stage ${l.stage} viz ${v.id}: row cell column "${c}" not in columns`);
     }
+    if (v.kind === "ladder") {
+      // ADR-0006 §6: exactly three rungs, in order control → abstract-over → step-down.
+      ok(!!v.parameter, `stage ${l.stage} viz ${v.id}: ladder has no parameter`);
+      ok(Array.isArray(v.rungs) && v.rungs.length === 3, `stage ${l.stage} viz ${v.id}: ladder must have exactly 3 rungs`);
+      (v.rungs ?? []).forEach((r, i) => {
+        ok(r.rung === LADDER_RUNGS[i], `stage ${l.stage} viz ${v.id}: rung ${i} must be "${LADDER_RUNGS[i]}", got "${r.rung}"`);
+        ok(!!r.caption && !!r.body, `stage ${l.stage} viz ${v.id}: rung "${r.rung}" missing caption/body`);
+      });
+    }
   }
+
+  // Section roles (optional; ADR-0006 show-then-tell) must be from the enum.
+  for (const s of l.sections ?? [])
+    if (s.role) ok(SECTION_ROLES.has(s.role), `stage ${l.stage}: section role "${s.role}" not one of problem/solution/show/tell`);
 
   // Quiz answer integrity
   for (const q of l.quiz) {
@@ -173,6 +203,7 @@ for (const l of LESSONS) {
     if (q.type === "fill-in")
       ok(Array.isArray(q.accepted) && q.accepted.length > 0, `stage ${l.stage} ${q.id}: no accepted answers`);
     ok(!!q.explanation, `stage ${l.stage} ${q.id}: no explanation`);
+    checkItemTags(q, `stage ${l.stage} quiz`);
   }
 }
 
@@ -348,8 +379,18 @@ for (const l of LESSONS) {
         for (const l2 of q.left)
           ok(rids.has(q.pairs[l2.id]), `concept ${c.id} ${q.id}: pair for ${l2.id} -> unknown right`);
       }
+      checkItemTags(q, `concept ${c.id} microQuiz`);
     }
   }
+
+  // Optional analogy (ADR-0006 §3, third leg of PEA): if present it needs a
+  // domain, a faithful mapping, and an explicit breakdown point.
+  for (const c of CONCEPTS)
+    if (c.analogy)
+      ok(
+        !!c.analogy.domain && !!c.analogy.mapping && !!c.analogy.breakdown,
+        `concept ${c.id}: analogy must have domain + mapping + breakdown`,
+      );
 
   // every prerequisite edge must carry a justification (PREREQ_WHY) AND a valid
   // semantic kind (PREREQ_KIND); no orphans in either map.

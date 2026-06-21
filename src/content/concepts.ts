@@ -489,6 +489,33 @@ const CONCEPTS: Concept[] = [
     example: "$\\mathbb{N} \\models \\forall x(x+0=x)$, and $\\mathbb{N} \\not\\models 2+2=5$.",
     prerequisites: ["structure", "formula", "sentence"],
     introducedIn: "stage-7",
+    microQuiz: [
+      {
+        id: "mq-satisfaction-1",
+        type: "multiple-choice",
+        prompt: "$\\mathbb{N} \\models \\varphi$ asserts that…",
+        options: [
+          "$\\varphi$ is provable in PA",
+          "$\\varphi$ is true in the standard model $\\mathbb{N}$",
+          "$\\varphi$ is well-formed",
+          "$\\varphi$ is an axiom",
+        ],
+        correct: 1,
+        explanation:
+          "$\\models$ is a *semantic* relation: it says $\\varphi$ holds in the structure $\\mathbb{N}$ — that is truth, not provability ($\\vdash$) and not well-formedness.",
+        concepts: ["satisfaction"],
+        misconceptions: ["true-prov"],
+      },
+    ],
+    analogy: {
+      domain: "a database query",
+      mapping:
+        "A formula is a *query*, the structure $\\mathbb{N}$ is the *database*, and $\\mathbb{N}\\models\\varphi$ is that query evaluating to *true* — mechanically, relative to that one fixed database.",
+      breakdown:
+        "A query returns rows; satisfaction returns only a truth value. And $\\mathbb{N}$ is *infinite*, so you cannot scan every row — satisfaction of a quantified formula is *defined* by recursion on the formula, not *computed* by enumerating cases.",
+      handoff:
+        "So truth in $\\mathbb{N}$ is well-defined but not something you can always *check* by running it — exactly the gap that provability ($\\vdash$) tries, and provably fails, to close.",
+    },
   },
   {
     id: "truth-in-structure",
