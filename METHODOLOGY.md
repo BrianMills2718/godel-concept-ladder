@@ -397,6 +397,16 @@ from closure by design.
 
 ## 7. Assessment theory
 
+- **Front-half readiness, back-half capability.** Two assessments bracket a unit.
+  A **prerequisite pretest** on *entry* (ADR-0007) checks the learner understands
+  the unit's prerequisites before engaging — and it is **derived**: a page's
+  pretest is the assembled per-concept checks (`microQuiz`) of its *out-of-page
+  prerequisite* concepts, so a concept's check is authored once and reused in every
+  dependent page. A page with no out-of-page prerequisites (the first page) gets
+  none. It is **soft-diagnostic** (a miss links to "review [concept]" — the graph
+  is the remediation map — and never blocks navigation). The end-of-unit check
+  tests the unit's *own* content. (Caveat: a one-item check is a weak probe; it is
+  a diagnostic nudge, not proof of mastery.)
 - **Demonstrated capability, not exposure.** A unit is earned by performing a
   task. Use **deterministic checks** wherever the answer is exact (classification,
   fill-in, matching), and reserve an **LLM judge** for genuinely open-ended

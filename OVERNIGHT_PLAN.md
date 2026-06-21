@@ -17,6 +17,10 @@
 > - ✅ **ADR-0005 Phase 1 — typed prerequisite edges** (semantic-kind annotation:
 >   `is-a` / `part-of` / `defined-via` / `operates-on` / `refines` / `assumes`,
 >   rendered as the edge label + colour). *Done.*
+> - 🔜 **ADR-0007 — prerequisite pretests** (soft-diagnostic readiness check per
+>   page, assembled from prerequisite concepts' `microQuiz`es + a derived
+>   "before this, understand: …" banner). *Implementing: mechanism + UI now; author
+>   high-fan-out concept checks incrementally.*
 > - 📐 **Specced, not built (ADR-0005 Ph.2 + ADR-0006):** the agentic-coder
 >   propose→gate→revise loop, the artifact gate (structural assertions + puppeteer),
 >   the in-domain evolving artifact + out-of-domain analogies, and "Therefore &
