@@ -71,6 +71,25 @@ The LLM must **not** adjudicate the hard invariants (an LLM "this looks acyclic"
 is not a guarantee). It adjudicates the soft optimization and assigns the edge
 *kind* + writes the *why* (judgment a fixed algorithm shouldn't make).
 
+**The proposer is an *agentic coder*, not raw completions.** At dev time the
+"LLM" is an agent with tools (`llm_client`-based) that reads the repo, edits the
+real source files, runs the gates (`npm run check`), runs puppeteer, reads the
+errors, and iterates — i.e. it closes its own propose→gate→revise loop and emits
+the actual artifact (source files), not JSON for a human to wire. Two rules keep
+this honest: (a) the **gate is an independent authority** — a *non-agent* run of
+the gates (CI) certifies; the agent's "it's green" is a claim, not proof; (b)
+keep agents on **tight, gated tasks** (as the audit workflows do) or they
+over-edit. Reproducibility means *re-deriving a valid artifact*, not bit-identical
+replay (commit the files; version the prompts + gate definitions).
+
+**Artifacts get their own gate.** Visual/interactive artifacts (typed graphs,
+parse explorer, encoders) are verified by puppeteer-in-the-loop + e2e **and hard
+structural assertions** — soft visual judgment alone misses "wrong." The structural
+check asserts the artifact's *structure matches its stated claims* (the round-2
+finding where a diagram claimed "a shared lemma reused — a DAG" but was a tree is
+the cautionary example: a check "claims-reuse ⇒ a node has ≥2 out-edges" catches it
+deterministically). Fast structural assertions + slower visual/e2e.
+
 ### 3. Acyclic substrate + spiral experience
 
 The dependency **substrate stays acyclic** (checkable; the holism does not force
@@ -87,6 +106,27 @@ prerequisite edges.
   layer. Quality from the LLM, correctness from the mechanism.
 - More authoring per edge (a `kind`), and a taxonomy that must be kept small and
   evidence-driven to avoid bikeshedding.
+
+## Uncertainties & concerns (explicit)
+- **"Independent gate" is not yet enforced as such.** Today `npm run check` is run
+  by whoever (me/an agent) — there is no separate CI that certifies independently
+  of the proposer. Until there is, the propose/dispose invariant rests on
+  discipline, not architecture.
+- **Agentic generation is nondeterministic, costly, and drifts.** Two audits
+  already show LLMs produce confident-but-wrong content; the gates catch *form*,
+  not *truth* (a wrong-but-well-formed definition passes). So the LLM-authored
+  curriculum still needs human/expert review (ADR-0004 §9 Tier-1) and efficacy
+  measurement (Tier-2) — neither is automated.
+- **The artifact "structure-matches-claims" gate is aspirational.** We have
+  ad-hoc sweeps (missing-chip / tex-error / raw-token counts), not general
+  structural assertions; specifying "the diagram shows what it says" in the
+  general case is itself hard.
+- **Phase 2 is unbuilt.** The propose/dispose generation loop and the
+  LLM-designed spiral traversal are specified, not implemented; the strongest test
+  of whether this works is authoring a *second* topic, which we have not done.
+- **The kind vocabulary is a judgment call** ("primary flavor"); some edges
+  defensibly fit two kinds, and the 6-kind set is earned from one topic only — it
+  may not transfer.
 
 ## Status / phasing
 - **Phase 1 (this ADR):** add the `kind` to all prerequisite edges; validate it;

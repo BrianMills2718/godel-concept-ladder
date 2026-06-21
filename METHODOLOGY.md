@@ -350,31 +350,45 @@ invariants ("looks acyclic" is not a guarantee) — only the soft optimization.
 ### Step 7 — Verify and iterate
 
 Run the gate on every change (closure + acyclicity + group coherence + assessment
-integrity). For anything rendered, confirm by **running the artifact** (a headless
-visual/automated sweep that asserts no unresolved references and no broken
-rendering) — not by assuming. Treat a failed gate as a content discovery.
+integrity). For anything rendered, confirm by **running the artifact** — not by
+assuming. The **artifact gate** has two halves (ADR-0005): *hard structural
+assertions* (the diagram's structure matches its stated claims — e.g. "claims a
+reused lemma ⇒ some node has ≥2 out-edges"; no unresolved references; no raw
+tokens) and a *slower visual/e2e pass* (puppeteer) for what structure can't catch.
+Soft visual judgment alone misses "wrong"; pair it with hard checks. When the
+proposer is an agentic coder (ADR-0005), it runs these in its own loop — but an
+**independent** run certifies. Treat a failed gate as a content discovery.
 
 ## 6. Content-attachment theory
 
-Structure is necessary but inert; content makes it teachable. Four disciplines:
+Structure is necessary but inert; content makes it teachable. Disciplines:
 
 - **First-encounter-readable definitions.** Precise but legible on first contact;
   depth is added by the expansion and by drilling into referenced concepts, not by
-  front-loading rigor.
-- **A fixed running cast.** Reuse a small set of canonical examples across the
-  whole treatment so the learner never re-anchors. (Reference cast: the theory
-  `PA`, the structure `ℕ`, a true sentence `2+2=4`, a false foil `2+2=5`, a
-  malformed foil, the self-referential payoff `G_T`.) One example cannot honestly
-  carry every concept; fix a *small cast* rather than fake one example.
-- **Typed visualizations that keep distinctions apart.** Where a diagram is used,
-  its node and edge *types* carry the conceptual distinction (so one relation can
-  never be mistaken for another), with a legend and a text fallback. This is the
-  anti-"category-error" mechanism: the visualization enforces the very
-  separations the topic is about.
+  front-loading rigor. **Show then tell** (concrete before abstract).
+- **PEA, distinguished by domain (ADR-0006).** *Pictures* (a visual of the real
+  thing) and *Examples* (an instance from the concept's own domain) are
+  **in-domain** — faithful, and they can *grow*. *Analogies* (a mapping to a
+  familiar foreign domain) are **out-of-domain** — lossy and *local*.
+- **One in-domain through-line, derived backward.** Prefer a single running
+  example + its picture/artifact that **accretes sophistication** across the arc,
+  derived backward from the *terminal* artifact (the one embodying the end goal) —
+  the example track is a second backward derivation, aligned to the concept track
+  by closure (the artifact at stage N uses only concepts available by N).
+  **Honest fallback:** a *small consistent cast* where one object cannot span a
+  stretch (the reference cast: `PA`, `ℕ`, `2+2=4`, `2+2=5`, a malformed foil,
+  `G_PA`) — fix a small cast rather than fake a through-line.
+- **Analogies are local, plural, bounded — fitted forward, not derived backward.**
+  Choose the best analogy *per concept*, mark its **breakdown point**, retire it
+  there; never stretch one across the arc (chess illuminates "formal system" and
+  is structurally silent on truth and self-reference). The breakdown point is
+  information — usually a "Therefore & But" handoff to the next concept.
+- **Typed visualizations that keep distinctions apart.** A diagram's node/edge
+  *types* carry the conceptual distinction (one relation can never be mistaken for
+  another), with a legend and text fallback — the anti-"category-error" mechanism.
 - **Confusions as predicted misconceptions.** The dependency structure predicts
-  where learners will conflate concepts (exactly the contrast pairs and the
-  category errors). Each unit states those misconceptions and their corrections
-  explicitly.
+  where learners conflate concepts (the contrast pairs, the category errors); each
+  unit states those misconceptions and their corrections explicitly.
 
 Unavoidable early mentions (a concept that must be named before its full
 treatment) use a **spiral gloss** — a one-line working definition up front,
@@ -511,6 +525,24 @@ structure."
 - "Optimal" is **stipulative and structural**, not a maximization claim: it removes
   a definite class of defects (§1) and makes correctness and efficacy *measurable*
   (§9); it does not certify the result is the best possible way to learn the topic.
+
+**Open questions / what is unsettled (the newest, least-tested parts):**
+- **The generation loop is unbuilt.** The agentic-coder propose→gate→revise loop
+  (ADR-0005) and the LLM-designed "Therefore & But" / spiral ordering are
+  *specified, not implemented*. The honest test is authoring a *second* topic from
+  scratch — not yet done; the reference instance was authored middle-out.
+- **No single object is guaranteed to span a topic.** The "one evolving artifact
+  derived backward" (ADR-0006) is a target with a mandatory fallback to a small
+  cast; when one object stops working is a judgment call.
+- **Analogies are unmodeled and unvalidated.** Their scope and breakpoints are
+  empirical (need transfer testing — Tier-2, which we don't do); the reference
+  instance models none.
+- **No independent gate yet.** The propose/dispose split assumes a *non-agent* run
+  certifies the agent's work; today that separation is discipline, not CI.
+- **The artifact "structure-matches-claims" gate is aspirational** — we have
+  ad-hoc sweeps, not general structural assertions.
+- **The kind vocabulary and the resolution moves are earned from one topic** and
+  may not transfer.
 
 **Positioning.** This is not a new claim about the structure of learning, and it
 overlaps deliberately with concept maps, learning-component decompositions, and

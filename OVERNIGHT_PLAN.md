@@ -14,12 +14,21 @@
 >
 > - ✅ **Round-2 audit** (lessons/quizzes/glossary/notation/cross-layer/backend/code)
 >   — 15 fixes; `docs/CONTENT_REVIEW.md`.
-> - 🔜 **ADR-0005 Phase 1 — typed prerequisite edges** (semantic-kind annotation:
+> - ✅ **ADR-0005 Phase 1 — typed prerequisite edges** (semantic-kind annotation:
 >   `is-a` / `part-of` / `defined-via` / `operates-on` / `refines` / `assumes`,
->   rendered as the edge label). *Implementing now.*
-> - 📐 **ADR-0005 Phase 2 — LLM-in-the-loop generation** ("propose, then dispose":
->   deterministic gates as guardrails, LLM optimizes ordering/grouping/spiral/prose).
->   The larger arc; specced, not built.
+>   rendered as the edge label + colour). *Done.*
+> - 📐 **Specced, not built (ADR-0005 Ph.2 + ADR-0006):** the agentic-coder
+>   propose→gate→revise loop, the artifact gate (structural assertions + puppeteer),
+>   the in-domain evolving artifact + out-of-domain analogies, and "Therefore &
+>   But" ordering. The strongest test is **authoring a second topic from scratch.**
+>
+> **Known content concerns (surfaced in review, not yet fixed):**
+> - **`object-theory` naming collision** — readers expect a link to `object` (a
+>   number), but `object-theory` means "object-*level* theory" (vs metatheory), an
+>   unrelated notion. Rename (`object-level-theory`) or gloss. Both audits missed it.
+> - **`syntactic` introduced at stage 8** — defensible (where ⊢-vs-⊨ is drawn) but
+>   the *idea* "proof = symbol manipulation" lives in `proof` (stage 3); worth a
+>   look at whether the named concept should come earlier.
 >
 > Prior overnight build (17 stages) and SPRINT (skill DAG + LLM judge) complete.
 
