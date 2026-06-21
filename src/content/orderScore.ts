@@ -31,8 +31,8 @@ const WEIGHTS = { fanoutEarly: 0.35, prereqLocality: 0.3, checkCadence: 0.2, exa
 const CHECK_RUN_CAP = 6; // a run longer than this without a check is fully penalized
 
 export function scoreConceptOrder(order: string[], concepts: Concept[]): OrderScore {
-  const byId = new Map(concepts.map((c) => [c.id, c]));
-  const pos = new Map(order.map((id, i) => [id, i]));
+  const byId = new Map<string, Concept>(concepts.map((c) => [c.id, c]));
+  const pos = new Map<string, number>(order.map((id, i) => [id, i]));
   const N = order.length;
   const empty = { fanoutEarly: 0, prereqLocality: 0, checkCadence: 0, exampleAlternation: 0 };
   if (N <= 1) return { valid: true, total: 1, components: { ...empty, fanoutEarly: 1, prereqLocality: 1, checkCadence: 1, exampleAlternation: 1 } };
@@ -42,16 +42,16 @@ export function scoreConceptOrder(order: string[], concepts: Concept[]): OrderSc
   for (const c of concepts) {
     if (!pos.has(c.id)) continue;
     for (const p of c.prerequisites)
-      if (pos.has(p) && pos.get(p) > pos.get(c.id)) { valid = false; break; }
+      if (pos.has(p) && pos.get(p)! > pos.get(c.id)!) { valid = false; break; }
     if (!valid) break;
   }
 
   // --- fanoutEarly: high out-degree concepts placed early ---
-  const fanout = new Map(order.map((id) => [id, 0]));
-  for (const c of concepts) for (const p of c.prerequisites) if (fanout.has(p)) fanout.set(p, fanout.get(p) + 1);
-  const earliness = (i) => (N - 1 - i) / (N - 1); // 1 at front, 0 at back
+  const fanout = new Map<string, number>(order.map((id) => [id, 0]));
+  for (const c of concepts) for (const p of c.prerequisites) if (fanout.has(p)) fanout.set(p, fanout.get(p)! + 1);
+  const earliness = (i: number) => (N - 1 - i) / (N - 1); // 1 at front, 0 at back
   let fSum = 0;
-  for (const id of order) fSum += fanout.get(id) * earliness(pos.get(id));
+  for (const id of order) fSum += fanout.get(id)! * earliness(pos.get(id)!);
   // best possible: highest fan-outs at the front
   const fanSortedDesc = [...fanout.values()].sort((a, b) => b - a);
   let fBest = 0;
@@ -62,9 +62,9 @@ export function scoreConceptOrder(order: string[], concepts: Concept[]): OrderSc
   let gapSum = 0, gapCount = 0;
   for (const c of concepts) {
     if (!pos.has(c.id)) continue;
-    const prereqPositions = c.prerequisites.filter((p) => pos.has(p)).map((p) => pos.get(p));
+    const prereqPositions = c.prerequisites.filter((p) => pos.has(p)).map((p) => pos.get(p)!);
     if (!prereqPositions.length) continue;
-    gapSum += pos.get(c.id) - Math.max(...prereqPositions);
+    gapSum += pos.get(c.id)! - Math.max(...prereqPositions);
     gapCount++;
   }
   const avgGap = gapCount ? gapSum / gapCount : 1;
