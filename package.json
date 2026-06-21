@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "validate": "node scripts/validate-content.mjs",
+    "completeness": "node scripts/completeness-report.mjs",
     "check": "tsc -b --noEmit && node scripts/validate-content.mjs && vite build",
     "screenshots": "node scripts/screenshots.mjs"
   },

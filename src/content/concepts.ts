@@ -856,6 +856,29 @@ export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(
   CONCEPTS.map((c) => [c.id, c]),
 );
 
+/** **apt-flags (ADR-0006, ROADMAP M1).** Explicit, centrally-maintained lists —
+ *  the list *is* the spec (no silent omissions). The completeness report
+ *  (`scripts/completeness-report.mjs`) requires:
+ *   - a `ladder` visualization in the introducing stage of each DYNAMICAL concept
+ *     (a parameterized concept with emergent behavior — control→abstract→step-down);
+ *   - a `Concept.analogy` for each ANALOGY-APT concept (a natural bounded
+ *     out-of-domain analogy with a breakdown point). */
+export const DYNAMICAL_CONCEPTS = new Set<string>([
+  "satisfaction", // ℕ ⊨ φ — slide the assignment (ladder shipped, stage-7)
+  "godel-coding", // prime-power encoder — slide the exponents
+  "provability", // proof-as-reachability from the axioms
+  "parser", // parse / parse-failure explorer — vary the input string
+  "diagonalization", // the self-reference loop
+]);
+export const ANALOGY_APT_CONCEPTS = new Set<string>([
+  "formal-theory", // ↔ chess (the canonical ADR-0006 analogy)
+  "satisfaction", // ↔ a database query (shipped, stage-7)
+  "godel-coding", // ↔ ISBN / text encoding
+  "provability", // ↔ legal moves in a game
+  "decidable", // ↔ a guaranteed-to-halt algorithm
+  "consistency", // ↔ a non-self-contradictory rulebook
+]);
+
 /**
  * Per-edge justification for every prerequisite, keyed `"concept>prerequisite"`.
  * Each value answers "why does the concept need this prerequisite?" — the
