@@ -386,6 +386,18 @@ Structure is necessary but inert; content makes it teachable. Disciplines:
 - **Typed visualizations that keep distinctions apart.** A diagram's node/edge
   *types* carry the conceptual distinction (one relation can never be mistaken for
   another), with a legend and text fallback — the anti-"category-error" mechanism.
+- **Ladder-of-abstraction recipe for *dynamical* concepts (ADR-0006 §6, after
+  B. Victor).** Where a concept *has a parameter*, build its artifact by **control →
+  abstract-over → step-down**: show a concrete case, show it generalized over the
+  parameter (all values at once), then tie a point on the abstraction back to a
+  concrete case. The insight is in the *transitions*. This is valuable even as a
+  **static** figure; full interactivity is a *scoped enhancement* reserved for the
+  few concepts that are parameterized systems with emergent behaviour (not the
+  definitional majority), and is deliberately **not** a v1 requirement — it is
+  expensive bespoke craft (soft-optimization layer, §8), built selectively and
+  gated, never a per-concept floor. (Note: this "ladder of abstraction" — levels of
+  *one* system — is orthogonal to the prerequisite DAG — relations *between*
+  concepts; do not conflate.)
 - **Confusions as predicted misconceptions.** The dependency structure predicts
   where learners conflate concepts (the contrast pairs, the category errors); each
   unit states those misconceptions and their corrections explicitly.

@@ -23,8 +23,16 @@
 >   high-fan-out concept checks incrementally.*
 > - 📐 **Specced, not built (ADR-0005 Ph.2 + ADR-0006):** the agentic-coder
 >   propose→gate→revise loop, the artifact gate (structural assertions + puppeteer),
->   the in-domain evolving artifact + out-of-domain analogies, and "Therefore &
->   But" ordering. The strongest test is **authoring a second topic from scratch.**
+>   the in-domain evolving artifact + out-of-domain analogies, "Therefore & But"
+>   ordering, and the **ladder-of-abstraction recipe** (ADR-0006 §6: control →
+>   abstract-over → step-down for *dynamical* concepts; usable statically). The
+>   strongest test is **authoring a second topic from scratch.**
+> - 🚫 **Decided NOT a v1 requirement (ADR-0006 §6):** Victor-grade *interactivity*
+>   per concept. It is a scoped enhancement for the ~4–6 parameterized/dynamical
+>   concepts (we already ship 2: the coding encoder + the parse explorer), built
+>   after the structure is validated — not a per-concept floor. The *technique* is
+>   adopted now (even statically); the *production value* is deferred to avoid
+>   ballooning v1.
 >
 > **Known content concerns (surfaced in review, not yet fixed):**
 > - **`object-theory` naming collision** — readers expect a link to `object` (a
