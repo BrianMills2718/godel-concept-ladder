@@ -13,20 +13,23 @@ import { ROOT_GOAL_ID, prereqsOf, ancestorsOf, nodeById } from "../content/graph
 
 interface SkillState {
   passed: string[];
+  /** Subset of `passed` claimed by learner self-attestation when the judge was
+   *  unreachable — recorded so these are never conflated with a real verdict. */
+  selfAttested: string[];
   goalId: string;
 }
 
 const KEY = "godel-ladder:skill:v1";
-const EMPTY_STATE: SkillState = Object.freeze({ passed: [], goalId: ROOT_GOAL_ID });
+const EMPTY_STATE: SkillState = Object.freeze({ passed: [], selfAttested: [], goalId: ROOT_GOAL_ID });
 
 function load(): SkillState {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return { passed: [], goalId: ROOT_GOAL_ID };
+    if (!raw) return { passed: [], selfAttested: [], goalId: ROOT_GOAL_ID };
     const p = JSON.parse(raw) as SkillState;
-    return { passed: p.passed ?? [], goalId: p.goalId ?? ROOT_GOAL_ID };
+    return { passed: p.passed ?? [], selfAttested: p.selfAttested ?? [], goalId: p.goalId ?? ROOT_GOAL_ID };
   } catch {
-    return { passed: [], goalId: ROOT_GOAL_ID };
+    return { passed: [], selfAttested: [], goalId: ROOT_GOAL_ID };
   }
 }
 
@@ -50,10 +53,20 @@ export function getSkillState(): SkillState {
   return state;
 }
 
-export function markNodePassed(nodeId: string) {
+export function markNodePassed(nodeId: string, selfAttested = false) {
   if (state.passed.includes(nodeId)) return;
-  state = { ...state, passed: [...state.passed, nodeId] };
+  state = {
+    ...state,
+    passed: [...state.passed, nodeId],
+    selfAttested: selfAttested ? [...state.selfAttested, nodeId] : state.selfAttested,
+  };
   emit();
+}
+
+/** Was this node marked passed by self-attestation (judge unreachable) rather than
+ *  a real verdict? */
+export function isSelfAttested(nodeId: string): boolean {
+  return state.selfAttested.includes(nodeId);
 }
 
 export function setGoal(goalId: string) {
@@ -63,7 +76,7 @@ export function setGoal(goalId: string) {
 }
 
 export function resetSkillProgress() {
-  state = { passed: [], goalId: ROOT_GOAL_ID };
+  state = { passed: [], selfAttested: [], goalId: ROOT_GOAL_ID };
   emit();
 }
 

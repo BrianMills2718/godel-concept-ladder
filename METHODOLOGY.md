@@ -273,8 +273,11 @@ Declare the topic's **goals** (terminal concepts / achievements). A concept is
 to reach a goal), **enrichment** if reachable but off every critical path, and an
 **orphan** (a warning) if in no goal's closure and not itself a goal.
 
-*Reference outcome:* **45 of 60** concepts are core; **15** are deliberate
-enrichment; no unexplained orphans. **Caveat:** this lens is only interpretable for
+*Reference outcome:* **44 of 60** concepts are core; **16** are deliberate
+enrichment; no unexplained orphans. (Notably, after a 2026-06-21 correctness fix,
+`soundness` is *enrichment*: it is sufficient but **not necessary** for the
+theorems, so it is correctly off the critical path — the truth clause is grounded
+in `satisfaction` (ℕ ⊨ G_T) instead. §13.) **Caveat:** this lens is only interpretable for
 topics with a *definable terminal goal* to derive backward from — Gödel has a crisp
 one (the incompleteness theorems); survey topics ("20th-century art"), open
 empirical sciences, and skill domains often do not (§15).

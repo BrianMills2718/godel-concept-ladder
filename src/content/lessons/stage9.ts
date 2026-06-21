@@ -65,13 +65,13 @@ No contradiction between them: one is about the logic's deductive power, the oth
       kind: "typed-graph",
       title: "Provable ⊆ true ⊆ all sentences (sound, incomplete theory)",
       textualSummary:
-        "Among all well-formed sentences, the true-in-ℕ sentences form a subset, and for a sound theory the provable sentences form a subset of those. Because the theory is incomplete, the provable set does not fill up the true set: the Gödel sentence G_T sits inside true-in-ℕ but outside provable-in-T.",
+        "Among all well-formed sentences, the true-in-ℕ sentences form a subset, and for a sound theory the provable sentences form a subset of those. Because the theory is incomplete, the provable set does not fill up the true set: there is a sentence true in ℕ but not provable in T (we will construct one — the Gödel sentence G_T — in Stage 15; shown here only to preview the gap).",
       layers: ["syntax", "semantics", "proof"],
       nodes: [
         { id: "all", type: "Sentence", layer: "syntax", label: "all well-formed sentences", position: { x: 40, y: 30 } },
         { id: "true", type: "TruthValue", layer: "semantics", label: "true in $\\mathbb{N}$", position: { x: 360, y: 30 } },
         { id: "prov", type: "Theorem", layer: "proof", label: "provable in $T$", position: { x: 360, y: 170 } },
-        { id: "g", type: "Sentence", layer: "semantics", label: "$G_T$: true but not provable", position: { x: 360, y: 320 } },
+        { id: "g", type: "Sentence", layer: "semantics", label: "true but not provable (e.g. $G_T$, Stage 15)", position: { x: 360, y: 320 } },
       ],
       edges: [
         { id: "e1", source: "true", target: "all", type: "relates", label: "⊆", layer: "semantics" },

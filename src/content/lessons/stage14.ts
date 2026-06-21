@@ -24,11 +24,11 @@ export const stage14: Lesson = {
   sections: [
     {
       heading: "The Fixed-Point Lemma (no magic)",
-      body: `Self-reference here is a **theorem**, not a trick. The **Diagonal / Fixed-Point Lemma** says: for any formula $\\psi(x)$ with one free variable, there is a sentence $G$ such that
+      body: `Self-reference here is a **theorem**, not a trick. The **Diagonal / Fixed-Point Lemma** says: for any formula $\\psi(x)$ with one free variable — and any theory $T$ extending a weak base arithmetic that can represent substitution (e.g. Robinson's Q; our $T = \\mathrm{PA}$ qualifies) — there is a sentence $G$ such that
 
 $$T \\vdash \\; G \\leftrightarrow \\psi(\\ulcorner G\\urcorner).$$
 
-That is, $T$ *proves* $G$ equivalent to "$\\psi$ holds of my own code." The lemma is established mechanically using the coding of Stages 12–13 — there is nothing informal about it.`,
+That is, $T$ *proves* $G$ equivalent to "$\\psi$ holds of my own code." The lemma is established mechanically using the coding of Stages 12–13 — there is nothing informal about it. (It needs that base strength: a theory too weak to represent substitution, or in a non-arithmetic language, has no such guarantee.)`,
     },
     {
       heading: "Build G_T by diagonalizing on 'not provable'",
@@ -48,7 +48,7 @@ In words: $T$ *proves* $G_T$ equivalent to "no number codes a $T$-proof of the s
 
 Why it is **not** the liar paradox ("this sentence is false"):
 
-- The liar uses *truth*, which (by Tarski) is **not** definable inside arithmetic — so "I am false" can't even be written.
+- The liar uses *truth*, which — by **Tarski's undefinability theorem** (no arithmetic formula can define "true in ℕ") — is **not** definable inside arithmetic, so "I am false" can't even be written.
 - $G_T$ uses *provability*, which **is** representable ($\\mathrm{Prov}_T$). "I am not provable" is expressible and consistent.
 
 A false-saying liar yields contradiction; an unprovable-saying $G_T$ yields *incompleteness*. Different ingredient, different outcome.`,
@@ -79,7 +79,7 @@ A false-saying liar yields contradiction; an unprovable-saying $G_T$ yields *inc
     {
       misconception: "The Gödel sentence is the liar paradox in disguise.",
       correction:
-        "The liar uses truth (undefinable in arithmetic, by Tarski) and gives contradiction. $G_T$ uses provability (representable) and gives incompleteness — no contradiction.",
+        "The liar uses truth (undefinable in arithmetic — Tarski's undefinability theorem) and gives contradiction. $G_T$ uses provability (representable) and gives incompleteness — no contradiction.",
     },
     {
       misconception: "$G_T$ is some special non-arithmetic statement.",

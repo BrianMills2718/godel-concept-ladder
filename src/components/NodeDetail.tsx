@@ -14,7 +14,7 @@ import { LessonPage } from "./LessonPage";
 import { Quiz } from "./Quiz";
 import { RichLine, RichText } from "./Math";
 import { useProgress } from "../store/progress";
-import { markNodePassed, useSkillView } from "../store/skillProgress";
+import { markNodePassed, isSelfAttested, useSkillView } from "../store/skillProgress";
 import { nodeById as graphNode } from "../content/graph";
 import { gradeAnswer } from "../lib/judge";
 import type { JudgeResult } from "../types";
@@ -207,14 +207,23 @@ function Capstone({ task, nodeId, alreadyPassed }: { task: AssessmentTask; nodeI
 
       <div className="nd-complete">
         {alreadyPassed || (judgePassed && detPassed) ? (
-          <span className="nd-passed">✓ Achievement earned.</span>
+          <span className="nd-passed">
+            {isSelfAttested(nodeId)
+              ? "✓ Self-attested (not AI-graded)."
+              : "✓ Achievement earned."}
+          </span>
         ) : (
           <button
             className="nd-complete-btn"
             disabled={!canClaim}
-            onClick={() => { markNodePassed(nodeId); window.location.hash = "#/tree"; }}
+            onClick={() => {
+              // fallbackOk path is a learner self-attestation, not a judged verdict —
+              // record it as such so the two are never conflated.
+              markNodePassed(nodeId, fallbackOk && !judgePassed);
+              window.location.hash = "#/tree";
+            }}
           >
-            Claim achievement →
+            {fallbackOk && !judgePassed ? "Self-attest & proceed →" : "Claim achievement →"}
           </button>
         )}
         {!canClaim && !alreadyPassed && !(judgePassed && detPassed) && (

@@ -1,12 +1,13 @@
 /**
  * Deriving the skill-map DAG from the concept graph (ADR-0003).
  *
- * The concept graph is the source of truth and MAY contain cycles (mutually-
- * defining concepts). The canonical way to turn a cyclic directed graph into a
- * DAG is strongly-connected-component (SCC) condensation: collapse each cycle
- * into one cluster, and the condensation is provably acyclic. We then lift
- * concept dependencies to the group level (the `introducedIn` grouping) to get
- * the skill-map's prerequisite edges.
+ * The concept graph is the source of truth and is kept **acyclic** by a build
+ * gate (a cycle is a decomposition error — ADR-0003 as amended, ADR-0004 §Cycles,
+ * METHODOLOGY §5). The SCC pass here is therefore a **guard/linter**, not a
+ * derivation step: with acyclic prerequisites every SCC is a singleton and the
+ * condensation is trivial. Derivation is the **group-lift**: we lift concept
+ * dependencies to the group level (the `introducedIn` grouping) to get the
+ * skill-map's prerequisite edges.
  *
  * Pure functions over CONCEPT_GRAPH so both the app (rendering) and the
  * validator/report can use them.

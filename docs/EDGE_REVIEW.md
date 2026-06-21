@@ -24,8 +24,8 @@
 | 10 | `godel-coding` | Trimmed the definition to just the numbering; "syntactic *relations* become arithmetic" now belongs to `arithmetization`. |
 | 11 | `representable` | **Math fix:** reworded to the proof-theoretic property (T ⊢ φ of the right tuples, T ⊢ ¬φ of the rest) — "holds of the right numbers" read as truth-in-ℕ, the exact ⊢/⊨ category error the site guards. |
 | 12 | `proof-predicate` | Dropped the transitively-redundant direct `arithmetization` edge (reachable via `representable`). |
-| 13 | `first-incompleteness` | **Math fix:** example no longer attributes *irrefutability* to plain consistency — "cannot prove (consistency suffices); cannot refute given soundness; ω-consistency / Rosser noted." Per CONTENT_NOTES §1. |
-| 14 | `godel-sentence` | Example hedges ℕ ⊨ G_PA with "given ℕ ⊨ PA, i.e. soundness." Per CONTENT_NOTES §1. |
+| 13 | `first-incompleteness` | **Math fix (2026-06-21):** *truth* of G_T needs only **consistency**, not soundness (biconditional holds in ℕ via the base arithmetic; counterexample PA+¬Con(PA)). Edges: dropped `soundness`; added `omega-consistency`, `rosser-sentence` (irrefutability) and `satisfaction` (the ℕ⊨G_T truth clause). Per CONTENT_NOTES §1. |
+| 14 | `godel-sentence` | **Math fix (2026-06-21):** example now states ℕ ⊨ G_PA follows from PA's *consistency* (no soundness hedge). Per CONTENT_NOTES §1. |
 | 15 | `formation-rule` | Definition now covers base clauses ("$0$ is a term"), not only inductive steps. |
 | 16 | `object-theory` | Replaced the bare "not about itself" with a coding-aware framing (arithmetic can encode claims about the theory — the Stage 12–14 payoff). |
 
@@ -159,8 +159,10 @@ record an independent reviewer's sign-off (✓ / ? / ✗).
 | `rosser-sentence` — Rosser sentence | `omega-consistency` — ω-consistency | …instead of ω-consistency |  |
 | `first-incompleteness` — first incompleteness theorem | `godel-sentence` — Gödel sentence | the theorem is about the unprovability of G_T |  |
 | `first-incompleteness` — first incompleteness theorem | `effectively-axiomatized` — effectively axiomatized | a hypothesis of the theorem |  |
-| `first-incompleteness` — first incompleteness theorem | `consistency` — consistency | a hypothesis of the theorem |  |
-| `first-incompleteness` — first incompleteness theorem | `soundness` — soundness | soundness gives 'true but unprovable' |  |
+| `first-incompleteness` — first incompleteness theorem | `consistency` — consistency | consistency alone gives both T ⊬ G_T and the truth of G_T (2026-06-21 fix) |  |
+| `first-incompleteness` — first incompleteness theorem | `omega-consistency` — ω-consistency | T ⊬ ¬G_T (irrefutability) needs ω-consistency for the original Gödel sentence |  |
+| `first-incompleteness` — first incompleteness theorem | `rosser-sentence` — Rosser sentence | Rosser's sentence obtains irrefutability from plain consistency |  |
+| `first-incompleteness` — first incompleteness theorem | `satisfaction` — satisfaction | the conclusion 'G_T true in ℕ' is a satisfaction claim (ℕ ⊨ G_T) — replaces the old `soundness` edge |  |
 | `first-incompleteness` — first incompleteness theorem | `completeness` — completeness | the conclusion is that completeness fails |  |
 | `first-incompleteness` — first incompleteness theorem | `metatheory` — metatheory | 'unprovable yet true' is a metatheoretic claim |  |
 | `con-t` — Con(T) | `prov-predicate` — Prov_T(q) | Con(T) is written with Prov_T |  |

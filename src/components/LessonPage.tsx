@@ -51,7 +51,7 @@ export function LessonPage({ lesson }: { lesson: Lesson }) {
         <h3>What you'll be able to do</h3>
         <ul className="objectives">
           {lesson.objectives.map((o, i) => (
-            <li key={i}>{o}</li>
+            <li key={i}><RichLine text={o} /></li>
           ))}
         </ul>
       </section>
@@ -123,7 +123,7 @@ export function LessonPage({ lesson }: { lesson: Lesson }) {
         <span className="mastery-icon">{progress.mastered ? "✓" : "◎"}</span>
         <div>
           <strong>Mastery checkpoint</strong>
-          <p>{lesson.masteryCheckpoint}</p>
+          <p><RichLine text={lesson.masteryCheckpoint} /></p>
           {progress.mastered ? (
             <p className="mastery-done">You aced this quiz. Ready for the next stage.</p>
           ) : (

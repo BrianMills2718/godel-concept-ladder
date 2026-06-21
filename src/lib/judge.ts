@@ -1,8 +1,11 @@
 /**
  * Client for the LLM judge backend (Phase C). The frontend sends only
  * {taskId, answer}; the backend is rubric-authoritative and recomputes pass/fail.
- * If the backend is unreachable, callers degrade to the deterministic + self-
- * attest flow — we never silently mark an achievement passed without a verdict.
+ * If the backend is unreachable, callers degrade to a deterministic + explicit
+ * self-attest flow: open-ended achievements can then be *self-attested* by the
+ * learner (never silently auto-passed), and such claims are recorded as
+ * `selfAttested` in the progress store and shown as "Self-attested (not AI-graded)"
+ * — kept distinct from a real judged verdict.
  */
 import type { JudgeResult } from "../types";
 

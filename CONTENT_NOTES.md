@@ -17,13 +17,27 @@ consistency, soundness, and ω-consistency. State precisely:
   (1936)** strengthened the sentence so that plain **consistency** suffices for
   both directions. Mention Rosser; don't claim plain consistency gives the
   original G both ways.
-- **`ℕ ⊨ G_T` (G_T is *true*) needs soundness / that ℕ ⊨ T.** This is a
-  *metatheoretic* claim and must be flagged as such. Don't assert "G_T is true"
-  without "assuming the standard model satisfies T."
+- **`ℕ ⊨ G_T` (G_T is *true*) needs ONLY consistency — NOT soundness.** This is the
+  subtle one, and the easy place to overclaim (an external review caught us doing
+  exactly this, 2026-06-21). The reasoning, in two parts, *neither* being soundness
+  of T:
+  1. *Correct arithmetization* (needs only that T is effectively axiomatized):
+     consistency gives no real proof of G_T, so `ℕ ⊨ ¬Prov_T(⌜G_T⌝)`.
+  2. *The biconditional `G_T ↔ ¬Prov_T(⌜G_T⌝)` is a theorem of the **base**
+     arithmetic* (Q/PA) via the Fixed-Point Lemma, not of T — so it holds in ℕ
+     because `ℕ ⊨ PA`, regardless of whether `ℕ ⊨ T`.
+  Combine: `ℕ ⊨ G_T`, from consistency alone. Soundness (`ℕ ⊨ T`) is **sufficient
+  but not necessary**. Counterexample that must stay refutable: `T = PA + ¬Con(PA)`
+  is consistent (Gödel 2) but unsound, and its Gödel sentence is still true in ℕ.
+  **Do NOT write "G_T is true assuming T is sound" as if soundness were required.**
+  It *is* still a metatheoretic claim (it lives in the metatheory, about the object
+  theory) — flag *that*, not a soundness dependency.
 
-Keep the three columns of the Stage 0 table honest: G_T's "not provable" hedge
-is "assuming T consistent & strong enough"; its "true in ℕ" hedge is "under the
-usual metatheoretic assumptions (soundness)." Already done in stage0.ts.
+It is fine and correct to say *soundness ⟹ everything T proves is true ⟹ Thm(T) ⊆
+True(ℕ)* (the prov ⊆ true containment in the Stage 9/15 region diagram). That is a
+different, legitimate use of soundness — keep it; just don't make the *truth of
+G_T* depend on it. Keep the Stage 0 table honest: G_T's "true in ℕ" hedge is
+"assuming T consistent" (the same hedge as unprovability), not "assuming soundness."
 
 ## 2. Diagonalization is the Fixed-Point Lemma, not casual self-reference (Stage 14)
 The existence of a sentence with `G_T ↔ ¬Prov_T(⌜G_T⌝)` is **not** something you

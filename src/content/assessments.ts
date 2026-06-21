@@ -51,7 +51,7 @@ export const RUBRICS: Record<string, Rubric> = {
     criteria: [
       { id: "conditions", description: "States the three conditions on T.", maxScore: 25 },
       { id: "unprov", description: "Explains T⊬G_T from consistency.", maxScore: 25 },
-      { id: "truth", description: "Explains why G_T is true in ℕ (soundness/standard model).", maxScore: 25 },
+      { id: "truth", description: "Explains why G_T is true in ℕ from consistency alone (biconditional holds in ℕ via the base arithmetic; soundness sufficient, not necessary).", maxScore: 25 },
       { id: "scope", description: "Notes unprovable-in-T is not absolutely unprovable.", maxScore: 25 },
     ],
   },
@@ -272,7 +272,7 @@ export const ASSESSMENTS: AssessmentTask[] = [
     kind: "llm-judged",
     title: "Explain First Incompleteness",
     prompt: "Explain Gödel's First Incompleteness Theorem.",
-    openEnded: { prompt: "Cover: (1) the conditions on T; (2) what $G_T$ says; (3) why $T\\nvdash G_T$ if T is consistent; (4) why $G_T$ is true in ℕ (soundness); (5) why this is not absolute unprovability.", rubricId: "rub-first" },
+    openEnded: { prompt: "Cover: (1) the conditions on T; (2) what $G_T$ says; (3) why $T\\nvdash G_T$ if T is consistent; (4) why $G_T$ is true in ℕ from consistency alone (soundness is sufficient, not necessary); (5) why this is not absolute unprovability.", rubricId: "rub-first" },
     requiredConcepts: ["consistent", "computably axiomatized", "first incompleteness theorem"],
     fatalMisconceptions: [M.absolute, M.trueProv],
     passThreshold: 0.8,

@@ -3,7 +3,10 @@
  * (CONTENT_NOTES §1). Keep the three conditions separate:
  *   T ⊬ G_T          needs only CONSISTENCY
  *   T ⊬ ¬G_T         needs ω-consistency (Gödel) or Rosser's trick (consistency)
- *   ℕ ⊨ G_T (true)   needs SOUNDNESS / that ℕ ⊨ T (metatheoretic)
+ *   ℕ ⊨ G_T (true)   needs only CONSISTENCY too — the G_T ↔ ¬Prov biconditional is
+ *                    a theorem of the *base* arithmetic, so it holds in ℕ regardless
+ *                    of T. SOUNDNESS is SUFFICIENT but NOT NECESSARY (counterexample:
+ *                    PA + ¬Con(PA) is consistent, unsound, yet its G_T is true).
  */
 import type { Lesson } from "../../types";
 
@@ -12,13 +15,13 @@ export const stage15: Lesson = {
   stage: 15,
   title: "First Incompleteness Theorem",
   summary:
-    "If T is consistent, computably axiomatized, and strong enough for arithmetic, then T ⊬ G_T — yet G_T is true in ℕ (assuming T is sound). Truth outruns provability.",
+    "If T is consistent, computably axiomatized, and strong enough for arithmetic, then T ⊬ G_T — yet G_T is true in ℕ (from consistency alone; soundness is not required). Truth outruns provability.",
   prerequisites: ["stage-14"],
   objectives: [
     "State the three hypotheses: consistent, computably axiomatized, strong enough.",
     "Show $T\\nvdash G_T$ using only consistency.",
     "Know that $T\\nvdash\\neg G_T$ needs ω-consistency (Gödel) or Rosser's trick.",
-    "Explain why $G_T$ is true in $\\mathbb{N}$ — and that this step needs soundness.",
+    "Explain why $G_T$ is true in $\\mathbb{N}$ from consistency alone — and why soundness is sufficient but not necessary.",
     "Distinguish 'unprovable in $T$' from 'absolutely unprovable'.",
   ],
   definitions: [
@@ -34,11 +37,11 @@ export const stage15: Lesson = {
 
 $$T \\nvdash G_T,$$
 
-and — assuming $T$ is **sound** for $\\mathbb{N}$ — also
+and — from those **same hypotheses** (no soundness needed) — also
 
 $$\\mathbb{N}\\models G_T.$$
 
-So $G_T$ is **true but not provable in $T$**. Each clause leans on a *different* hypothesis; the rest of the stage keeps them apart.`,
+So $G_T$ is **true but not provable in $T$**. The one clause that needs *more* than consistency is $T\\nvdash\\neg G_T$ (irrefutability), which needs ω-consistency or a Rosser sentence. Each clause leans on a *different* hypothesis; the rest of the stage keeps them apart.`,
     },
     {
       heading: "The three claims at a glance",
@@ -48,7 +51,7 @@ So $G_T$ is **true but not provable in $T$**. Each clause leans on a *different*
 |---|---|---|
 | $T\\nvdash G_T$ | **consistency** only | else $T$ proves both $\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ and its negation |
 | $T\\nvdash\\neg G_T$ | **ω-consistency** (original $G_T$), or a **Rosser** sentence + consistency | a different theorem route |
-| $\\mathbb{N}\\models G_T$ | correct arithmetization + **soundness** (standard model) | the truth claim is metatheoretic |
+| $\\mathbb{N}\\models G_T$ | **consistency** + correct arithmetization (soundness *sufficient, not required*) | the $G_T\\leftrightarrow\\neg\\mathrm{Prov}$ biconditional holds in $\\mathbb{N}$ via the base arithmetic |
 
 The three sections below establish these one at a time.`,
     },
@@ -71,13 +74,13 @@ Now $T$ proves both $\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ and its negatio
 So: with $G_T$ you get incompleteness assuming ω-consistency; with the separate sentence $R_T$ you get it from bare consistency. Either way a consistent, computable, strong enough $T$ is **incomplete**.`,
     },
     {
-      heading: "Step 3 — why G_T is true in ℕ (two separate ingredients)",
-      body: `This step is **metatheoretic** and rests on two *distinct* facts — keep them apart:
+      heading: "Step 3 — why G_T is true in ℕ (only consistency, *not* soundness)",
+      body: `This step is **metatheoretic**, and it is where presentations often over-assume. It rests on two facts — and **neither is soundness of $T$**:
 
-1. **Correct arithmetization (not soundness).** $\\mathrm{Proof}_T(p,q)$ is built to hold of exactly the genuine proof-codes; in the standard model $\\mathbb{N}$ its extension matches real provability. Since Step 1 (consistency) gives *no* real proof of $G_T$, we get $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. This uses only the construction + consistency — *not* any assumption that $T$ is sound.
-2. **Soundness / standard model.** To pass from there to $\\mathbb{N}\\models G_T$ we use the provable biconditional $G_T\\leftrightarrow\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. For $\\mathbb{N}$ to satisfy that biconditional we need $\\mathbb{N}\\models T$ — i.e. $T$ is **sound** (the standard model is a model of $T$).
+1. **Correct arithmetization.** $\\mathrm{Proof}_T(p,q)$ is built to hold of exactly the genuine proof-codes, so in the standard model $\\mathbb{N}$ its extension matches real provability. (This needs only that $T$ is **effectively axiomatized**, so proof-checking is decidable.) Since Step 1 (consistency) gives *no* real proof of $G_T$, we get $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$.
+2. **The biconditional holds in $\\mathbb{N}$ — via the *base* arithmetic, not $T$.** The Fixed-Point Lemma proves $G_T\\leftrightarrow\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ already in the **weak base theory** (Robinson's Q / PA), *not* in $T$. The standard model satisfies that base outright ($\\mathbb{N}\\models\\mathrm{PA}$), so $\\mathbb{N}$ satisfies the biconditional **whether or not $\\mathbb{N}\\models T$**.
 
-Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* claim (ingredient 2), though unprovability (Step 1) still stands. Keep the hedge: **"true under the usual assumption that the standard model satisfies $T$."**`,
+Combine 1 and 2: $\\mathbb{N}\\models G_T$. **Only consistency was used.** Soundness of $T$ is *sufficient* (if $\\mathbb{N}\\models T$ then everything $T$ proves is true) but **not necessary** — and the difference is real: $T = \\mathrm{PA} + \\neg\\mathrm{Con}(\\mathrm{PA})$ is **consistent** (by Gödel's second theorem) yet **unsound**, and its Gödel sentence is **still true in $\\mathbb{N}$**. So the honest statement drops the soundness hedge: *a consistent, effective, sufficiently strong theory has a true, unprovable Gödel sentence.*`,
     },
     {
       heading: "What it does and doesn't say",
@@ -110,9 +113,9 @@ Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* cla
   ],
   confusions: [
     {
-      misconception: "Gödel needs the theory to be sound (true) to get unprovability.",
+      misconception: "Gödel needs the theory to be sound (true) before $G_T$ is true / unprovable.",
       correction:
-        "Unprovability of $G_T$ (Step 1) needs only *consistency*. Soundness is needed only for the separate claim that $G_T$ is *true* in $\\mathbb{N}$ (Step 3).",
+        "Both $T\\nvdash G_T$ *and* the **truth** of $G_T$ follow from **consistency alone** — truth via the $G_T\\leftrightarrow\\neg\\mathrm{Prov}$ biconditional, which holds in $\\mathbb{N}$ because the base arithmetic proves it. Soundness is sufficient but not necessary: $T=\\mathrm{PA}+\\neg\\mathrm{Con}(\\mathrm{PA})$ is consistent but unsound, and its Gödel sentence is still true. (ω-consistency enters only for $T\\nvdash\\neg G_T$.)",
     },
     {
       misconception: "Plain consistency already gives that neither $G$ nor $\\neg G$ is provable.",
@@ -157,7 +160,7 @@ Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* cla
       ],
       correct: 1,
       wrongExplanations: {
-        "0": "Soundness is needed for the *truth* of $G_T$, not for its unprovability.",
+        "0": "Soundness is not what yields unprovability — consistency is (and the *truth* of $G_T$ also follows from consistency). Soundness is a sufficient-but-unnecessary extra.",
         "3": "ω-consistency is needed for $T\\nvdash\\neg G_T$, not for $T\\nvdash G_T$.",
       },
       explanation:
@@ -175,7 +178,7 @@ Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* cla
     {
       id: "s15q4",
       type: "multiple-choice",
-      prompt: "Why does $T\\nvdash G_T$ make $G_T$ true in $\\mathbb{N}$ (given $T$ sound)?",
+      prompt: "Why is $G_T$ true in $\\mathbb{N}$?",
       options: [
         "Because unprovable sentences are true by definition.",
         "Because $G_T$ asserts exactly 'no number codes a $T$-proof of $G_T$', and Step 1 shows there really is no such proof.",
@@ -184,9 +187,9 @@ Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* cla
       ],
       correct: 1,
       explanation:
-        "$G_T$ says it has no proof; Step 1 (consistency) establishes it has none, and correct arithmetization gives $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. Soundness ($\\mathbb{N}\\models T$) is then what carries this to $\\mathbb{N}\\models G_T$ via the provable biconditional — two separate ingredients.",
+        "$G_T$ says it has no proof; Step 1 (consistency) establishes it has none, and correct arithmetization gives $\\mathbb{N}\\models\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$. The biconditional $G_T\\leftrightarrow\\neg\\mathrm{Prov}_T$ holds in $\\mathbb{N}$ because the *base* arithmetic proves it, so $\\mathbb{N}\\models G_T$ follows from **consistency alone** — no soundness assumption.",
     },
   ],
   masteryCheckpoint:
-    "You can state the three hypotheses, derive $T\\nvdash G_T$ from consistency alone, attribute $T\\nvdash\\neg G_T$ to ω-consistency/Rosser, and explain why $G_T$'s *truth* needs soundness — and why unprovable-in-$T$ isn't absolute.",
+    "You can state the three hypotheses, derive $T\\nvdash G_T$ from consistency alone, attribute $T\\nvdash\\neg G_T$ to ω-consistency/Rosser, explain why $G_T$'s *truth* also follows from consistency alone (soundness sufficient, not necessary) — and why unprovable-in-$T$ isn't absolute.",
 };

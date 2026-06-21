@@ -14,7 +14,12 @@ provable = true) that ordinary explanations skip over.
 **Architecture — concept graph as source of truth.** A **concept graph**
 (`src/content/concepts.ts`: 60 concepts, acyclic prerequisites each with a stated
 justification, plus undirected `contrasts`) is the single source of truth; the
-**skill map** (homepage DAG) is *derived* from it (`derive.ts` → `graph.ts`). The
+**skill map** (homepage DAG) is *derived* from it (`derive.ts` → `graph.ts`) — with
+a small, explicitly-labeled hand-authored **overlay** that is *not* derived (4
+pedagogical-sequencing edges the audit kept, plus the achievement nodes/edges,
+positions, and goals; `derive-report` reports 4 authored edges the concept graph
+does not explain). So "derived" means *the concept→concept prerequisite backbone is
+computed*, not that every edge on the homepage is. The
 homepage is that derived prerequisite DAG — concept nodes (the reviewed lessons) +
 13 **achievement** nodes earned by **performance assessment**, not by viewing
 content. Deterministic checks grade exact answers; an **LLM judge** (`backend/`,
@@ -93,7 +98,10 @@ dev server on an untrusted network; the production bundle is unaffected.
       not paradox; Proof_T an arithmetic predicate; metatheory ≠ a node in T.
 - [x] Every stage has a quiz with why-correct + why-wrong feedback.
 - [x] Typed, consistent graph notation + textual fallback (a11y).
-- [x] No unexplained term — all are in the glossary (validated).
+- [x] No unexplained **typed** term — every `@t{}`/`@c{}` reference resolves and
+      respects definition-closure (validated). *Caveat:* the gate checks typed
+      references only; bare prose can still name a term without a typed link
+      (METHODOLOGY §6/§16) — typing requirement-bearing terms is the mitigation.
 - [x] Sequential navigation + review (sidebar); soft mastery gating.
 - [x] Math renders (KaTeX); clean, content-driven (add a lesson without touching
       components).
