@@ -1,10 +1,18 @@
 # Overnight build — make the reference architecture fully embody the methodology
 
-> **STATUS (2026-06-20): Phase 3 (correctness audit) COMPLETE** via a multi-agent
-> workflow — 16 confirmed findings fixed, 13 arguable adjudicated; see
-> `docs/EDGE_REVIEW.md`. Phases 1, 2, 4 remain (pending go-ahead). The prior
-> overnight build (17 stages + interactives) and the SPRINT (skill DAG + LLM
-> judge) are complete; preserved in git history / `docs/SPRINT.md`.
+> **STATUS (2026-06-21):**
+> - ✅ **Phase 3 (correctness audit)** — multi-agent; 16 fixes; `docs/EDGE_REVIEW.md`.
+> - ✅ **Phase 2 (goal-closure lens)** — core/enrichment in `derive.ts` + report +
+>   concept-graph badge/toggle (45/60 core).
+> - ✅ **Phase 4 (maintenance)** — `deploy.yml` bumped off the Node-20 runtime.
+> - ⏸ **Phase 1 (typed relations + versioning)** — **deferred by design.** The
+>   methodology already states these are "added per domain need," and the Gödel
+>   instance has no current use for `soft-prerequisite`/`corequisite`/versioning.
+>   The one piece with real value — a `foreshadow` forward-link (e.g.
+>   `formation-rule` → `parse-tree`, which closure currently forbids as a chip) —
+>   is teed up as a focused next task rather than built speculatively.
+>
+> Prior overnight build (17 stages) and SPRINT (skill DAG + LLM judge) complete.
 
 **Mission.** The methodology (`METHODOLOGY.md`, ADR-0004) now describes several
 model features the reference implementation does not yet have. Close that gap so
