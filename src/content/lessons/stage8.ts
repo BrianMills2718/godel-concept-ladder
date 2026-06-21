@@ -133,4 +133,5 @@ $$T \\nvdash G_T \\qquad\\text{yet}\\qquad \\mathbb{N}\\models G_T$$
   ],
   masteryCheckpoint:
     "You can explain why 'provable in $T$' and 'true in $\\mathbb{N}$' are different predicates, and that the Gödel sentence is true-but-unprovable.",
+  foreshadows: ["godel-sentence"],
 };

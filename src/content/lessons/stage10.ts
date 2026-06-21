@@ -135,4 +135,5 @@ Provided $T'$ is still **consistent**, it is computably axiomatized and strong e
   ],
   masteryCheckpoint:
     "You can label a claim as object-level or metatheoretic, and explain why adding $\\mathrm{Con}(T)$ climbs to a stronger theory that Gödel still bites.",
+  foreshadows: ["godel-sentence", "con-t", "second-incompleteness"],
 };

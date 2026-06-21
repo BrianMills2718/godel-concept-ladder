@@ -483,6 +483,41 @@ for (const g of GLOSSARY) {
   gterms.add(g.term.toLowerCase());
 }
 
+// --- bare-prose closure (ROADMAP M2b) ---
+// The typed-closure gate sees only @t{}/@c{} refs; this catches a concept term named
+// in PLAIN prose before it is introduced (METHODOLOGY §6/§16). Declared `foreshadows`
+// are legitimate (the foreshadow relation); ALLOW lists terms too common to flag.
+{
+  const ALLOW = new Set([
+    "object", "string", "term", "model", "structure", "proof", "theorem", "grammar",
+    "parser", "sentence", "formula", "variable", "symbol", "axiom", "alphabet",
+    "complete", "completeness", "consistent", "consistency", "sound", "soundness",
+    "true", "interpretation", "semantic", "syntactic", "decidable", "provability",
+    "representable", "numeral", "contradiction", "well-formed",
+  ]);
+  const EXEMPT = new Set(["stage-0"]);
+  const stageIdx = Object.fromEntries(LESSONS.map((l) => [l.id, l.stage]));
+  const strip = (s) => (s || "")
+    .replace(/@[ntc]\{[^}]*\}/g, " ").replace(/\$\$[\s\S]*?\$\$/g, " ")
+    .replace(/\$[^$]*\$/g, " ").replace(/`[^`]*`/g, " ");
+  for (const l of LESSONS) {
+    if (EXEMPT.has(l.id)) continue;
+    const foreshadowed = new Set(l.foreshadows ?? []);
+    const prose = strip([
+      l.summary, ...(l.objectives ?? []),
+      ...(l.sections ?? []).map((s) => `${s.heading ?? ""} ${s.body}`),
+      ...(l.definitions ?? []).flatMap((d) => [d.short, d.expanded ?? "", d.example ?? ""]),
+      ...(l.confusions ?? []).flatMap((c) => [c.misconception, c.correction]),
+    ].join("\n"));
+    for (const c of CONCEPT_GRAPH.concepts) {
+      if (ALLOW.has(c.id) || ALLOW.has(c.term.toLowerCase()) || foreshadowed.has(c.id)) continue;
+      if (!(stageIdx[c.introducedIn] > l.stage)) continue;
+      const re = new RegExp(`(?<![\\w-])${c.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`, "i");
+      ok(!re.test(prose), `${l.id}: plain-prose forward reference to "${c.term}" (introduced ${c.introducedIn}) — declare it in \`foreshadows\` or reword`);
+    }
+  }
+}
+
 rmSync(out, { force: true });
 rmSync(stub, { force: true });
 

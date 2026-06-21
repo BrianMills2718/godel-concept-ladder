@@ -347,6 +347,11 @@ export interface Lesson {
   quiz: QuizQuestion[];
   /** The "you may proceed when you can…" statement. */
   masteryCheckpoint: string;
+  /** Concept ids this lesson *intentionally* previews in prose before they are
+   *  introduced (the `foreshadow` relation, ADR-0005 / METHODOLOGY §2). Declaring
+   *  them here is what makes a forward mention legitimate rather than a bare-prose
+   *  closure hole — the prose-closure gate exempts only declared foreshadows. */
+  foreshadows?: string[];
 }
 
 export interface GlossaryEntry {

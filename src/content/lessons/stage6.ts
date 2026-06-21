@@ -137,4 +137,5 @@ A *different* structure could interpret "$+$" as something else entirely. The sy
   ],
   masteryCheckpoint:
     "You can describe $\\mathbb{N}$ as domain + interpretation, and explain why the symbol $+$ is not the same thing as the addition function.",
+  foreshadows: ["truth-in-structure"],
 };
