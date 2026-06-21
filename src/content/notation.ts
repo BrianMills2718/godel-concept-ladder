@@ -127,6 +127,6 @@ export const NOTATION: Record<string, NotationEntry> = {
     glyph: "G_T",
     name: "the Gödel sentence",
     meaning: "A sentence with $T\\vdash G_T\\leftrightarrow\\neg\\mathrm{Prov}_T(\\ulcorner G_T\\urcorner)$ — it 'says' it is unprovable in $T$.",
-    example: "$\\mathrm{PA}\\nvdash G_{\\mathrm{PA}}$, yet $\\mathbb{N}\\models G_{\\mathrm{PA}}$.",
+    example: "$\\mathrm{PA}\\nvdash G_{\\mathrm{PA}}$, yet $\\mathbb{N}\\models G_{\\mathrm{PA}}$ (true in the standard model, since $\\mathbb{N}\\models\\mathrm{PA}$).",
   },
 };

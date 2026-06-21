@@ -61,7 +61,7 @@ So checking a given proof is easy; deciding provability is not. (This is the com
         "A candidate proof fed to the proof checker always halts, answering valid or invalid — proof-checking is decidable. A candidate sentence P fed to proof search either finds a proof and answers yes, or, if no proof exists, runs forever — so theoremhood is recursively enumerable but not decidable.",
       layers: ["proof", "metatheory"],
       nodes: [
-        { id: "cand", type: "CodeNumber", layer: "proof", label: "candidate proof", position: { x: 40, y: 40 } },
+        { id: "cand", type: "ProofStep", layer: "proof", label: "candidate proof", position: { x: 40, y: 40 } },
         { id: "check", type: "InferenceRule", layer: "metatheory", label: "proof checker (always halts)", position: { x: 320, y: 40 } },
         { id: "vi", type: "MetaClaim", layer: "metatheory", label: "valid / invalid", position: { x: 620, y: 40 } },
         { id: "P", type: "Sentence", layer: "proof", label: "candidate sentence $P$", position: { x: 40, y: 240 } },
@@ -70,9 +70,9 @@ So checking a given proof is easy; deciding provability is not. (This is the com
         { id: "forever", type: "MetaClaim", layer: "metatheory", label: "no proof → runs forever", position: { x: 620, y: 300 } },
       ],
       edges: [
-        { id: "e1", source: "cand", target: "check", type: "represents", layer: "metatheory" },
+        { id: "e1", source: "cand", target: "check", type: "relates", label: "input", layer: "metatheory" },
         { id: "e2", source: "check", target: "vi", type: "proves_about", layer: "metatheory" },
-        { id: "e3", source: "P", target: "search", type: "represents", layer: "metatheory" },
+        { id: "e3", source: "P", target: "search", type: "relates", label: "input", layer: "metatheory" },
         { id: "e4", source: "search", target: "yes", type: "proves_about", layer: "metatheory" },
         { id: "e5", source: "search", target: "forever", type: "proves_about", layer: "metatheory" },
       ],

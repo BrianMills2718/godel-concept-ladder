@@ -97,7 +97,7 @@ Together: $\\mathbb{N}\\models G_T$. Drop soundness and you lose the *truth* cla
         { id: "true", type: "TruthValue", layer: "semantics", label: "true in $\\mathbb{N}$", position: { x: 360, y: 30 } },
         { id: "prov", type: "Theorem", layer: "proof", label: "provable in $T$", position: { x: 360, y: 160 } },
         { id: "g", type: "Sentence", layer: "semantics", label: "$G_T$: true, not provable", position: { x: 660, y: 95 } },
-        { id: "ng", type: "Sentence", layer: "proof", label: "$\\neg G_T$: false, not provable", position: { x: 360, y: 300 } },
+        { id: "ng", type: "Sentence", layer: "proof", label: "$\\neg G_T$: false; unprovable (needs ω-consistency / Rosser)", position: { x: 360, y: 300 } },
       ],
       edges: [
         { id: "e1", source: "true", target: "all", type: "relates", label: "⊆", layer: "semantics" },

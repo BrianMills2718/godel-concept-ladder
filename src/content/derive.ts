@@ -139,12 +139,38 @@ export function deriveStageEdges(): Array<[string, string]> {
   return edges;
 }
 
+/** True iff the directed edge set contains a cycle (DFS colouring). */
+export function hasCycle(edges: Array<[string, string]>): boolean {
+  const succ: Record<string, string[]> = {};
+  const nodes = new Set<string>();
+  for (const [a, b] of edges) { (succ[a] ??= []).push(b); nodes.add(a); nodes.add(b); }
+  const color: Record<string, number> = {};
+  let cyclic = false;
+  const visit = (u: string) => {
+    color[u] = 1;
+    for (const v of succ[u] ?? []) {
+      if (color[v] === 1) { cyclic = true; return; }
+      if (!color[v]) { visit(v); if (cyclic) return; }
+    }
+    color[u] = 2;
+  };
+  for (const n of nodes) { if (!color[n]) visit(n); if (cyclic) break; }
+  return cyclic;
+}
+
 /**
  * Transitive reduction of a DAG: drop edge (u,v) when v is reachable from u
  * through another successor (so only the minimal "covering" edges remain). Keeps
  * the derived skill map free of transitive shortcuts for a clean rendering.
+ *
+ * REQUIRES acyclic input: on a cyclic graph the reduction over-removes (it can
+ * erase a cycle and destroy reachability), so we refuse it loudly — this is also
+ * the gate that catches a prerequisite cycle smuggled in via the hand-authored
+ * overlay (the union is reduced here; see graph.ts).
  */
 export function transitiveReduction(edges: Array<[string, string]>): Array<[string, string]> {
+  if (hasCycle(edges))
+    throw new Error("transitiveReduction: input graph has a cycle — only DAGs may be reduced (a prerequisite cycle slipped past the acyclicity gate, e.g. via a pedagogical-overlay edge)");
   const succ: Record<string, Set<string>> = {};
   for (const [a, b] of edges) (succ[a] ??= new Set()).add(b);
   const reachFrom: Record<string, Set<string>> = {};
@@ -175,12 +201,13 @@ export function transitiveReduction(edges: Array<[string, string]>): Array<[stri
 /** Reachability closure of a directed edge set: node → set of nodes reachable. */
 export function reachability(edges: Array<[string, string]>): Record<string, Set<string>> {
   const adj: Record<string, string[]> = {};
-  for (const [a, b] of edges) (adj[a] ??= []).push(b);
+  const nodes = new Set<string>();
+  for (const [a, b] of edges) { (adj[a] ??= []).push(b); nodes.add(a); nodes.add(b); }
   const memo: Record<string, Set<string>> = {};
   const dfs = (n: string, acc: Set<string>) => {
     for (const m of adj[n] ?? []) if (!acc.has(m)) { acc.add(m); dfs(m, acc); }
   };
-  for (const n of Object.keys(adj)) {
+  for (const n of nodes) { // every node (incl. sinks) gets an entry, never undefined
     const acc = new Set<string>();
     dfs(n, acc);
     memo[n] = acc;

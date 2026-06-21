@@ -73,7 +73,7 @@ $$T \\nvdash G_T \\qquad\\text{yet}\\qquad \\mathbb{N}\\models G_T$$
       rows: [
         { label: "$\\forall{+}{=}x))0$", cells: { "Well-formed?": { value: "no" }, "Provable in $T$?": { value: "no" }, "True in $\\mathbb{N}$?": { value: "n/a", note: "no truth value" } } },
         { label: "$2+2=4$", cells: { "Well-formed?": { value: "yes" }, "Provable in $T$?": { value: "yes" }, "True in $\\mathbb{N}$?": { value: "yes" } } },
-        { label: "$2+2=5$", cells: { "Well-formed?": { value: "yes" }, "Provable in $T$?": { value: "no", note: "PA refutes it" }, "True in $\\mathbb{N}$?": { value: "no" } } },
+        { label: "$2+2=5$", cells: { "Well-formed?": { value: "yes" }, "Provable in $T$?": { value: "no", note: "$T$ refutes it" }, "True in $\\mathbb{N}$?": { value: "no" } } },
         { label: "$G_T$", cells: { "Well-formed?": { value: "yes" }, "Provable in $T$?": { value: "no", note: "T consistent & strong" }, "True in $\\mathbb{N}$?": { value: "yes", note: "metatheoretic assumptions" } } },
       ],
     },
@@ -120,7 +120,7 @@ $$T \\nvdash G_T \\qquad\\text{yet}\\qquad \\mathbb{N}\\models G_T$$
     {
       id: "s8q3",
       type: "classification",
-      prompt: "For each sentence, mark whether $T$ proves it (assuming consistent, sound PA).",
+      prompt: "For each sentence, mark whether $T$ proves it (assuming $T$ is consistent and sound).",
       buckets: ["Provable in T", "Not provable in T"],
       items: [
         { id: "a", label: "$2+2=4$", correctBucket: "Provable in T" },
@@ -128,7 +128,7 @@ $$T \\nvdash G_T \\qquad\\text{yet}\\qquad \\mathbb{N}\\models G_T$$
         { id: "c", label: "$G_T$ (the Gödel sentence)", correctBucket: "Not provable in T" },
       ],
       explanation:
-        "PA proves $2+2=4$; it does not prove $2+2=5$ (it refutes it); and it does not prove $G_T$ — even though $G_T$ is true in $\\mathbb{N}$.",
+        "$T$ proves $2+2=4$; it does not prove $2+2=5$ (it refutes it); and it does not prove $G_T$ — even though $G_T$ is true in $\\mathbb{N}$.",
     },
   ],
   masteryCheckpoint:

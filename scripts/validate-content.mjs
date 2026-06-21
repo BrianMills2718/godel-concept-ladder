@@ -157,8 +157,10 @@ for (const l of LESSONS) {
   for (const q of l.quiz) {
     if (q.type === "multiple-choice")
       ok(q.correct >= 0 && q.correct < q.options.length, `stage ${l.stage} ${q.id}: correct index OOR`);
-    if (q.type === "multi-select")
+    if (q.type === "multi-select") {
+      ok(Array.isArray(q.correct) && q.correct.length > 0, `stage ${l.stage} ${q.id}: multi-select has no correct answers`);
       for (const i of q.correct) ok(i >= 0 && i < q.options.length, `stage ${l.stage} ${q.id}: multi index OOR`);
+    }
     if (q.type === "classification") {
       for (const it of q.items)
         ok(q.buckets.includes(it.correctBucket), `stage ${l.stage} ${q.id}: bucket "${it.correctBucket}" missing`);
@@ -332,13 +334,20 @@ for (const l of LESSONS) {
       ok(!!q.explanation, `concept ${c.id} microQuiz ${q.id}: no explanation`);
       if (q.type === "multiple-choice")
         ok(q.correct >= 0 && q.correct < q.options.length, `concept ${c.id} ${q.id}: correct index OOR`);
-      if (q.type === "multi-select")
+      if (q.type === "multi-select") {
+        ok(Array.isArray(q.correct) && q.correct.length > 0, `concept ${c.id} ${q.id}: multi-select has no correct answers`);
         for (const i of q.correct) ok(i >= 0 && i < q.options.length, `concept ${c.id} ${q.id}: multi index OOR`);
+      }
       if (q.type === "classification")
         for (const it of q.items)
           ok(q.buckets.includes(it.correctBucket), `concept ${c.id} ${q.id}: bucket "${it.correctBucket}" missing`);
       if (q.type === "fill-in")
         ok(Array.isArray(q.accepted) && q.accepted.length > 0, `concept ${c.id} ${q.id}: no accepted answers`);
+      if (q.type === "matching") {
+        const rids = new Set(q.right.map((r) => r.id));
+        for (const l2 of q.left)
+          ok(rids.has(q.pairs[l2.id]), `concept ${c.id} ${q.id}: pair for ${l2.id} -> unknown right`);
+      }
     }
   }
 
@@ -382,6 +391,7 @@ for (const l of LESSONS) {
   for (const c of CONCEPTS) {
     ok(stageIds.has(c.introducedIn), `concept ${c.id}: introducedIn "${c.introducedIn}" is not a stage`);
     const node = lessonNode[c.introducedIn];
+    ok(!!node, `concept ${c.id}: introducedIn "${c.introducedIn}" has no skill-graph node`);
     if (!node) continue;
     const anc = skillAnc(node);
     for (const p of c.prerequisites) {
@@ -389,6 +399,7 @@ for (const l of LESSONS) {
       if (!pc) continue;
       if (pc.primitive) continue; // primitives (symbol, object) are available everywhere
       const pnode = lessonNode[pc.introducedIn];
+      ok(!!pnode, `concept ${c.id}: prerequisite ${p} introducedIn "${pc.introducedIn}" has no skill-graph node`);
       if (!pnode) continue;
       ok(
         pnode === node || anc.has(pnode),

@@ -323,7 +323,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   },
   {
     term: "representable",
-    definition: "A relation is representable in $T$ if an arithmetic formula holds of exactly the right numbers. Decidable syntactic relations (e.g. proof-checking) are representable.",
+    definition: "A relation $R$ is representable in $T$ when some arithmetic formula $\\varphi$ lets $T$ *prove* $\\varphi(\\bar n)$ for tuples in $R$ and *prove* $\\neg\\varphi(\\bar n)$ for tuples not in $R$ — a provability ($\\vdash$) property, not mere truth in $\\mathbb{N}$. Decidable syntactic relations (e.g. proof-checking) are representable.",
     related: ["Proof_T(p,q)", "primitive recursive", "decidable"],
   },
   {

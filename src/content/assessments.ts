@@ -62,6 +62,15 @@ export const RUBRICS: Record<string, Rubric> = {
       { id: "precise", description: "Precise about the relevant distinction; no fatal misconception.", maxScore: 30 },
     ],
   },
+  "rub-second": {
+    id: "rub-second",
+    criteria: [
+      { id: "con-def", description: "Defines Con(T) as the arithmetic sentence ¬Prov_T(⌜0=1⌝).", maxScore: 25 },
+      { id: "formalized-first", description: "States the Second theorem as the First formalized inside T: a consistent, computably axiomatized, strong T can't prove Con(T).", maxScore: 25 },
+      { id: "not-absolute", description: "Notes Con(T) is true (sound base) yet unprovable in T; a stronger theory can prove it.", maxScore: 25 },
+      { id: "hierarchy", description: "Explains T+Con(T) has its own Gödel sentence, so the hierarchy never closes.", maxScore: 25 },
+    ],
+  },
 };
 
 const T = (t: AssessmentTask): AssessmentTask => t;
@@ -274,7 +283,7 @@ export const ASSESSMENTS: AssessmentTask[] = [
     kind: "llm-judged",
     title: "Explain Second Incompleteness",
     prompt: "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy (for a sound base, where each extension stays consistent).",
-    openEnded: { prompt: "Cover: $\\mathrm{Con}(T):=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$; the formalized first theorem; that a stronger theory can prove it; and why $T+\\mathrm{Con}(T)$ has its own Gödel sentence.", rubricId: "rub-first" },
+    openEnded: { prompt: "Cover: $\\mathrm{Con}(T):=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$; the formalized first theorem; that a stronger theory can prove it; and why $T+\\mathrm{Con}(T)$ has its own Gödel sentence.", rubricId: "rub-second" },
     requiredConcepts: ["Con(T)", "second incompleteness theorem"],
     fatalMisconceptions: [{ id: "con-false", description: "Says T can't prove Con(T) because Con(T) is false.", remediationNodeIds: ["c-incompleteness-2"], fatal: true }],
     passThreshold: 0.8,

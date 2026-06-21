@@ -79,7 +79,7 @@ PA does not literally contain the English concept "proof." It contains a number 
         { id: "e2", source: "P", target: "q", type: "encodes_as", layer: "coding" },
         { id: "e3", source: "p", target: "pf", type: "represents", layer: "coding" },
         { id: "e4", source: "q", target: "pf", type: "represents", layer: "coding" },
-        { id: "e5", source: "pf", target: "prov", type: "represents", label: "∃p", layer: "coding" },
+        { id: "e5", source: "pf", target: "prov", type: "relates", label: "defined by ∃p", layer: "coding" },
       ],
     },
   ],
@@ -126,7 +126,7 @@ PA does not literally contain the English concept "proof." It contains a number 
         "True or false: $\\mathrm{Proof}_T(p,q)$ can be written as an arithmetic formula because proof-checking is **primitive recursive**, and every primitive recursive relation is representable in PA.",
       correct: true,
       explanation:
-        "True. Proof-checking is primitive recursive, and primitive recursive relations are representable — that is what lets proofhood live inside arithmetic. (Note: being merely *decidable* would not suffice on its own; the relevant fact is the stronger one, primitive recursiveness.)",
+        "True. Proof-checking is primitive recursive, and primitive recursive relations are representable — that is what lets proofhood live inside arithmetic. (Decidability already suffices for representability; primitive recursiveness is just the concrete, easy-to-verify reason proof-checking qualifies.)",
     },
   ],
   masteryCheckpoint:

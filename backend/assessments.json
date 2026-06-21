@@ -482,26 +482,26 @@
     "taskPrompt": "Explain why a suitable consistent T cannot prove $\\mathrm{Con}(T)$, and why adding it never ends the hierarchy (for a sound base, where each extension stays consistent).",
     "openEndedPrompt": "Cover: $\\mathrm{Con}(T):=\\neg\\mathrm{Prov}_T(\\ulcorner 0=1\\urcorner)$; the formalized first theorem; that a stronger theory can prove it; and why $T+\\mathrm{Con}(T)$ has its own Gödel sentence.",
     "rubric": {
-      "id": "rub-first",
+      "id": "rub-second",
       "criteria": [
         {
-          "id": "conditions",
-          "description": "States the three conditions on T.",
+          "id": "con-def",
+          "description": "Defines Con(T) as the arithmetic sentence ¬Prov_T(⌜0=1⌝).",
           "maxScore": 25
         },
         {
-          "id": "unprov",
-          "description": "Explains T⊬G_T from consistency.",
+          "id": "formalized-first",
+          "description": "States the Second theorem as the First theorem formalized inside T: a consistent, computably axiomatized, strong T cannot prove Con(T).",
           "maxScore": 25
         },
         {
-          "id": "truth",
-          "description": "Explains why G_T is true in ℕ (soundness/standard model).",
+          "id": "not-absolute",
+          "description": "Notes Con(T) is true (for a sound base) yet unprovable in T, and a stronger theory can prove it — so it is not absolutely unprovable.",
           "maxScore": 25
         },
         {
-          "id": "scope",
-          "description": "Notes unprovable-in-T is not absolutely unprovable.",
+          "id": "hierarchy",
+          "description": "Explains that T+Con(T) has its own Gödel sentence, so adding consistency never closes the hierarchy.",
           "maxScore": 25
         }
       ]

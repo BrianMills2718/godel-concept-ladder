@@ -56,7 +56,7 @@ That is the entire content of "provable": there is a finite path (really a finit
       kind: "typed-graph",
       title: "Deriving $C$ from $A,\\ A\\to B,\\ B\\to C$",
       textualSummary:
-        "From axiom A and axiom A→B, modus ponens concludes B. Then B together with axiom B→C feeds a second modus ponens step concluding C. C is reachable from the axioms, so T⊢C. The lemma B is proved once and reused — a DAG, not a tree.",
+        "From axiom A and axiom A→B, modus ponens concludes the lemma B. Then B together with axiom B→C feeds a second modus ponens step concluding C. C is reachable from the axioms by inference edges, so T⊢C — this is ⊢ as reachability in a proof graph.",
       layers: ["proof"],
       nodes: [
         { id: "A", type: "Axiom", layer: "proof", label: "$A$", position: { x: 40, y: 40 } },
