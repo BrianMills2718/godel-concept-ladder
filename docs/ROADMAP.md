@@ -100,13 +100,16 @@ practitioner-capability + neutrality, and set/time faithfulness. Roadmap consequ
   plan→implement→operate coverage. **Owed:** a rubric expansion, and where feasible
   **tension *detectors*** (flag a collision, demand a recorded resolution — not pass/fail).
   These are *soft*; they do not block M2–M4 but raise the bar M4 must eventually hit.
-- **Second Brain as candidate M5 hostile-transfer topic.** A landscape research sweep (17
-  notes in `second-brain-ladder/docs/research/`) maps the modern KG/GraphRAG/LLM-wiki/
-  agentic-harness field. The existing sibling instance is mis-scoped (2018 symbolic stack);
-  a **rescope is a separate, unstarted track**, deliberately not planned yet — **blocked on
-  deciding where it lives** (sibling repo / fork / fresh). Caveat: it is externally-owned
-  and a moving target, so its fit as the M5 hostile topic (vs. mechanics/stats/ecology) is
-  itself open.
+- **Second Brain rescope = a partial M5 transfer test (now planned).** A landscape sweep
+  (17 notes in `second-brain-ladder/docs/research/`) maps the modern KG/GraphRAG/LLM-wiki/
+  agentic-harness field. The sibling instance is mis-scoped (2018 symbolic stack); the
+  **rescope is now planned** — *in place, in the sibling repo, branch-based, evolving
+  `concepts.ts`* — see `second-brain-ladder/docs/RESCOPE_PLAN.md` (PR #3), milestones R0–R5.
+  It is a **partial** M5: it stresses **plurality/neutrality** (competing paradigms, no
+  single right answer), **set/time faithfulness** (fast-moving field), and the
+  **decide→plan→implement→operate** arc — but **not move-4 maturity-versioning** (no
+  genuine co-constitutive cycle), so a co-constitutive topic (mechanics) is still owed for
+  a complete M5.
 - **Companion docs:** `ADR-0008`, `DISCUSSION-2026-06-22.md`, and the research notes above.
 
 ## Standing rules (do not re-litigate)
