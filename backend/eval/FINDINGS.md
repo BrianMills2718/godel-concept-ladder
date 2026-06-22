@@ -8,9 +8,19 @@
 > environment). The remaining **10** judged tasks (`cap-classify`, `cap-prove-224`,
 > `cap-proof-graph`, `cap-evaluate-N`, `cap-sound-complete`, `cap-object-meta`,
 > `cap-computability`, `cap-encode`, `cap-prov-predicate`, `cap-second`) still need
-> frozen sets. **The measurement is blocked on `OPENROUTER_API_KEY`**: run
-> `cd backend && python -m eval.run` with a key to certify all present sets. Until
-> 12/12 are measured PASS, only `cap-distinguish` is a validated gate.
+> frozen sets.
+>
+> **2026-06-22 partial re-run (setup unblocked; now blocked on CREDITS).** The backend
+> is now installable (`backend/.venv` via host-pip `--python`; `llm_client` editable
+> from `~/code/personal/llm_client`) and the judge runs. With a provided
+> `OPENROUTER_API_KEY` the eval graded **4 cases before the key hit `402 Insufficient
+> credits`**, all correct: `strong`→PASS 100, `correct-terse`→PASS 95,
+> `minor-imprecision`→PASS 94, `true-equals-provable`→fail 0 (calibration reconfirmed,
+> ~27s/grade on `openrouter/openai/gpt-5-mini`). The rest errored on credit exhaustion
+> → INCONCLUSIVE. **To finish M2d: add OpenRouter credits, then
+> `cd backend && OPENROUTER_API_KEY=… .venv/bin/python -m eval.run`** (~$0.004 + ~27s
+> per grade; 12 tasks × ~8 cases ≈ $0.4 and ~45 min). Until 12/12 are measured PASS,
+> only `cap-distinguish` (full 8/8 below) is a validated gate.
 
 ## cap-distinguish — measured
 
