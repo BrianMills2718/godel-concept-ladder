@@ -368,15 +368,29 @@ topics with a *definable terminal goal* to derive backward from — Gödel has a
 one (the incompleteness theorems); survey topics ("20th-century art"), open
 empirical sciences, and skill domains often do not (§16).
 
-**Skill-focus: the goal is often a *decision*, not a terminal fact.** In skill and
-practitioner domains the terminal goal is a **capability or choice** the learner must
-execute — *"which substrate do I pick, and why?"* — not a definitional endpoint. When it
-is, **core** and **enrichment** are scoped by *what that decision requires*: a concept is
-core because some real decision turns on it, not because the domain's taxonomy lists it.
-Theory is subordinate to the choice it informs. This narrows coverage usefully and sets
-up the Therefore/But content arc of §11 (each option is a candidate solution carrying a
-cost). It also creates a standing tension with domain-faithfulness (§13) — covering the
-field honestly vs. covering only what a decision needs — resolved per §15.
+**Skill-focus: the goal is a *practitioner capability*, not a terminal fact.** In skill
+and practitioner domains the terminal goal is not "understand topic X" but "**can act in
+X**": for the learner's *own* goal, **understand the alternatives → weigh the tradeoffs →
+decide and plan → implement → operate.** Understanding is only the first third; a tree
+that stops at conceptual coverage has not produced the capability. So `core`/`enrichment`
+are scoped by *what some real decision or build step requires* — a concept is core because
+a choice turns on it or a build needs it, not because the domain's taxonomy lists it —
+and coverage must extend past concepts to the *plan→implement→operate* layer (how to
+choose a stack for a goal, build it, run and maintain it).
+
+> **The author's job is to empower the learner's decision, not to win the debate.**
+> Where alternatives genuinely compete (and the author has a preferred one), the content
+> stays **neutral**: present the real menu of options, each with its honest costs, and
+> teach the learner *how to choose for their situation* — never spine the curriculum on a
+> favorite. An author's preference is shown as one option fairly costed, not as the
+> answer. (This is a faithfulness obligation: a biased menu mis-scopes the field just as a
+> stale one does, §13.)
+
+Two structural consequences. (1) This sets up the Therefore/But content arc of §11 (each
+option is a candidate solution carrying a cost). (2) It creates standing tensions —
+covering the field *fairly and completely* (domain-faithfulness, §13) vs. covering only
+what a decision needs (skill-focus), and conceptual breadth vs. implementation depth —
+both resolved per §15.
 
 ## §9. Ordering — topological, then optimized
 
