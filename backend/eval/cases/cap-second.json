@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-second",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Con(T) is the arithmetic sentence ¬Prov_T(⌜0=1⌝): no number codes a T-proof of 0=1. The Second Incompleteness Theorem is the First, formalized inside T: T can formalize the proof that 'if T is consistent then G_T is unprovable', i.e. T ⊢ Con(T) → G_T; so if T also proved Con(T) it would prove G_T, contradicting the First theorem. Hence a consistent, effectively axiomatized, sufficiently strong T cannot prove Con(T). Con(T) is true (T really is consistent) yet unprovable in T — a true-but-unprovable sentence, and not absolutely unprovable: a stronger theory proves it. Adding Con(T) gives a stronger theory T'=T+Con(T), which has its own Con(T') it can't prove — the hierarchy never closes." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "Con(T):=¬Prov_T(⌜0=1⌝). Second theorem = First formalized in T: T⊢Con(T)→G_T, so proving Con(T) would prove G_T, impossible for consistent T; hence T⊬Con(T). Con(T) is true but unprovable in T (provable in a stronger theory). T+Con(T) is stronger but has its own unprovable consistency — the climb never ends." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "Con(T) says no proof of 0=1 exists, written ¬Prov_T(⌜0=1⌝). Because the First theorem's argument can be carried out inside T, T would prove G_T if it proved Con(T), which it can't — so T can't prove its own consistency. You can add Con(T) to get a stronger system, but that system can't prove its consistency either, so it keeps going up." },
+    { "id": "con-false", "expect_pass": false, "answer": "The Second theorem shows Con(T) is false — that consistent theories are actually inconsistent, or at least can't be trusted, since they can't prove they don't contain a contradiction. So we can never know if math is consistent because it probably isn't." },
+    { "id": "absolute", "expect_pass": false, "answer": "Con(T) is a truth that can never be proved by anything, anywhere — it's absolutely unprovable, showing consistency of mathematics is forever unknowable by any means." },
+    { "id": "vague", "expect_pass": false, "answer": "The Second Incompleteness Theorem says a system can't prove its own consistency. This is deep and shows the limits of formal systems and was a blow to Hilbert's program." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Con(T) is the confidence level of a theory, and the second theorem is about how adding more axioms makes proofs shorter, related to proof complexity." }
+  ]
+}

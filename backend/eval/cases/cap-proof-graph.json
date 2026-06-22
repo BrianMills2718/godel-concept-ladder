@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-proof-graph",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Draw the proof as a graph: the premises (axioms and previously-derived lines) are source nodes, each inference-rule application is a node taking its premises as inputs, and the conclusion C is the sink reachable from the sources by following rule-edges. C is 'reachable' exactly when there is a finite path of valid inference steps from the axioms to C — that is what T⊢C (provability) means. Crucially this reachability is about derivation/syntax, not truth: C being reachable says a proof exists, not that C is true in ℕ; provable and true are different relations that happen to agree only when the theory is sound." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "Premises = axioms/earlier lines (sources); conclusion C = sink. C is reachable iff a finite chain of inference-rule steps leads from the axioms to C, which is just T⊢C. Reachability is a derivation (syntactic) fact, not a truth claim — provability ≠ truth." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "In the proof graph the axioms and assumptions are the starting nodes and each rule application links premises to a new line; C is reachable if you can get to it by legal steps. That reachability is exactly provability of C. It's about the derivation existing, not about C being true in the model." },
+    { "id": "true-prov", "expect_pass": false, "answer": "C is reachable in the proof graph because it's true — reachability just means the statement is true in ℕ, since provable and true are the same thing. So you reach C exactly when C holds." },
+    { "id": "no-derivation", "expect_pass": false, "answer": "A proof graph is a diagram of how ideas connect, and C is reachable if it feels related to the premises. Reachability is about conceptual connection." },
+    { "id": "vague", "expect_pass": false, "answer": "Proofs can be drawn as graphs with nodes and edges. The conclusion is at the end. This helps visualize the argument." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Graph reachability is an algorithm like BFS/DFS with O(V+E) complexity; you check if node C is reachable from the start node in the adjacency list." }
+  ]
+}

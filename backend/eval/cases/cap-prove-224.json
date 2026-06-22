@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-prove-224",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Using the recursive definition of addition — x+0=x (base) and x+S(y)=S(x+y) (step) — with numerals 2=S(S(0)), 4=S(S(S(S(0)))): 2+2 = 2+S(S(0)) = S(2+S(0)) [step] = S(S(2+0)) [step] = S(S(2)) [base] = S(S(S(S(0)))) = 4. Each rewrite is licensed by a specific PA axiom instance, so this is a genuine finite derivation from PA's axioms, not an 'it's obvious' appeal — every step cites a rule, which is exactly what makes it a proof rather than intuition." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "From PA's recursion axioms x+0=x and x+S(y)=S(x+y): 2+2=2+S(S0)=S(2+S0)=S(S(2+0))=S(S2)=4 (numerals as iterated S). Each = is one axiom instance, so it's a real PA derivation step-by-step, not an obvious assertion." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "Addition is defined recursively (x+0=x, x+Sy=S(x+y)). Applying the step rule twice to 2+2 peels the second 2 down to 2+0=2, then the successors rebuild 4. Because each rewrite uses a definite axiom, it's a genuine proof in PA rather than just 'everyone knows 2+2=4'." },
+    { "id": "obvious", "expect_pass": false, "answer": "2+2=4 is just obvious — it's basic arithmetic everyone learns as a kid, so there's nothing to derive. PA proves it because it's true and obvious." },
+    { "id": "no-recursion", "expect_pass": false, "answer": "You prove 2+2=4 by counting: two things plus two things is four things. That's the justification, no axioms needed." },
+    { "id": "true-equals-provable", "expect_pass": false, "answer": "2+2=4 is provable because it's true in the numbers — truth and provability are the same, so its being true is the whole derivation." },
+    { "id": "off-topic", "expect_pass": false, "answer": "2+2 can equal other things in modular arithmetic, like 0 mod 4, so whether 2+2=4 depends on the number system you choose." }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-object-meta",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "'PA is consistent' is a metatheoretic claim — it is about PA (about whether PA's proofs ever derive a contradiction), made from outside PA, not a statement PA asserts about numbers. The object theory PA talks about numbers; claims about what PA can prove live in the metatheory. Its arithmetized proxy Con(PA) CAN be written inside PA as a sentence about code-numbers, but that encoded sentence is a different object from the metatheoretic claim. Adding Con(T) yields a strictly stronger theory T+Con(T): it proves everything T did plus Con(T) (which, by Gödel II, T itself couldn't prove), so it's a genuinely new, stronger object theory — which then has its own unprovable consistency." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "'PA is consistent' is about PA, so it's metatheoretic — reasoning about the theory, not a numeric statement inside it (though Con(PA) encodes a proxy inside PA). Adding Con(T) makes T+Con(T), which proves strictly more than T (T couldn't prove Con(T) by Gödel II), so it's a stronger theory." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "Saying PA is consistent is talking about PA from the outside (metatheory), not something PA says about numbers. If you add Con(T) as a new axiom you get a bigger theory that can prove things T couldn't, so it's stronger — and Gödel says it still can't prove its own consistency." },
+    { "id": "obj-meta", "expect_pass": false, "answer": "'PA is consistent' is just another theorem inside PA, a statement about numbers like any other; PA proves it about itself directly, and there's no real difference between talking in PA and talking about PA." },
+    { "id": "no-stronger", "expect_pass": false, "answer": "Adding Con(T) doesn't change anything — it's already true so the theory is the same, no stronger than before, just restating what T already knew." },
+    { "id": "vague", "expect_pass": false, "answer": "There's a difference between the object level and the meta level in logic. Consistency is a meta idea. Adding axioms changes theories. This is important for Gödel." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Object and metatheory are like object-oriented programming classes and metaclasses; Con(T) is a configuration flag you add to the theory object." }
+  ]
+}

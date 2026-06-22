@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-sound-complete",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Soundness: everything T proves is true in the intended model — T⊢P ⇒ ℕ⊨P (no false theorems). Completeness (of a theory): T decides every sentence — for every P, T⊢P or T⊢¬P. They are different and independent: soundness is a relation between provability and truth, completeness is purely about provability deciding every sentence. PA is sound but, by Gödel, not complete (G_PA is neither proved nor refuted). Consistency (T proves no contradiction) is weaker than soundness: soundness implies consistency, but a consistent theory can be unsound (e.g. PA+¬Con(PA))." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "Sound = T⊢P implies ℕ⊨P (only truths are provable). Complete (theory) = for every sentence P, T⊢P or T⊢¬P (everything is decided). Distinct: one ties proof to truth, the other is about proof deciding all sentences. Consistency (no P with both T⊢P and T⊢¬P) is weaker than soundness. PA is sound and consistent but incomplete." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "Soundness means the theory only proves true things (T⊢P ⇒ ℕ⊨P). Theory-completeness means it proves or refutes every sentence. These are separate properties; PA has the first but not the second. Consistency just means it never proves a contradiction, which is weaker than soundness." },
+    { "id": "sound-complete-same", "expect_pass": false, "answer": "Soundness and completeness are basically the same thing: a theory is sound and complete when it proves exactly the true statements. So if PA is sound it's complete, since proving all and only truths is what both mean." },
+    { "id": "complete-is-consistent", "expect_pass": false, "answer": "Completeness means the theory is consistent — it doesn't contradict itself. Soundness is the same idea, that the theory makes sense and doesn't prove nonsense." },
+    { "id": "vague", "expect_pass": false, "answer": "Soundness and completeness are important properties of logical systems. Gödel's theorems are about completeness. A good theory should be both sound and complete but Gödel showed problems." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Soundness is about whether an argument's premises are true and the logic valid, like in informal logic class; completeness is when you've covered all the cases in a proof." }
+  ]
+}

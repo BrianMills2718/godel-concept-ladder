@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-computability",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Proof-checking is decidable: given p and a target, an algorithm always halts with yes/no on whether p codes a valid T-proof of it (it's primitive recursive). Theoremhood is different: 'is there some proof?' is recursively enumerable but not decidable — you can search for a proof and halt 'yes' if one exists, but if none exists the search need not terminate, so there's no always-halting decider. 'Undecidable' here means no decision procedure exists in principle — it is NOT a claim that an algorithm is merely slow or would eventually answer given more time." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "Checking a given proof is decidable (always halts). Theoremhood (does any proof exist?) is r.e. but undecidable: confirmable when true by finding the proof, but not always refutable when false. Undecidable means no always-halting algorithm exists, not that the algorithm is slow." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "Verifying a candidate proof is a decidable, mechanical check. But whether a sentence is a theorem is only semi-decidable (r.e.) — you can enumerate proofs and stop if you find one, yet there's no procedure guaranteed to halt when it isn't a theorem. So theoremhood is undecidable in principle, which is not about running time." },
+    { "id": "undecidable-slow", "expect_pass": false, "answer": "Theoremhood is undecidable because the algorithm is just too slow — it would take longer than the age of the universe, but in principle a fast enough computer would eventually decide every sentence. Decidable vs undecidable is really about efficiency." },
+    { "id": "checking-undecidable", "expect_pass": false, "answer": "Both proof-checking and theoremhood are undecidable — there's no way to tell if something is a proof or a theorem, that's what Gödel showed." },
+    { "id": "vague", "expect_pass": false, "answer": "Computability theory says some things can be computed and some can't. Gödel and Turing showed limits. Theoremhood is one of the hard ones." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Undecidable means the question is a matter of opinion with no objective answer, like undecidable moral questions; theoremhood is decidable if mathematicians agree on it." }
+  ]
+}

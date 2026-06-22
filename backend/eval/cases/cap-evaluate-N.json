@@ -1,0 +1,12 @@
+{
+  "taskId": "cap-evaluate-N",
+  "cases": [
+    { "id": "strong", "expect_pass": true, "answer": "Work in the standard model ℕ under the intended interpretation: the symbol + is interpreted as the addition function and each numeral denotes its number. To evaluate 2+2=4: evaluate the term 2+2 — the interpretation of + applied to (2,2) gives 4 — and the term 4 evaluates to 4. The equality 2+2=4 holds iff both terms denote the same object of the domain; 4 = 4, so ℕ ⊨ 2+2=4. This is pure evaluation in the structure; no proof or derivation is involved." },
+    { "id": "correct-terse", "expect_pass": true, "answer": "Under the intended interpretation in ℕ, + means addition, so the term 2+2 evaluates to 4 and the term 4 evaluates to 4. The atomic formula 2+2=4 is satisfied because both sides denote the same domain object (4=4). So ℕ ⊨ 2+2=4 by evaluation, not by any proof." },
+    { "id": "minor-imprecision", "expect_pass": true, "answer": "In the standard model the interpretation sends + to addition; evaluating the term 2+2 gives 4, and 4 evaluates to 4, so the equality 2+2=4 is true in ℕ because the two terms name the same number. It's a semantic check (evaluation), separate from provability." },
+    { "id": "true-equals-provable", "expect_pass": false, "answer": "2+2=4 is true in ℕ because PA proves it — truth just is provability, so we derive 2+2=4 from the axioms and that's why it's true in the model." },
+    { "id": "mentions-proof", "expect_pass": false, "answer": "To check 2+2=4 we give a derivation from PA's axioms using the recursive definition of addition until we reach 4=4; the existence of that proof is what makes it hold in ℕ." },
+    { "id": "no-interpretation", "expect_pass": false, "answer": "2+2=4 is obviously true because 2 and 2 make 4. Everyone knows that. It's just basic arithmetic so it's true in the numbers." },
+    { "id": "off-topic", "expect_pass": false, "answer": "Evaluation in ℕ is impossible in general because arithmetic truth is undecidable, so you can't evaluate any sentence; Gödel showed there's no algorithm for truth." }
+  ]
+}
