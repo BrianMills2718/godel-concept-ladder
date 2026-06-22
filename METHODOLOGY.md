@@ -376,7 +376,12 @@ that stops at conceptual coverage has not produced the capability. So `core`/`en
 are scoped by *what some real decision or build step requires* — a concept is core because
 a choice turns on it or a build needs it, not because the domain's taxonomy lists it —
 and coverage must extend past concepts to the *plan→implement→operate* layer (how to
-choose a stack for a goal, build it, run and maintain it).
+choose a stack for a goal, build it, run and maintain it). And in many modern
+practitioner domains *implement* rarely means *build from scratch*: the capable move is to
+**adopt and extend** an existing platform, tool, or agent harness — select it, configure
+it, connect it, extend it through its integration surface — not reimplement it. So the
+implementation skill the tree should build is *selection + configuration + information
+architecture*, with "build your own" presented as one option, fairly costed (§8 neutrality).
 
 > **The author's job is to empower the learner's decision, not to win the debate.**
 > Where alternatives genuinely compete (and the author has a preferred one), the content
