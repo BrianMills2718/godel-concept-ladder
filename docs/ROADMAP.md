@@ -88,6 +88,27 @@ Fill the completeness rubric across the instance — this *is* Tier-1 content wo
 
 ---
 
+## Addendum (2026-06-22): methodology evolution + a Second Brain track
+
+This roadmap targets the **generator** (M4) over a *structural* gate. A design round on
+2026-06-22 (ADR-0008; METHODOLOGY §8/§11/§13/§15) added a **soft content layer above the
+structural gate** — explanatory craft, a tension-resolution discipline, skill-focus =
+practitioner-capability + neutrality, and set/time faithfulness. Roadmap consequences:
+
+- **M1's completeness rubric is now known-incomplete.** It checks structural presence, not
+  craft, quiz-distractor quality, judged *activities*, neutrality, tension-resolution, or
+  plan→implement→operate coverage. **Owed:** a rubric expansion, and where feasible
+  **tension *detectors*** (flag a collision, demand a recorded resolution — not pass/fail).
+  These are *soft*; they do not block M2–M4 but raise the bar M4 must eventually hit.
+- **Second Brain as candidate M5 hostile-transfer topic.** A landscape research sweep (17
+  notes in `second-brain-ladder/docs/research/`) maps the modern KG/GraphRAG/LLM-wiki/
+  agentic-harness field. The existing sibling instance is mis-scoped (2018 symbolic stack);
+  a **rescope is a separate, unstarted track**, deliberately not planned yet — **blocked on
+  deciding where it lives** (sibling repo / fork / fresh). Caveat: it is externally-owned
+  and a moving target, so its fit as the M5 hostile topic (vs. mechanics/stats/ecology) is
+  itself open.
+- **Companion docs:** `ADR-0008`, `DISCUSSION-2026-06-22.md`, and the research notes above.
+
 ## Standing rules (do not re-litigate)
 - Every milestone ends with `npm run check` green + a commit (+ push).
 - A failed gate is a content discovery, not an obstacle.
@@ -95,14 +116,17 @@ Fill the completeness rubric across the instance — this *is* Tier-1 content wo
 - No silent coverage caps: the completeness report names everything still missing.
 - Math correctness per `CONTENT_NOTES.md` is paramount; a subtle content error is a critical bug.
 
-## Current status (2026-06-21)
+## Current status (2026-06-22)
 - **M0 done.** Validator in CI.
 - **M1 done.** `docs/COMPLETENESS.md` + apt-flag sets + `npm run completeness`.
 - **M2a done.** `npm run e2e` artifact gate (caught 3 real render bugs).
 - **M2b done.** Bare-prose closure linter + `foreshadows` (in `npm run validate`).
 - **M2c done.** `src/content/orderScore.ts` + tests (in `npm run check`).
-- **M2d partial / BLOCKED.** Harness generalized to all tasks; 2/12 case sets authored;
-  measurement needs `OPENROUTER_API_KEY` + backend deps (absent here).
+- **M2d partial.** Harness generalized to all tasks; **12/12 case sets authored + committed**.
+  2 measured with a refreshed key: `cap-distinguish` **PASS** (false-pass 0 / false-fail 0),
+  `cap-first` **FAIL** — a false-fail on the `minor-imprecision` case (scored 77). Owed:
+  revise `cap-first`'s pass-cases to cover the rubric, then run the full 12-task eval and
+  record in `backend/eval/FINDINGS.md`.
 - **M3 done.** Completeness ALL-GREEN and hard-gated (31 microQuizzes, 6 analogies,
   5 ladders, examples 60/60, section roles 17/17, real pretests 15/15); Tier-1 verdicts
   for all 108 edges (102 correct / 6 arguable / 0 wrong) in `EDGE_REVIEW.md`.
