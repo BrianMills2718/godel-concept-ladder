@@ -485,7 +485,7 @@ for (const g of GLOSSARY) {
 
 // --- bare-prose closure (ROADMAP M2b) ---
 // The typed-closure gate sees only @t{}/@c{} refs; this catches a concept term named
-// in PLAIN prose before it is introduced (METHODOLOGY §6/§16). Declared `foreshadows`
+// in PLAIN prose before it is introduced (METHODOLOGY §6/§17). Declared `foreshadows`
 // are legitimate (the foreshadow relation); ALLOW lists terms too common to flag.
 {
   const ALLOW = new Set([

@@ -1,6 +1,6 @@
 /**
  * Bare-prose closure linter (ROADMAP M2b). The typed-closure gate only sees
- * @t{}/@c{} references; this catches the hole (METHODOLOGY §6/§16): a concept term
+ * @t{}/@c{} references; this catches the hole (METHODOLOGY §6/§17): a concept term
  * named in *plain prose* before it is introduced (a forward reference the typed
  * gate can't see). Strips chips / math / code first, then flags whole-word mentions
  * of a NOT-YET-INTRODUCED concept term, minus an allowlist of terms too common to

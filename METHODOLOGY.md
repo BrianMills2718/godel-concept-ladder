@@ -14,12 +14,16 @@
 learnable treatment of a topic — ordered lessons, a navigable skill map,
 assessments, visualizations, a glossary — by making the topic's **conceptual
 dependency structure** an explicit, machine-checked artifact and **deriving** the
-curriculum from it. It is grounded in a deployed reference architecture (the
+curriculum from it. Beyond the checkable structure it also specifies the **content
+craft** hung on it (motivation, concrete-before-abstract, a problem→solution arc,
+total symbol/notation explanation, skill-focus) and a discipline for resolving the
+**tensions** those content demands create with each other (§11, §15). It is grounded in
+a deployed reference architecture (the
 "Concept Ladder" for Gödel's incompleteness theorems) but written to apply to any
 topic that can be represented as concepts plus prerequisite relations — though
 **whether a given topic admits that representation is itself the hard, often-negative
-question (§15)**, not a mild precondition. It argues for **structural** optimality and
-is explicit (§13–§15) about the empirical claims it deliberately does **not** make.*
+question (§16)**, not a mild precondition. It argues for **structural** optimality and
+is explicit (§13–§16) about the empirical claims it deliberately does **not** make.*
 
 > **For external reviewers.** This is a **construction / methods** paper, not an
 > efficacy study. We claim **structural well-formedness only**; learning efficacy and
@@ -27,7 +31,7 @@ is explicit (§13–§15) about the empirical claims it deliberately does **not*
 > (§13), by design (reading contract). The most useful review evaluates the
 > **construction discipline and its honesty about scope** — where the method
 > over-reaches, where a step is too vague to execute, where it ignores a relevant
-> prior result (§17) — *not* "where is the user study?" (we agree there isn't one
+> prior result (§18) — *not* "where is the user study?" (we agree there isn't one
 > yet, and §13 says why). The self-application in §0 is meant to be checked: the
 > claims there (acyclic map, derived section order, closure) are falsifiable against
 > Appendix A.
@@ -71,7 +75,7 @@ is explicit (§13–§15) about the empirical claims it deliberately does **not*
 > unknown — possibly zero, conceivably negative — correlation to actual learning.**
 > "Necessary, not sufficient" understates it: a proxy can also *mislead* (maximal
 > decomposition satisfies group-coherence yet may cause the atomization/fatigue
-> failure of §16). Every design decision made before Tier 2 — granularity, the four
+> failure of §17). Every design decision made before Tier 2 — granularity, the four
 > cycle-resolution moves, the ordering heuristics — is therefore **provisional and
 > may be reversed by efficacy data.**
 >
@@ -83,7 +87,7 @@ is explicit (§13–§15) about the empirical claims it deliberately does **not*
 > `scripts/validate-content.mjs`; design records: ADR-0002…ADR-0007. File references
 > are illustrative, not requirements. **The reference topic is a near-best-case
 > instance** (formal, definitional, compositional, single terminal theorem,
-> uncontested), which §15 weighs honestly.
+> uncontested), which §16 weighs honestly.
 
 ---
 
@@ -114,9 +118,12 @@ node→prerequisite listing is Appendix A; the shape is:
    running-artifact       ← PEA, goal
    ladder-of-abstraction  ← running-artifact
    spiral-gloss           ← definition-closure, content-attachment
+   skill-focus            ← goal, content-attachment
  assessment               ← concept, ordering, goal-closure
  validation-tiers         ← assessment, skill-map-derivation
+ domain-faithfulness      ← concept-graph, goal, validation-tiers
  optimal-output           ← definition-closure, acyclicity, ordering, goal-closure   [goal]
+ tension-resolution       ← content-attachment, validation-tiers, optimal-output
  transfer-limits          ← optimal-output, validation-tiers                          [goal]
 ```
 
@@ -128,9 +135,9 @@ those are `gloss`/`foreshadow`-typed pointers in the sense of §6, which point a
 violations.) **Spiral gloss:** `optimal-output` is a goal node (it depends on every
 invariant), so its full definition can only land in §14; the reading contract gives
 it the mandatory one-line gloss up front. This section is the *orientation node* and
-is, by design, exempt from closure (it previews everything); §16 (Threats) and §17
+is, by design, exempt from closure (it previews everything); §17 (Threats) and §18
 (Related work) are back-matter, outside the concept map. So the derived span is the
-**§1–§15** spine.
+**§1–§16** spine.
 
 ---
 
@@ -218,7 +225,7 @@ fix is **prerequisite predicates** (Boolean formulas over concepts: `A ∧ B`, `
 threshold-k) or **hyperedges** (one dependency from a *set* of sources to a target);
 both are specified-not-built, and until then disjunctive routes must be modeled
 out-of-band (e.g. as separate goal closures). This is a real formalism gap, not a
-cosmetic one (see also §15).
+cosmetic one (see also §16).
 
 ## §3. The concept graph as the single source of truth
 
@@ -235,7 +242,7 @@ render as a drill-down into the named concept.
 ## §4. Acyclicity by construction
 
 The prerequisite relation is **kept acyclic** — a deliberate methodological choice,
-defended here, not a claim that every domain is natively acyclic (§15 marks the
+defended here, not a claim that every domain is natively acyclic (§16 marks the
 limit). A prerequisite cycle would assert "A cannot be understood *at all* without
 first *fully* understanding B, and vice versa." Yet learners do acquire
 co-constitutive pairs (supply/demand; force/mass/acceleration) — by holding
@@ -259,7 +266,7 @@ built — ship the acyclic core and mark the cycle as an explicitly-typed
 "mutually-defined cluster" to be taught holistically — would give a degraded mode; we
 chose hard-fail to keep the guarantee crisp. Whether "a cycle always admits better
 decomposition" holds *universally* is unproven and, for genuinely co-defined concepts,
-arguably circular — §15 states this plainly.
+arguably circular — §16 states this plainly.
 
 **Acyclic substrate, spiral experience.** Keeping the *substrate* acyclic is not a
 claim that understanding is non-holistic. Mutuality is represented elsewhere — in
@@ -295,7 +302,7 @@ When the acyclicity gate fires, the cycle resolves into **one of four forms**
    > reference instance ships **zero** versioned concepts (its domain decomposes
    > cleanly without it). Whether arbitrary co-defined pairs *cleanly stratify* into
    > acyclic versions — rather than resisting decomposition entirely — is a
-   > **conjecture**, not a result (§15). Moves 1–3 are exercised and solid; move 4 is
+   > **conjecture**, not a result (§16). Moves 1–3 are exercised and solid; move 4 is
    > a recommended extension carrying disproportionate load.
 
 A strongly-connected-component (SCC) linter reports cycles. Once the gate is green
@@ -312,7 +319,7 @@ use" a property the build enforces at term granularity, not a hope.
 The gate governs **requirement** references only: a motivational mention is typed as
 a `gloss`/`foreshadow` that points forward without gating. **The known hole, stated
 once:** the gate sees only *typed* references — bare prose can still smuggle an
-untyped requirement (§16). The mitigation is to require requirement-bearing terms to
+untyped requirement (§17). The mitigation is to require requirement-bearing terms to
 be typed and to lint prose for known terms; the gate does **not** certify that every
 *word* is earned, only that every *typed reference* is.
 
@@ -359,7 +366,17 @@ theorems, so it is correctly off the critical path — the truth clause is groun
 in `satisfaction` (ℕ ⊨ G_T) instead. §13.) **Caveat:** this lens is only interpretable for
 topics with a *definable terminal goal* to derive backward from — Gödel has a crisp
 one (the incompleteness theorems); survey topics ("20th-century art"), open
-empirical sciences, and skill domains often do not (§15).
+empirical sciences, and skill domains often do not (§16).
+
+**Skill-focus: the goal is often a *decision*, not a terminal fact.** In skill and
+practitioner domains the terminal goal is a **capability or choice** the learner must
+execute — *"which substrate do I pick, and why?"* — not a definitional endpoint. When it
+is, **core** and **enrichment** are scoped by *what that decision requires*: a concept is
+core because some real decision turns on it, not because the domain's taxonomy lists it.
+Theory is subordinate to the choice it informs. This narrows coverage usefully and sets
+up the Therefore/But content arc of §11 (each option is a candidate solution carrying a
+cost). It also creates a standing tension with domain-faithfulness (§13) — covering the
+field honestly vs. covering only what a decision needs — resolved per §15.
 
 ## §9. Ordering — topological, then optimized
 
@@ -405,16 +422,28 @@ You get LLM-quality pedagogy with **mechanically-guaranteed structural validity,
 conditional on the authored graph** (not guaranteed *correctness* — a wrong edge
 yields a perfectly valid but mis-taught curriculum; that is the edge-epistemology
 problem §13 addresses). *Status: the agentic-coder propose→gate→revise loop is
-**specified, not built** (§15); today the separation is authoring discipline, not CI.*
+**specified, not built** (§16); today the separation is authoring discipline, not CI.*
 
 ## §11. Attaching content to the structure
 
-Structure is necessary but inert. Disciplines for the prose and artifacts hung on it:
+Structure is necessary but inert. Disciplines for the prose and artifacts hung on it
+(a tested explanatory craft — closest articulation: N. Case, *How To Explain Things Real
+Good* — adapted to the graph; these desiderata **conflict**, and resolving the conflicts
+is §15):
 
-- **First-encounter-readable definitions; show then tell.** Precise but legible on
-  first contact; depth is added by expansion and drill-down, not front-loaded rigor.
-  Concrete (picture/example) before abstract (definition). The sequence is a
-  problem→solution story ("Therefore & But"), not an "and-then" topological listicle.
+- **Show what made you *care* — motivation before mechanism.** Open a unit with the
+  concrete puzzle, surprise, or stake that made the idea matter — *show what made you
+  care; don't assert why it's important* (the abstract "why" is gobbledygook to a
+  novice). The first job is to make the learner *want* the next concept, which a
+  Therefore/But arc then earns.
+- **First-encounter-readable definitions; show then tell; concept before syntax.**
+  Precise but legible on first contact; depth is added by expansion and drill-down, not
+  front-loaded rigor. Concrete (picture/example/analogy) **before** abstract
+  (definition) — and the *idea* before any specific-language **syntax**: a particular
+  grammar or serialization or query language is a late, optional detail, never the entry
+  point (introducing a concept *through* its notation is the inversion this rule
+  forbids). The sequence is a problem→solution story ("Therefore & But"), not an
+  "and-then" topological listicle.
 - **PEA, distinguished by domain (ADR-0006).** *Pictures* (a visual of the real
   thing) and *Examples* (an instance from the concept's own domain) are **in-domain**
   — faithful, and they can *grow*. *Analogies* (a mapping to a familiar foreign
@@ -449,6 +478,24 @@ Structure is necessary but inert. Disciplines for the prose and artifacts hung o
 - **Confusions as predicted misconceptions.** The dependency structure predicts where
   learners conflate concepts (contrast pairs, category errors); each unit states those
   misconceptions and their corrections explicitly.
+- **Explain every symbol, notation, and acronym — completely.** No bare acronym (spell
+  it out *and* define it on first use); every glyph in a formula or syntax block is
+  accounted for — what each symbol, delimiter, prefix, and separator *does*. This is §6
+  closure pushed below term granularity to the **sub-token** level, and it is
+  non-negotiable: a learner must never have to *guess* what a mark means, because
+  guessing manufactures exactly the silent wrong assumption the method exists to prevent.
+- **Anchor to the learner's decision (skill-focus, §8).** In skill/decision domains,
+  hang content on the *choice the learner must make*, not a theory taxonomy: present the
+  options as candidate solutions, each with its cost (a natural Therefore/But), so theory
+  earns its place by informing a decision rather than being surveyed for its own sake.
+- **Confusion-anticipation pass.** Author each unit by predicting, line by line, the
+  question or wrong assumption a first-time reader forms *right here*, and resolve it
+  inline — the per-line complement to the structural misconception list above.
+- **Test early, heckle often (§15).** A unit is not done when it reads well *to its
+  author*; expose it to a real reader early and capture where it bored or confused them.
+  Note these disciplines actively conflict (complete notation fights concision; a hook
+  fights even coverage; concrete-first fights closure) — surfacing and resolving those
+  tensions, holistically and iteratively, is §15.
 
 ## §12. Assessment
 
@@ -507,6 +554,18 @@ graph recovers most of one expert's structure — nothing more** (same author wr
 both; consistent with shared bias or retrofitting). Tier 1 is what would make it
 independent.
 
+**Set-faithfulness is a distinct Tier-1 check from edge-correctness.** Edge review asks
+"is *this dependency* true?"; it cannot ask "are these the *right concepts at all*?" A
+graph can be acyclic, closed, and have every edge correct, yet **mis-scope the domain** —
+omit ideas the field now treats as central, or center a dated taxonomy. (Reference
+failure mode, from the sibling knowledge-graph instance: a "second brain" curriculum
+built on the 2018 symbolic-query stack — RDF/SPARQL/OWL — while omitting retrieval/RAG and
+agentic search, the dominant *current* paradigm.) So Tier 1 owes a **coverage/scope audit
+against current authoritative sources**: are the declared concepts what a present-day
+expert would teach, or a partial or stale slice? This is faithfulness of the *set*,
+orthogonal to correctness of the *edges* — and, like skill-focus (§8), it trades off
+against concision and is resolved per §15.
+
 *The central unresolved issue is **edge epistemology** — how we know a prerequisite
 edge is true. Edges are author opinion until reviewed, yet the whole compiler trusts
 them: a wrong edge yields a perfectly valid, educationally distorted curriculum.* To
@@ -535,7 +594,10 @@ gain, misconception elimination, transfer, retention — not one scalar. *Baseli
 the same content authored conventionally; a topic-matched resource; an ablation
 removing the *derived ordering* (random/expert-guessed) to isolate the structure's
 contribution. *Controls:* hold prose constant so the variable under test is the
-*structure*, not the writing.
+*structure*, not the writing. Before any of this is runnable, the only honest early
+signal is **in-situ reader feedback** (§15) — a per-section "this confused/bored me"
+channel; it is useful for *iteration*, not a substitute for the controlled comparison
+above (it measures the *feeling* of difficulty, not learning gain).
 
 > The claim this paper supports is: *the construction is principled, well-formed, and
 > auditable.* The claims it does **not** make are *that the edges are correct* (Tier
@@ -572,7 +634,87 @@ only (reading contract). They remove the structural defects of §1; they do not
 guarantee learning, and — per the proxy caveat — may not even correlate with it. A
 reader who substitutes *well-structured* for *optimal* throughout loses nothing.
 
-## §15. What transfers — and where the method returns empty
+These seven are the structural **floor**. Doing the job *well* above that floor —
+balancing the content desiderata of §11 (which, unlike the gates, actively *conflict*
+with one another) — is a separate discipline, and the gates are silent on it. That is
+§15.
+
+## §15. The desiderata conflict — a discipline for resolving tensions
+
+The hard gates (§4, §6, §7) define a **feasible set**, and §14 calls clearing them
+"structurally optimal" — a *floor*. But the work that actually determines whether a
+treatment is good happens **above** that floor, in the content desiderata of §11 and
+the soft ordering of §9. Those are **not** independent checkboxes you can each
+maximize: they actively **trade off** against one another. A method that only ANDs
+gates is silent exactly where most authoring judgment is spent. This section makes the
+trade-offs explicit and gives an iterative, whole-graph discipline for resolving them.
+
+**The forces (the recurring tension pairs).**
+
+| This force… | pulls toward… | …conflicts with | …which pulls toward | Collision |
+|---|---|---|---|---|
+| Completeness (§11: explain *every* symbol/acronym) | account for every mark | Concision (§11: cut 10%, respect time) | say less | a fully-annotated notation block blows the length budget |
+| Coverage / domain-faithfulness (§13) | the concepts the field *actually* uses now | Skill-focus (§8) | only what the learner's decision needs | a faithful survey buries the choice the learner came to make |
+| Depth / comprehensiveness | author the full band | Legibility (§17) | a page a learner can hold at once | a complete page renders as an unreadable wall |
+| Concrete-first (§11: PEA, show-then-tell) | open with a motivating example | Closure (§6) | introduce nothing un-earned | the best motivating example needs a term not yet defined |
+| One running artifact (§11) | reuse the through-line | Per-concept aptness (§11) | the best picture for *this* idea | the running artifact isn't the clearest illustration here |
+| Motivation hook (§11: "show what made you care") | a personal, vivid entry | Neutral surveying | even, comprehensive tone | the hook over-weights one sub-topic |
+
+**Why a checklist cannot resolve these.** A gate is *pass/fail and independent*; these
+forces are *dependent and continuous*. Maximize concision and you starve the
+symbol-by-symbol explanation a newcomer needs; maximize coverage and you bury the
+decision a skill-domain learner came for; satisfy closure too strictly and you forbid
+the motivating example that makes the unit land. The resolution is therefore never
+"satisfy all of them" — it is "**balance, per unit, on purpose, and check the whole.**"
+
+**A three-part discipline.**
+
+1. **Resolve per unit, by role — and record the choice.** The right balance depends on
+   a unit's *role* in the arc. An orientation node (closure-exempt, §6) resolves
+   Concrete-first ↔ Closure toward the hook; a deep reference node resolves the same
+   tension toward closure. Each unit carries a short **resolution rationale** — which
+   forces it favored and why — an ADR-at-the-unit, so the trade-off is inspectable (§3)
+   and not silently re-litigated on the next edit.
+2. **Detect tensions; don't pretend they're gates.** Some checks are **tension
+   detectors**, not pass/fail gates: they flag a collision and *demand a recorded
+   resolution* rather than picking a winner. "This unit introduces N undefined symbols
+   **and** exceeds the concision budget" is not a failure — it is a surfaced tension
+   whose resolution (gloss the symbols? split the unit? accept the length and say why?)
+   is recorded. The detector's job is to make the trade-off visible to the author/LLM.
+3. **Resolve holistically, then iterate.** A tension is rarely local. Easing
+   Concrete-first by adding a motivating example can introduce a forward reference three
+   nodes downstream (a §6 break *elsewhere*); deepening coverage to satisfy
+   faithfulness can break legibility on the page. So every resolution triggers a
+   **whole-graph re-check** — evaluated against the entire curriculum, not the single
+   unit — and you iterate until the graph *as a whole* settles. This is the soft
+   counterpart to the hard fixed-point the gates compute.
+
+**This is the missing half of propose→gate→revise (§10).** §10 split labor into a
+deterministic floor (the gates) and an LLM that "optimizes within the envelope." That
+envelope *is* this tension space, and "optimize" was named a direction, not an
+algorithm (§9). The discipline here is what the optimize step actually *does*: surface
+the forces, balance per unit by role, re-check globally, iterate. The hard gates keep
+it honest — no resolution may break closure or acyclicity — but the pedagogy lives in
+the resolutions, not the gates.
+
+**Closing the loop needs real signal, early.** *Which* resolution is right is
+ultimately the Tier-2 empirical question (§13) — unanswerable until the system is
+built. Until then the cheapest honest signal is to **test early and heckle often**:
+put the draft in front of a reader and capture, *in situ*, where it bored, confused, or
+lost them. The reference architecture operationalizes this as a **per-section feedback
+channel** in the product — the reader flags a specific unit *while reading* — so
+tension resolutions accrue real reactions instead of the author's guess. This is
+signal, **not proof**: it measures the *feeling* of difficulty, not learning gain — the
+§13 distinction holds.
+
+**The shape is not a coincidence.** A good *explanation* is a Therefore/But loop (§11):
+a solution creates a new problem, forcing a new solution. So is this *methodology*: each
+requirement solves one defect of §1 (BUT) creates a tension with another, (THEREFORE)
+forcing a resolution, which surfaces the next tension. The method's own desiderata form
+a Therefore/But graph, resolved iteratively and holistically — applied to itself, the
+method has the very structure it prescribes for its output.
+
+## §16. What transfers — and where the method returns empty
 
 **Transfers:** everything except the concept records — the `Concept` shape, the gates
 (closure, acyclicity, coherence), the SCC linter, the derivation (group-lift +
@@ -629,12 +771,15 @@ hedge; it is the actual scope.
 - **The kind vocabulary and the four resolution moves are earned from one topic** and
   may not transfer.
 
-## §16. Threats to validity and failure modes
+## §17. Threats to validity and failure modes
 
 | Threat | Symptom | Mitigation |
 |---|---|---|
 | **Form mistaken for truth** | A well-formed graph encoding the *wrong* dependencies | Tier-1 validation (§13); the gates can't catch this |
 | **Proxy mistaken for outcome** | Optimizing closure/coverage/acyclicity that don't track learning (or anti-track it) | Treat all pre-Tier-2 choices as provisional; run §13 Tier 2 before believing the structure helps |
+| **Desiderata silently in conflict** | Author maximizes one force (concision) and starves another (symbol completeness, coverage) without noticing | Tension detectors + per-unit recorded resolution + whole-graph re-check (§15) |
+| **Dated / mis-scoped concept set** | A well-formed graph reflecting an old or partial taxonomy; omits how the field now works | Set-faithfulness audit against current sources (§13); skill-focus scoping (§8) |
+| **Notation opacity** | Symbols, delimiters, or acronyms used unexplained; the learner guesses and mis-assumes | Sub-token explanation discipline + concept-before-syntax (§11); lint for undefined glyphs/acronyms |
 | Wrong prerequisite edge | A unit unlocks before its real dependency | §7 audit; Tier-1 review; small high-confidence edits |
 | Over-decomposition (atomization) | Dozens of trivial nodes; learner fatigue | Group coherence; "distinct idea or a sentence?" review |
 | Co-constitutive concepts forced into order | An honest cycle papered over | Maturity versioning (§5 move 4) — itself unproven |
@@ -645,7 +790,7 @@ hedge; it is the actual scope.
 | Judge false pass/fail | Confident nonsense earns a badge / terse-but-correct rejected | Validate judge on a frozen set first; deterministic component; confidence-thresholded override |
 | Recency over-indexing in authoring | The model fixates on whatever was salient when authored | Pressure-test framings against standard sources, not the last conversation |
 
-## §17. Related work and positioning
+## §18. Related work and positioning
 
 Prerequisite structure is old; almost nothing here is a new claim about *learning*.
 The honest position is that the method **reinvents none of the theory and adds an
@@ -750,15 +895,18 @@ PEA                    → content-attachment
 running-artifact       → PEA, goal
 ladder-of-abstraction  → running-artifact
 spiral-gloss           → definition-closure, content-attachment
+skill-focus            → goal, content-attachment
 assessment             → concept, ordering, goal-closure
 validation-tiers       → assessment, skill-map-derivation
+domain-faithfulness    → concept-graph, goal, validation-tiers
 optimal-output  [goal] → definition-closure, acyclicity, ordering, goal-closure
+tension-resolution     → content-attachment, validation-tiers, optimal-output
 transfer-limits [goal] → optimal-output, validation-tiers
 ```
 
-Acyclic (verify: no node lists a later node). The **§1–§15** order is one topological
+Acyclic (verify: no node lists a later node). The **§1–§16** order is one topological
 order of this graph; `optimal-output`, a goal, depends on every invariant, so it can
-only be defined at §14 — hence the reading-contract spiral gloss. (§16 Threats and §17
+only be defined at §14 — hence the reading-contract spiral gloss. (§17 Threats and §18
 Related work are back-matter, outside the concept map — like §0, which is the
 closure-exempt orientation node.) The method, applied to itself, produced this paper's
 spine.
@@ -767,7 +915,7 @@ spine.
 
 Move 4 (§5) is the method's answer to genuinely co-constitutive concepts and is its
 least-tested part (no reference instance uses it). This sketch shows it is a concrete
-construction, not a placeholder — though a hand sketch is not validation (§15).
+construction, not a placeholder — though a hand sketch is not validation (§16).
 
 *Target mutuality:* in introductory mechanics, **force**, **mass**, and
 **acceleration** are co-defined — `F = ma` relates all three, and each is usually
@@ -788,5 +936,5 @@ The chain is acyclic (each node's prerequisites precede it), yet it honestly mod
 "you hold rough versions of all three, then the law sharpens each into its formal
 version." The `refines` edges (§2 semantic-kind) carry the version relation. **What
 this does *not* show:** that *every* co-constitutive cluster stratifies this cleanly —
-some may resist (the open question, §15). It shows only that the construction is
+some may resist (the open question, §16). It shows only that the construction is
 well-defined where it applies.
