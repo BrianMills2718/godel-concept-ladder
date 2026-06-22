@@ -392,6 +392,15 @@ covering the field *fairly and completely* (domain-faithfulness, §13) vs. cover
 what a decision needs (skill-focus), and conceptual breadth vs. implementation depth —
 both resolved per §15.
 
+**The arc's last segment — *operate* — is the one most curricula drop, and it is the
+hardest.** Demos end at "it works once"; real capability is keeping the system correct,
+current, and affordable in use (maintenance, drift, cost, updating). The honest target is
+to teach the learner to run an **evaluation-gated living system** — a held-out check that
+*gates each change* to their artifact. That is, recursively, the very propose→gate→revise
+discipline this paper applies to *building* curricula (§10), handed to the learner as an
+operating skill. A practitioner-capability tree that omits day-2 operation has taught the
+first act and called it the play.
+
 ## §9. Ordering — topological, then optimized
 
 The recommended linear path is a **topological order** of the concept graph.
@@ -579,6 +588,17 @@ against current authoritative sources**: are the declared concepts what a presen
 expert would teach, or a partial or stale slice? This is faithfulness of the *set*,
 orthogonal to correctness of the *edges* — and, like skill-focus (§8), it trades off
 against concision and is resolved per §15.
+
+**Corollary for fast-moving practitioner domains: separate the durable from the
+perishable.** In a field that churns (the second-brain/LLM tooling stack turns over
+quarterly), faithfulness has a time dimension: the *durable* layer (the pipeline shape,
+the decision axes, the tradeoff structure) is the concept graph and ages slowly; the
+*perishable* layer (specific framework APIs, current prices, this month's leading system)
+ages in months. Keep them in different registers — teach the durable as concepts, and
+**date and quarantine** the perishable (mark it "as of <date>," confine it to examples,
+never let a prerequisite edge depend on a tool's current API). This keeps a
+practitioner-capable curriculum from rotting, and is the staleness-control complement to
+the coverage audit above.
 
 *The central unresolved issue is **edge epistemology** — how we know a prerequisite
 edge is true. Edges are author opinion until reviewed, yet the whole compiler trusts
