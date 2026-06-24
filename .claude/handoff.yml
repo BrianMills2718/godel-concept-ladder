@@ -1,0 +1,47 @@
+updated: "2026-06-24T09:34:00"
+project: godel
+
+summary: "Sprint complete (CF1–CF4, C1–C4, D1–D2). Post-sprint: ADR-0007 Ph.1 (prerequisite pretests UI) and ADR-0006 (explanatory devices framework) both landed as docs+mechanism but neither is content-complete."
+
+completed:
+  - "Full sprint done — skill DAG homepage, two-distinctions reframe, reference-closure checker, LLM judge backend validated, goal picker (0f8aced closes ADR-0006 §6)"
+  - "ADR-0007 Ph.1: prerequisite pretest mechanism + soft-diagnostic UI (db722cf)"
+  - "ADR-0006: Accepted stance on PEA (Pictures/Examples/Analogies), ladder-of-abstraction, two-track backward derivation (0f8aced)"
+
+uncertainties:
+  - id: U1
+    priority: high
+    summary: "ADR-0006 is documented but NOT implemented — current content has a fixed cast, no analogies, no single accreting through-line artifact"
+    context: "ADR-0006 status field says 'Not implemented'. The theory is correct and accepted; execution gap is large. Check what ADR-0006 §5/§6 says is scoped out of v1 before starting."
+    blocking: "Any content improvement work that assumes the explanatory-device framework is in place"
+
+  - id: U2
+    priority: medium
+    summary: "ADR-0007 pretests: most concepts have no microQuiz, so most pretests render as readiness-banner only (thin)"
+    context: "Coverage fills incrementally; highest-fan-out concepts (proof, formula, etc.) should be authored first. See ADR-0007 §staged-build."
+    blocking: "Meaningful pretest coverage"
+
+pending:
+  - id: P1
+    priority: high
+    effort: large
+    summary: "Author microQuiz entries for high-fan-out prerequisite concepts"
+    details: "ADR-0007 says: author checks for highest-fan-out concepts first (a check on 'proof' or 'formula' appears in many pages' pretests). Find the top-N fan-out concepts: grep concepts.ts for prerequisites arrays, count references. Then add microQuiz to each. Verify with npm run check."
+
+  - id: P2
+    priority: medium
+    effort: large
+    summary: "Implement ADR-0006 explanatory devices in content — analogies with breakdown points, artifact track"
+    details: "ADR-0006 is stance-only. Implementation means: (1) audit each concept for analogy opportunities; (2) mark breakdown points; (3) derive a terminal artifact and work backward per the two-track method. RUNNING_EXAMPLE.md already documents that a single sentence can't span all 17 stages — use the 'small consistent cast' fallback."
+
+  - id: P3
+    priority: low
+    effort: small
+    summary: "ADR-0007 UX: cap pretest question count, make collapsible/skippable, suppress on already-passed pages"
+    details: "ADR-0007 uncertainties section flags pretest fatigue. Implementation: cap at 3 questions per pretest; add collapse toggle; track passed pages in localStorage and suppress pretest once prerequisite pages are passed."
+
+sanity_checks:
+  - cmd: "npm run check"
+    expect: "exits 0"
+  - cmd: "cd backend && python -m pytest -q"
+    expect: "all pass"
